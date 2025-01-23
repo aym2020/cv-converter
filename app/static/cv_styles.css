@@ -1,0 +1,135 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #0f1840;
+    background-color: white;
+}
+
+/* Print Button */
+.print-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #2f7dda;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.print-button:hover {
+    background-color: #1e5bb5;
+}
+
+/* A4 Page Size */
+.page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 20mm;
+    box-sizing: border-box;
+    background-color: white;
+    box-shadow: none;
+}
+
+/* Page 1 Styles */
+.page-1 {
+    background-color: #0f1840;
+    color: white;
+    text-align: center;
+    padding-top: 100mm; /* Center content vertically */
+}
+
+.page-1 h1 {
+    font-size: 48px;
+    color: #00ffff;
+    margin: 0;
+}
+
+.page-1 h2 {
+    font-size: 24px;
+    color: white;
+    margin: 10px 0 0;
+}
+
+/* Page 2 Styles */
+.page-2 {
+    background-color: white;
+}
+
+.section-title {
+    background-color: #2f7dda;
+    color: white;
+    padding: 10px;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.skills-list, .languages-list, .experiences-list {
+    margin: 20px 0;
+}
+
+.skills-list h3, .languages-list h3, .experiences-list h3 {
+    color: #0f1840;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.skills-list ul, .languages-list ul, .experiences-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.skills-list li, .languages-list li, .experiences-list li {
+    margin: 5px 0;
+}
+
+.languages-list span {
+    color: #2f7dda;
+}
+
+/* Last Page Styles */
+.last-page {
+    background-color: #0f1840;
+    color: white;
+    text-align: center;
+    padding: 50px;
+}
+
+.last-page h3 {
+    color: #00ffff;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.last-page p {
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Print Styles */
+@media print {
+    /* Ensure the blue background is printed */
+    .page-1 {
+        background-color: #0f1840 !important;
+        -webkit-print-color-adjust: exact; /* For Chrome/Safari */
+        color-adjust: exact; /* Standard property */
+    }
+
+    /* Hide the print button when printing */
+    .print-button {
+        display: none;
+    }
+
+    /* Ensure each section starts on a new page */
+    .page-2, .last-page {
+        page-break-before: always;
+    }
+}
