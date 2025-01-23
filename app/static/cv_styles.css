@@ -45,7 +45,7 @@ body {
     padding-top: 50mm; /* Adjust this value to move content higher */
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center content horizontally */
+    align-items: baseline; /* Center content horizontally */
     position: relative;
     min-height: 297mm; /* Ensure the page takes full height */
 }
