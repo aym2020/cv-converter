@@ -69,7 +69,7 @@ def send_to_openai_api(text):
                 {"role": "system", "content": "You are a helpful assistant that extracts structured data from CVs and returns it in valid JSON format."},
                 {"role": "user", "content": f"""
                     Extract the following information from this CV text and return it in valid JSON format:
-                    - name: Full name of the candidate.
+                    - name: Last name of the candidate.
                     - first_name: First name of the candidate.
                     - skills: A dictionary with up to 5 categories of skills. Each category should contain a list of skills. Ensure the categories are relevant (e.g., Programming, Business Intelligence, IDEs, etc.) and do not include any blank categories.
                     - languages: A dictionary where keys are languages and values are proficiency levels (e.g., 'Fluent', 'Intermediate', 'Basic').
@@ -77,8 +77,9 @@ def send_to_openai_api(text):
                         - job_title: Job title.
                         - company: Company name.
                         - duration: Start and end dates (e.g., '11/2023 – 09/2024').
-                        - description: Description of responsibilities.
+                        - description: Description of responsibilities. Enhance the description to make it more interesting and relevant.
                     Ensure the JSON is valid and properly structured. Do not include any additional text or explanations.
+                    Ensure all the information is in english.
 
                     CV Text:
                     {text}
@@ -112,17 +113,21 @@ def generate_cv():
         "name": request.form.get("name"),
         "first_name": request.form.get("first_name"),
         "job_title": request.form.get("job_title"),
-        "skills": {
-            "Programming": request.form.get("skills_Programming", "").split(", "),
-            "Business Intelligence": request.form.get("skills_Business Intelligence", "").split(", "),
-            # Add other skill categories dynamically
-        },
+        "skills": {},  # Initialize an empty dictionary for skills
         "languages": {
             "French": request.form.get("language_FRENCH", ""),
             "English": request.form.get("language_ENGLISH", ""),
         },
         "experiences": []
     }
+
+    # Dynamically process skills from the form data
+    for key, value in request.form.items():
+        if key.startswith("skills_"):  # Check if the key is a skill category
+            category = key.replace("skills_", "")  # Extract the category name
+            skills = value.split(", ")  # Split the skills into a list
+            if skills:  # Only add the category if there are skills
+                data["skills"][category] = skills
 
     # Dynamically add experiences
     i = 1

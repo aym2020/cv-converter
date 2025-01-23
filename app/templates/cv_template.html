@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CV Template</title>
+    <!-- Import Open Sans font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='cv_styles.css') }}">
 </head>
 <body>
@@ -12,6 +14,12 @@
 
     <!-- Page 1 -->
     <div class="page page-1">
+        <!-- Logo Container -->
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='randstad_logo.png') }}" alt="Randstad Digital Logo" class="company-logo">
+        </div>
+
+        <!-- Candidate Information -->
         <h1>{{ data.first_name }} {{ data.name }}</h1>
         <h2>{{ data.job_title }}</h2>
     </div>
@@ -19,30 +27,29 @@
     <!-- Page 2 -->
     <div class="page page-2">
         <!-- Technical and Functional Skills -->
-        <div class="section-title">Compétences Techniques et Fonctionnelles</div>
+        <div class="section-title">Technical and Functional Skills</div>
         <div class="skills-list">
             {% for category, skills in data.skills.items() %}
-                <h3>{{ category }}</h3>
-                <ul>
-                    {% for skill in skills %}
-                        <li>{{ skill }}</li>
-                    {% endfor %}
-                </ul>
+                <div class="skill-category">
+                    <span class="skill-category-name">{{ category }}:</span>
+                    <span class="skill-items">{{ skills | join(', ') }}</span>
+                </div>
             {% endfor %}
         </div>
 
         <!-- Languages -->
-        <div class="section-title">Langues</div>
+        <div class="section-title">Languages</div>
         <div class="languages-list">
-            <ul>
-                {% for language, level in data.languages.items() %}
-                    <li>{{ language }}: <span>{{ level }}</span></li>
-                {% endfor %}
-            </ul>
+            {% for language, level in data.languages.items() %}
+                <div class="language-item">
+                    <span class="language-name">{{ language }}:</span>
+                    <span class="language-level">{{ level }}</span>
+                </div>
+            {% endfor %}
         </div>
 
         <!-- Professional Experiences -->
-        <div class="section-title">Expériences Professionnelles</div>
+        <div class="section-title">Professional Experiences</div>
         <div class="experiences-list">
             {% for experience in data.experiences %}
                 <h3>{{ experience.job_title }} - {{ experience.company }}</h3>
@@ -54,12 +61,12 @@
 
     <!-- Last Page -->
     <div class="page last-page">
-        <h3>Nous sommes Randstad Digital</h3>
+        <h3>We are Randstad Digital</h3>
         <p>
-            Randstad Digital est un partenaire technologique de référence qui facilite la transformation digitale accélérée des entreprises en fournissant des talents, des capacités de production et des solutions packagées dans des domaines spécialisés. Notre expertise vous permet de renforcer votre équipe, tout en vous mettant en relation avec des professionnels qualifiés dans le monde entier qui s'alignent sur les technologies que vous avez choisies.<br><br>
-            Nous nous concentrons sur les solutions packagées et nous donnons aux entreprises les moyens d'atteindre leurs objectifs rapidement et efficacement. Nous intervenons autour de quatre lignes de services : l'expérience client (UX/UI), l'ingénierie numérique et l'ingénierie produit, les datas & analytics et le cloud & infrastructures. Pour ce faire, nous proposons à nos clients trois modèles d'engagement : l'expertise, des centres de compétences et des solutions packagées.<br><br>
-            Lancée le 30 août 2023, Randstad Digital possède une connaissance approfondie du marché du travail pour accompagner ses clients dans leurs projets de transformation digitale grâce à son expertise et ses méthodologies diversifiées et agiles. Nos 46 000 collaborateurs dans le monde ont un impact positif sur la société en aidant les gens à réaliser leur véritable potentiel tout au long de leur vie professionnelle.<br><br>
-            Randstad a été fondée en 1960 et son siège social se trouve à Diemen, aux Pays-Bas. En 2022, sur nos 39 marchés, nous avons aidé plus de 2 millions de personnes à trouver un emploi qui leur convient et conseillé plus de 230 000 clients sur leurs besoins en talents. Nous avons généré un chiffre d'affaires de 27,6 milliards d'euros. Randstad N.V. est cotée à l'Euronext Amsterdam.
+            Randstad Digital is a leading technology partner that accelerates digital transformation for businesses by providing talent, production capabilities, and packaged solutions in specialized fields. Our expertise enables you to strengthen your team while connecting you with skilled professionals worldwide who align with the technologies you’ve chosen.<br><br>
+            We focus on packaged solutions, empowering businesses to achieve their objectives quickly and efficiently. We operate across four service lines: customer experience (UX/UI), digital engineering and product engineering, data & analytics, and cloud & infrastructure. To achieve this, we offer our clients three engagement models: expertise, competency centers, and packaged solutions.<br><br>
+            Launched on August 30, 2023, Randstad Digital has an in-depth understanding of the labor market, enabling us to support our clients in their digital transformation projects with our diversified and agile expertise and methodologies. Our 46,000 employees worldwide positively impact society by helping people achieve their full potential throughout their professional lives.<br><br>
+            Randstad was founded in 1960, with its headquarters in Diemen, the Netherlands. In 2022, across our 39 markets, we helped over 2 million people find jobs that suited them and advised more than 230,000 clients on their talent needs. We generated €27.6 billion in revenue. Randstad N.V. is listed on Euronext Amsterdam.
         </p>
     </div>
 </body>

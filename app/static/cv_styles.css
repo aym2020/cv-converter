@@ -1,6 +1,6 @@
 /* Global Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Open Sans', sans-serif;
     margin: 0;
     padding: 0;
     color: #0f1840;
@@ -42,11 +42,15 @@ body {
     background-color: #0f1840;
     color: white;
     text-align: center;
-    padding-top: 100mm; /* Center content vertically */
+    padding-top: 100mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
 .page-1 h1 {
-    font-size: 48px;
+    font-size: 60px;
     color: #00ffff;
     margin: 0;
 }
@@ -62,42 +66,71 @@ body {
     background-color: white;
 }
 
+/* Section Titles */
 .section-title {
-    background-color: #2f7dda;
-    color: white;
-    padding: 10px;
-    font-size: 20px;
+    color: #2f7dda;
+    font-size: 24px;
+    font-weight: bold;
     margin-top: 20px;
+    margin-bottom: 10px;
 }
 
-.skills-list, .languages-list, .experiences-list {
+/* Skills List */
+.skills-list {
     margin: 20px 0;
 }
 
-.skills-list h3, .languages-list h3, .experiences-list h3 {
+.skill-category {
+    margin: 10px 0;
+}
+
+.skill-category-name {
+    color: #0f1840;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.skill-items {
+    color: #2f7dda;
+    font-size: 16px;
+}
+
+/* Languages List */
+.languages-list {
+    margin: 20px 0;
+}
+
+.language-item {
+    margin: 10px 0;
+}
+
+.language-name {
+    color: #0f1840;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.language-level {
+    color: #2f7dda;
+    font-size: 16px;
+}
+
+/* Experiences List */
+.experiences-list h3 {
     color: #0f1840;
     font-size: 18px;
     margin: 10px 0;
 }
 
-.skills-list ul, .languages-list ul, .experiences-list ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.skills-list li, .languages-list li, .experiences-list li {
+.experiences-list p {
     margin: 5px 0;
-}
-
-.languages-list span {
-    color: #2f7dda;
 }
 
 /* Last Page Styles */
 .last-page {
     background-color: #0f1840;
     color: white;
-    text-align: center;
+    text-align: left;
     padding: 50px;
 }
 
@@ -110,26 +143,37 @@ body {
 .last-page p {
     font-size: 16px;
     line-height: 1.6;
+    text-align: justify;
     max-width: 800px;
     margin: 0 auto;
 }
 
 /* Print Styles */
 @media print {
-    /* Ensure the blue background is printed */
-    .page-1 {
+    .page-1, .last-page {
         background-color: #0f1840 !important;
-        -webkit-print-color-adjust: exact; /* For Chrome/Safari */
-        color-adjust: exact; /* Standard property */
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
     }
 
-    /* Hide the print button when printing */
     .print-button {
         display: none;
     }
 
-    /* Ensure each section starts on a new page */
     .page-2, .last-page {
         page-break-before: always;
     }
+}
+
+/* Logo Container */
+.logo-container {
+    position: absolute;
+    top: 10mm;
+    right: 10mm;
+}
+
+/* Company Logo */
+.company-logo {
+    width: 400px;
+    height: auto;
 }
