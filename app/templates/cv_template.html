@@ -22,6 +22,18 @@
         <!-- Candidate Information -->
         <h1>{{ data.first_name }} {{ data.name }}</h1>
         <h2>{{ data.job_title }}</h2>
+
+        <!-- Delivery Manager Information -->
+        <div class="manager-info">
+            <p class="delivery-manager">Delivery Manager</p>
+            <p class="manager-name">{{ data.manager_name }}</p>
+            <p class="manager-email">{{ data.manager_email }}</p>
+        </div>
+
+        <!-- Bulles Image -->
+        <div class="bulles-container">
+            <img src="{{ url_for('static', filename='bulles.png') }}" alt="Bulles Image" class="bulles-image">
+        </div>
     </div>
 
     <!-- Page 2 -->
@@ -68,6 +80,11 @@
             Launched on August 30, 2023, Randstad Digital has an in-depth understanding of the labor market, enabling us to support our clients in their digital transformation projects with our diversified and agile expertise and methodologies. Our 46,000 employees worldwide positively impact society by helping people achieve their full potential throughout their professional lives.<br><br>
             Randstad was founded in 1960, with its headquarters in Diemen, the Netherlands. In 2022, across our 39 markets, we helped over 2 million people find jobs that suited them and advised more than 230,000 clients on their talent needs. We generated €27.6 billion in revenue. Randstad N.V. is listed on Euronext Amsterdam.
         </p>
+         
+        <!-- Laser Image -->
+        <div class="laser-container">
+            <img src="{{ url_for('static', filename='laser.png') }}" alt="Laser Image" class="laser-image">
+        </div>
     </div>
 </body>
 </html>

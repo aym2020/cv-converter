@@ -113,6 +113,8 @@ def generate_cv():
         "name": request.form.get("name"),
         "first_name": request.form.get("first_name"),
         "job_title": request.form.get("job_title"),
+        "manager_name": request.form.get("manager_name"),
+        "manager_email": request.form.get("manager_email"),
         "skills": {},  # Initialize an empty dictionary for skills
         "languages": {
             "French": request.form.get("language_FRENCH", ""),
