@@ -15,7 +15,8 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Configure upload folder
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = 'app/uploads'
+
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
@@ -55,9 +56,13 @@ def upload_file():
 
 def extract_text_from_pdf(filepath):
     text = ""
-    with fitz.open(filepath) as doc:
-        for page in doc:
-            text += page.get_text()
+    try:
+        with fitz.open(filepath) as doc:
+            for page in doc:
+                text += page.get_text()
+    except Exception as e:
+        print(f"Error extracting text from PDF: {e}")
+        return None
     return text
 
 def send_to_openai_api(text):
@@ -78,9 +83,14 @@ def send_to_openai_api(text):
                         - company: Company name.
                         - duration: Start and end dates (e.g., '11/2023 – 09/2024').
                         - description: Description of responsibilities. Enhance the description to make it more interesting and relevant.
+                    - education: A list of education entries. Each entry should include:
+                        - degree: The degree obtained (e.g., Bachelor of Science, Master of Arts).
+                        - institution: The name of the educational institution. If the institution is not known, let it blank.
+                        - duration: Start and end dates (e.g., '09/2015 – 06/2019').
                     Ensure the JSON is valid and properly structured. Do not include any additional text or explanations.
-                    Ensure all the information is in english.
-
+                    Ensure all the information is in English.
+                    Language, Name and Degree must be capitalized (e.g. French, English, etc.)
+                    
                     CV Text:
                     {text}
                 """}
@@ -106,46 +116,224 @@ def send_to_openai_api(text):
         print(f"Error calling OpenAI API: {e}")
         return None
 
-@app.route('/generate_cv', methods=['POST'])
+
+@app.route('/generate_cv', methods=['GET', 'POST'])
 def generate_cv():
-    # Get form data
-    data = {
-        "name": request.form.get("name"),
-        "first_name": request.form.get("first_name"),
-        "job_title": request.form.get("job_title"),
-        "manager_name": request.form.get("manager_name"),
-        "manager_email": request.form.get("manager_email"),
-        "skills": {},  # Initialize an empty dictionary for skills
-        "languages": {
-            "French": request.form.get("language_FRENCH", ""),
-            "English": request.form.get("language_ENGLISH", ""),
-        },
-        "experiences": []
-    }
+    """
+    This version does item-by-item chunking so that if there's space left on the page,
+    the next items in the same section can appear there, rather than forcing the entire block
+    to a new page.
+    """
+    # 1) Collect or load CV data
+    if request.method == 'POST':
+        data = {
+            "first_name": request.form.get("first_name"),
+            "name": request.form.get("name"),
+            "job_title": request.form.get("job_title"),
+            "manager_name": request.form.get("manager_name"),
+            "manager_email": request.form.get("manager_email"),
+            "skills": {},
+            "languages": {},
+            "experiences": [],
+            "education": [],
+        }
 
-    # Dynamically process skills from the form data
-    for key, value in request.form.items():
-        if key.startswith("skills_"):  # Check if the key is a skill category
-            category = key.replace("skills_", "")  # Extract the category name
-            skills = value.split(", ")  # Split the skills into a list
-            if skills:  # Only add the category if there are skills
-                data["skills"][category] = skills
+        # Dynamically process skills
+        for key, value in request.form.items():
+            if key.startswith("skills_"):
+                category = key.replace("skills_", "")
+                skills_list = value.split(", ")
+                if skills_list:
+                    data["skills"][category] = skills_list
 
-    # Dynamically add experiences
-    i = 1
-    while True:
-        job_title = request.form.get(f"job_title_{i}")
-        if not job_title:
-            break
-        data["experiences"].append({
-            "job_title": job_title,
-            "company": request.form.get(f"company_{i}", ""),
-            "duration": request.form.get(f"duration_{i}", ""),
-            "description": request.form.get(f"description_{i}", ""),
+        # Dynamically process languages
+        for key, value in request.form.items():
+            if key.startswith("language_"):
+                language = key.replace("language_", "")
+                data["languages"][language] = value
+
+        # Experiences
+        i = 1
+        while True:
+            job_title = request.form.get(f"job_title_{i}")
+            if not job_title:
+                break
+            data["experiences"].append({
+                "job_title": job_title,
+                "company": request.form.get(f"company_{i}", ""),
+                "duration": request.form.get(f"duration_{i}", ""),
+                "description": request.form.get(f"description_{i}", ""),
+            })
+            i += 1
+
+        # Education
+        j = 1
+        while True:
+            degree = request.form.get(f"degree_{j}")
+            if not degree:
+                break
+            data["education"].append({
+                "degree": degree,
+                "institution": request.form.get(f"institution_{j}", ""),
+                "duration": request.form.get(f"education_duration_{j}", ""),
+                "description": request.form.get(f"education_description_{j}", ""),
+            })
+            j += 1
+
+    else:
+        # Example data if GET
+        data = {
+            "first_name": "Issam",
+            "name": "Elafi",
+            "job_title": "Support IT & Administratif",
+            "manager_name": "John Doe",
+            "manager_email": "john.doe@example.com",
+            "skills": {
+                "Programming": ["Python", "JavaScript", "SQL"],
+                "Business Intelligence": ["Tableau", "Power BI"],
+            },
+            "languages": {
+                "French": "Fluent",
+                "English": "Intermediate",
+            },
+            "experiences": [
+                {
+                    "job_title": "IT Support Specialist",
+                    "company": "Company XYZ",
+                    "duration": "01/2020 – Present",
+                    "description": "Provided technical support and resolved IT issues.",
+                },
+            ],
+            "education": [
+                {
+                    "degree": "Bachelor of Science in Computer Science",
+                    "institution": "University of Example",
+                    "duration": "09/2015 – 06/2019",
+                    "description": "Graduated with honors.",
+                },
+            ],
+        }
+
+    # 2) Build sections
+    sections = []
+    # -- Skills
+    if data["skills"]:
+        skill_items = []
+        for category, skill_list in data["skills"].items():
+            skill_items.append({"category": category, "skills": skill_list})
+        sections.append({
+            "type": "skills",
+            "heading": "Technical and Functional Skills",
+            "items": skill_items,
         })
-        i += 1
 
-    # Render the CV template
+    # -- Languages
+    if data["languages"]:
+        lang_items = []
+        for lang, level in data["languages"].items():
+            lang_items.append({"language": lang, "level": level})
+        sections.append({
+            "type": "languages",
+            "heading": "Languages",
+            "items": lang_items,
+        })
+
+    # -- Experiences
+    if data["experiences"]:
+        sections.append({
+            "type": "experiences",
+            "heading": "Professional Experiences",
+            "items": data["experiences"],
+        })
+
+    # -- Education
+    if data["education"]:
+        sections.append({
+            "type": "education",
+            "heading": "Education",
+            "items": data["education"],
+        })
+
+    # 3) Approximate item heights
+    #    Each item in a block might have a different height. We define a small function:
+    def heading_height(): 
+        return 10  # mm
+
+    def item_height(section_type):
+        """
+        Return the approximate height for a single item in the section.
+        Adjust these values as needed for your layout.
+        """
+        if section_type == "skills":
+            return 12   # Each skill category is small
+        elif section_type == "languages":
+            return 10   # A single line per language
+        elif section_type == "experiences":
+            return 35  # Could be multiple lines describing the job
+        elif section_type == "education":
+            return 30  # Enough space for degree, institution, dates
+        return 10
+
+    # 4) Item-by-item chunking
+    PAGE_HEIGHT_MM = 297
+    PADDING_MM = 20
+    CONTENT_HEIGHT_MM = PAGE_HEIGHT_MM - 2 * PADDING_MM
+
+    pages = []              # pages -> list of pages
+    current_page = []       # each page -> list of blocks
+    current_height = 0.0
+
+    for section in sections:
+        # 4a) Try to place the heading
+        sec_heading_height = heading_height()
+        # If heading won't fit, start a new page
+        if current_height + sec_heading_height > CONTENT_HEIGHT_MM:
+            pages.append(current_page)
+            current_page = []
+            current_height = 0
+
+        # Create a new block with an empty items array
+        # We'll fill items as they fit
+        new_block = {
+            "type": section["type"],
+            "heading": section["heading"],
+            "items": []
+        }
+        current_page.append(new_block)
+        current_height += sec_heading_height  # used some vertical space for heading
+
+        # 4b) chunk each item within the section
+        for single_item in section["items"]:
+            h = item_height(section["type"])
+            if current_height + h > CONTENT_HEIGHT_MM:
+                # new page
+                pages.append(current_page)
+                current_page = []
+                current_height = 0
+
+                # Add heading again (with "continued" if you like)
+                new_block = {
+                    "type": section["type"],
+                    "items": []
+                }
+                current_page.append(new_block)
+                current_height += sec_heading_height
+
+            # Now add this item
+            current_page[-1]["items"].append(single_item)
+            current_height += h
+
+    # Finish up
+    if current_page:
+        pages.append(current_page)
+
+    # 5) Attach to data
+    data["page_2_content"] = pages
+
+    # Debug
+    print("Page 2 Content:", json.dumps(data["page_2_content"], indent=2))
+
+    # 6) Render
     return render_template('cv_template.html', data=data)
 
 if __name__ == '__main__':

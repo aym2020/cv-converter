@@ -28,13 +28,13 @@ body {
 
 /* A4 Page Size */
 .page {
-    width: 210mm;
-    min-height: 297mm;
-    margin: 0 auto;
-    padding: 20mm;
-    box-sizing: border-box;
+    width: 210mm; /* A4 width */
+    min-height: 297mm; /* A4 height */
+    padding: 20mm; /* Simulate margins with padding */
+    box-sizing: border-box; /* Include padding in width/height calculations */
     background-color: white;
-    box-shadow: none;
+    margin: 0 auto; /* Center the page horizontally */
+    page-break-after: always; /* Force a page break after each page */
 }
 
 /* Page 1 Styles */
@@ -42,16 +42,12 @@ body {
     background-color: #0f1840;
     color: white;
     text-align: center;
-    padding-top: 50mm; /* Adjust this value to move content higher */
+    padding-top: 55mm; /* Adjusted to move content higher */
     display: flex;
     flex-direction: column;
-    align-items: baseline; /* Center content horizontally */
+    align-items: baseline;
     position: relative;
-    min-height: 297mm; /* Ensure the page takes full height */
-}
-
-.page-1 {
-    padding-top: 55mm; /* Move content even higher */
+    min-height: 297mm;
 }
 
 .page-1 h1 {
@@ -60,7 +56,6 @@ body {
     margin: 0;
     font-family: 'Tahoma', sans-serif;
     font-weight: 400;
-    
 }
 
 .page-1 h2 {
@@ -69,7 +64,6 @@ body {
     margin: 10px 0 0;
     font-family: 'Tahoma', sans-serif;
     font-weight: 400;
-
 }
 
 /* Page 2 Styles */
@@ -137,17 +131,32 @@ body {
     margin: 5px 0;
 }
 
+/* Education List */
+.education-list {
+    margin: 20px 0;
+}
+
+.education-list h3 {
+    color: #0f1840;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.education-list p {
+    margin: 5px 0;
+}
+
 /* Last Page Styles */
 .last-page {
     background-color: #0f1840;
     color: white;
     text-align: left;
     padding: 50px;
-    position: relative; /* Ensure the laser container is positioned relative to this */
-    width: 210mm; /* Constrain to A4 width */
-    min-height: 297mm; /* Constrain to A4 height */
-    box-sizing: border-box; /* Include padding in width/height calculations */
-    overflow: hidden; /* Prevent overflow */
+    position: relative;
+    width: 210mm;
+    min-height: 297mm;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .last-page h3 {
@@ -162,6 +171,76 @@ body {
     text-align: justify;
     max-width: 800px;
     margin: 0 auto;
+}
+
+/* Logo Container */
+.logo-container {
+    position: absolute;
+    top: 10mm;
+    right: 10mm;
+}
+
+/* Company Logo */
+.company-logo {
+    width: 400px;
+    height: auto;
+}
+
+/* Delivery Manager Information */
+.manager-info {
+    position: absolute;
+    bottom: 17mm;
+    right: 17mm;
+    text-align: right;
+    color: white;
+    font-size: 20px;
+    line-height: 1.2;
+}
+
+.manager-info .delivery-manager {
+    color: #00ffff;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.manager-info .manager-name {
+    color: white;
+}
+
+.manager-info .manager-email {
+    color: white;
+}
+
+/* Bulles Container */
+.bulles-container {
+    position: absolute;
+    bottom: 50mm;
+    left: -150px;
+    z-index: 10;
+    text-align: center;
+}
+
+/* Bulles Image */
+.bulles-image {
+    width: 900px;
+    height: auto;
+}
+
+/* Laser Image Container */
+.laser-container {
+    position: absolute;
+    bottom: 20mm;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    text-align: center;
+    max-width: 100%;
+}
+
+/* Laser Image */
+.laser-image {
+    width: 800px;
+    height: auto;
 }
 
 /* Print Styles */
@@ -181,73 +260,14 @@ body {
     }
 }
 
-/* Logo Container */
-.logo-container {
-    position: absolute;
-    top: 10mm;
-    right: 10mm;
+/* Ensure text alignment is consistent during capture */
+.page-1 h1, .page-1 h2 {
+    text-align: left !important;
 }
 
-/* Company Logo */
-.company-logo {
-    width: 400px;
-    height: auto;
+/* Ensure text alignment is consistent during capture */
+.capture-mode .page-1 h1,
+.capture-mode .page-1 h2 {
+    text-align: left !important;
 }
 
-/* Delivery Manager Information */
-.manager-info {
-    position: absolute;
-    bottom: 17mm; /* Adjust distance from the bottom */
-    right: 17mm; /* Adjust distance from the right */
-    text-align: right; /* Align text to the right */
-    color: white; /* Default text color */
-    font-size: 20px; /* Font size */
-    line-height: 1.2; /* Reduce line spacing */
-
-}
-
-.manager-info .delivery-manager {
-    color: #00ffff; /* Light blue for "Delivery Manager" */
-    font-weight: bold; /* Make it bold */
-    margin-bottom: 5px; /* Reduce space below "Delivery Manager" */
-}
-
-.manager-info .manager-name {
-    color: white; /* White for the name */
-}
-
-.manager-info .manager-email {
-    color: white; /* White for the email */
-}
-
-/* Conteneur de l'image Bulles */
-.bulles-container {
-    position: absolute; /* Position absolue pour superposer l'image */
-    bottom: 50mm; /* Distance depuis le bas */
-    left: -150px; /* Décaler l'image plus à gauche (ajustez cette valeur) */
-    z-index: 10; /* Placer l'image au premier plan */
-    text-align: center; /* Centrer l'image horizontalement */
-}
-
-/* Image Bulles */
-.bulles-image {
-    width: 900px; /* Ajustez la taille de l'image */
-    height: auto; /* Conserver le ratio de l'image */
-}
-
-/* Laser Image Container */
-.laser-container {
-    position: absolute; /* Position the image absolutely */
-    bottom: 20mm; /* Adjust distance from the bottom */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Fine-tune horizontal centering */
-    z-index: 10; /* Ensure the image is above other elements */
-    text-align: center; /* Center the image horizontally */
-    max-width: 100%; /* Ensure the container doesn't exceed the page width */
-}
-
-/* Laser Image */
-.laser-image {
-    width: 800px; /* Set a fixed width for the image */
-    height: auto; /* Maintain aspect ratio */
-}

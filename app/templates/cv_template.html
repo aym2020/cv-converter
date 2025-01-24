@@ -7,11 +7,14 @@
     <!-- Import Open Sans font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='cv_styles.css') }}">
+    <!-- Add required libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <!-- Print Button -->
     <button onclick="window.print()" class="print-button">Print to PDF</button>
-
+    
     <!-- Page 1 -->
     <div class="page page-1">
         <!-- Logo Container -->
@@ -37,39 +40,59 @@
     </div>
 
     <!-- Page 2 -->
+    {% for page in data.page_2_content %}
     <div class="page page-2">
-        <!-- Technical and Functional Skills -->
-        <div class="section-title">Technical and Functional Skills</div>
-        <div class="skills-list">
-            {% for category, skills in data.skills.items() %}
+        {% for block in page %}
+        {% if block.type == "skills" %}
+            <div class="section-title">{{ block.heading }}</div>
+            <div class="skills-list">
+            {% for item in block["items"] %}
                 <div class="skill-category">
-                    <span class="skill-category-name">{{ category }}:</span>
-                    <span class="skill-items">{{ skills | join(', ') }}</span>
+                <span class="skill-category-name">{{ item.category }}:</span>
+                <span class="skill-items">{{ item.skills | join(', ') }}</span>
                 </div>
             {% endfor %}
-        </div>
+            </div>
 
-        <!-- Languages -->
-        <div class="section-title">Languages</div>
-        <div class="languages-list">
-            {% for language, level in data.languages.items() %}
+        {% elif block.type == "languages" %}
+            <div class="section-title">{{ block.heading }}</div>
+            <div class="languages-list">
+            {% for item in block["items"] %}
                 <div class="language-item">
-                    <span class="language-name">{{ language }}:</span>
-                    <span class="language-level">{{ level }}</span>
+                <span class="language-name">{{ item.language }}:</span>
+                <span class="language-level">{{ item.level }}</span>
                 </div>
             {% endfor %}
-        </div>
+            </div>
 
-        <!-- Professional Experiences -->
-        <div class="section-title">Professional Experiences</div>
-        <div class="experiences-list">
-            {% for experience in data.experiences %}
-                <h3>{{ experience.job_title }} - {{ experience.company }}</h3>
-                <p><em>{{ experience.duration }}</em></p>
-                <p>{{ experience.description }}</p>
+        {% elif block.type == "experiences" %}
+            <div class="section-title">{{ block.heading }}</div>
+            <div class="experiences-list">
+            {% for item in block["items"] %}
+                <h3>{{ item.job_title }} - {{ item.company }}</h3>
+                <p><em>{{ item.duration }}</em></p>
+                <p>{{ item.description }}</p>
             {% endfor %}
-        </div>
+            </div>
+
+        {% elif block.type == "education" %}
+            <div class="section-title">{{ block.heading }}</div>
+            <div class="education-list">
+            {% for item in block["items"] %}
+                <h3>
+                {{ item.degree }}
+                {% if item.institution %}
+                    - {{ item.institution }}
+                {% endif %}
+                </h3>
+                <p><em>{{ item.duration }}</em></p>
+                <p>{{ item.description }}</p>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% endfor %}
     </div>
+    {% endfor %}
 
     <!-- Last Page -->
     <div class="page last-page">
@@ -80,7 +103,7 @@
             Launched on August 30, 2023, Randstad Digital has an in-depth understanding of the labor market, enabling us to support our clients in their digital transformation projects with our diversified and agile expertise and methodologies. Our 46,000 employees worldwide positively impact society by helping people achieve their full potential throughout their professional lives.<br><br>
             Randstad was founded in 1960, with its headquarters in Diemen, the Netherlands. In 2022, across our 39 markets, we helped over 2 million people find jobs that suited them and advised more than 230,000 clients on their talent needs. We generated €27.6 billion in revenue. Randstad N.V. is listed on Euronext Amsterdam.
         </p>
-         
+
         <!-- Laser Image -->
         <div class="laser-container">
             <img src="{{ url_for('static', filename='laser.png') }}" alt="Laser Image" class="laser-image">

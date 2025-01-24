@@ -108,6 +108,32 @@
             {% endfor %}
         </div>
 
+        <!-- Education Section -->
+        <div class="form-group">
+            <label>Education:</label>
+            {% for education in data.education %}
+                <fieldset>
+                    <legend>Education {{ loop.index }}</legend>
+                    <div>
+                        <label for="degree_{{ loop.index }}">Degree:</label>
+                        <input type="text" id="degree_{{ loop.index }}" name="degree_{{ loop.index }}" value="{{ education.degree }}">
+                    </div>
+                    <div>
+                        <label for="institution_{{ loop.index }}">Institution:</label>
+                        <input type="text" id="institution_{{ loop.index }}" name="institution_{{ loop.index }}" value="{{ education.institution }}">
+                    </div>
+                    <div>
+                        <label for="education_duration_{{ loop.index }}">Duration:</label>
+                        <input type="text" id="education_duration_{{ loop.index }}" name="education_duration_{{ loop.index }}" value="{{ education.duration }}">
+                    </div>
+                    <div>
+                        <label for="education_description_{{ loop.index }}">Description:</label>
+                        <textarea id="education_description_{{ loop.index }}" name="education_description_{{ loop.index }}">{{ education.description }}</textarea>
+                    </div>
+                </fieldset>
+            {% endfor %}
+        </div>
+
         <button type="submit">Generate CV</button>
     </form>
 </body>
