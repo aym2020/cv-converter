@@ -65,53 +65,92 @@ def extract_text_from_pdf(filepath):
         return None
     return text
 
+import json  # Ensure json is imported
+
 def send_to_openai_api(text):
     try:
-        # Call the OpenAI API
         response = client.chat.completions.create(
             model="gpt-4-1106-preview",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant that extracts structured data from CVs and returns it in valid JSON format."},
-                {"role": "user", "content": f"""
-                    Extract the following information from this CV text and return it in valid JSON format:
-                    - name: Last name of the candidate.
-                    - first_name: First name of the candidate.
-                    - skills: A dictionary with up to 5 categories of skills. Each category should contain a list of skills. Ensure the categories are relevant (e.g., Programming, Business Intelligence, IDEs, etc.) and do not include any blank categories.
-                    - languages: A dictionary where keys are languages and values are proficiency levels (e.g., 'Fluent', 'Intermediate', 'Basic').
-                    - experiences: A list of professional experiences. Each experience should include:
-                        - job_title: Job title.
-                        - company: Company name.
-                        - duration: Start and end dates (e.g., '11/2023 – 09/2024').
-                        - description: Description of responsibilities. Enhance the description to make it more interesting and relevant. Use bullet points (-) and line breaks to make it more readable.
-                    - education: A list of education entries. Each entry should include:
-                        - degree: The degree obtained (e.g., Bachelor of Science, Master of Arts).
-                        - institution: The name of the educational institution. If the institution is not known, let it blank.
-                        - duration: Start and end dates (e.g., '09/2015 – 06/2019').
-                    Ensure the JSON is valid and properly structured. Do not include any additional text or explanations.
-                    Ensure all the information is in English.
-                    Language, Name and Degree must be capitalized (e.g. French, English, etc.)
-                    
-                    CV Text:
-                    {text}
-                """}
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a highly accurate assistant that extracts structured CV data and returns it in a "
+                        "fixed JSON format—no extra fields, no missing fields."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": f"""
+**INSTRUCTIONS:**
+Extract the following information from the CV text. **Output must be valid JSON** with **exactly** these top-level fields, in this order (do not add or rename keys):
+
+{{
+    "name": "",
+    "first_name": "",
+    "skills": {{}},
+    "languages": {{}},
+    "experiences": [],
+    "education": [],
+    "certifications": []
+}}
+
+1. **name**: Last name (string).
+2. **first_name**: First name (string).
+3. **skills**: An **object** with up to 5 categories. Keys are category names (capitalized if relevant), each a **list** of skill strings. No blank categories. Example:
+   "skills": {{ "Programming": ["Python", "JavaScript"], "Business Intelligence": ["Tableau"] }}
+   If no skills, return `"skills": {{}}`.
+
+4. **languages**: An **object** where each key is a Language (capitalized), and value is the proficiency level. Example:
+   "languages": {{ "French": "Fluent", "English": "Intermediate" }}
+   If none, return `"languages": {{}}`.
+
+5. **experiences**: A **list** of objects, each with:
+   - **job_title** (string)
+   - **company** (string)
+   - **duration** (string, e.g. '11/2023 – 09/2024')
+   - **description** (string). Enhance responsibilities, use bullet points (`- `) and line breaks for readability.
+   If none, return `"experiences": []`.
+
+6. **education**: A **list** of objects, each with:
+   - **degree** (string, capitalized)
+   - **institution** (string, empty if unknown)
+   - **duration** (string)
+   - **description** (string)
+   If none, return `"education": []`.
+
+7. **certifications**: A **list** of objects, each with:
+   - **name** (string, capitalized)
+   - **issuer** (string, empty if unknown)
+   If none, return `"certifications": []`.
+
+**Important**:
+- Do **not** add extra top-level fields or rename existing fields.
+- If a section is not found in the CV, provide an empty object/array for it.
+- Return **only** the JSON object, no additional text or explanations.
+- All text in **English**.
+- Capitalize Language names, Degree names, Name and First Name and Job Title and Certification names.
+
+CV Text:
+{text}
+"""
+                }
             ]
         )
+        raw_content = response.choices[0].message.content
+        # Clean up the raw JSON content from GPT
+        json_str = re.sub(r'^```json\s*', '', raw_content)  # remove ```json
+        json_str = re.sub(r'\s*```$', '', json_str)         # remove ending ```
+        json_str = json_str.strip()
+        # Fix trailing commas in objects/arrays
+        json_str = re.sub(r',\s*}', '}', json_str)
+        json_str = re.sub(r',\s*]', ']', json_str)
 
-        # Extract the response content
-        result = response.choices[0].message.content
-        print("Raw API Response:", result)  # Debugging: Print the raw response
+        # Print the JSON in a readable format
+        print("Raw JSON from OpenAI API:")
+        print(json.dumps(json.loads(json_str), indent=4))  # Pretty-print JSON
 
-        # Clean the response (remove triple backticks and non-JSON text)
-        result = re.sub(r'^```json\s*', '', result)  # Remove ```json at the start
-        result = re.sub(r'\s*```$', '', result)  # Remove ``` at the end
-        result = result.strip()  # Remove any leading/trailing whitespace
-
-        # Remove trailing commas in JSON
-        result = re.sub(r',\s*}', '}', result)  # Fix trailing commas in objects
-        result = re.sub(r',\s*]', ']', result)  # Fix trailing commas in arrays
-
-        # Parse the JSON string and return as a dictionary
-        return json.loads(result)
+        return json.loads(json_str)
     except Exception as e:
         print(f"Error calling OpenAI API: {e}")
         return None
@@ -119,10 +158,6 @@ def send_to_openai_api(text):
 
 @app.route('/generate_cv', methods=['GET', 'POST'])
 def generate_cv():
-    """
-    This version does item-by-item chunking. For experiences, we count
-    how many lines are in 'description' to estimate the height. 
-    """
     if request.method == 'POST':
         data = {
             "first_name": request.form.get("first_name"),
@@ -134,6 +169,7 @@ def generate_cv():
             "languages": {},
             "experiences": [],
             "education": [],
+            "certifications": [],  # Add certifications
         }
 
         # Dynamically process skills
@@ -178,6 +214,18 @@ def generate_cv():
             })
             j += 1
 
+        # Certifications
+        k = 1
+        while True:
+            certification_name = request.form.get(f"certification_name_{k}")
+            if not certification_name:
+                break
+            data["certifications"].append({
+                "name": certification_name,
+                "issuer": request.form.get(f"certification_issuer_{k}", ""),
+            })
+            k += 1
+
     else:
         # Example data if GET
         data = {
@@ -210,10 +258,17 @@ def generate_cv():
                     "description": "Graduated with honors.",
                 },
             ],
+            "certifications": [
+                {
+                    "name": "AWS Certified Solutions Architect",
+                    "issuer": "Amazon Web Services",
+                },
+            ],
         }
 
-    # 2) Build sections
+    # 2) Build sections in the desired order
     sections = []
+
     # -- Skills
     if data["skills"]:
         skill_items = []
@@ -223,6 +278,22 @@ def generate_cv():
             "type": "skills",
             "heading": "Technical and Functional Skills",
             "items": skill_items,
+        })
+
+    # -- Education
+    if data["education"]:
+        sections.append({
+            "type": "education",
+            "heading": "Education",
+            "items": data["education"],
+        })
+
+    # -- Certifications (optional)
+    if data["certifications"]:
+        sections.append({
+            "type": "certifications",
+            "heading": "Certifications",
+            "items": data["certifications"],
         })
 
     # -- Languages
@@ -244,17 +315,9 @@ def generate_cv():
             "items": data["experiences"],
         })
 
-    # -- Education
-    if data["education"]:
-        sections.append({
-            "type": "education",
-            "heading": "Education",
-            "items": data["education"],
-        })
-
     # 3) heading_height
     def heading_height():
-        return 10  # ~10 mm for each section heading
+        return 20  # ~10 mm for each section heading
 
     # 4) item_height (now dynamic based on lines in the description, etc.)
     def item_height(section_type, item):
@@ -296,6 +359,12 @@ def generate_cv():
 
     for section in sections:
         hh = heading_height()
+        
+        if section["type"] == "experiences" and current_height > 0:
+            pages.append(current_page)
+            current_page = []
+            current_height = 0
+        
         if current_height + hh > CONTENT_HEIGHT_MM:
             pages.append(current_page)
             current_page = []

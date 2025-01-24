@@ -134,6 +134,41 @@
             {% endfor %}
         </div>
 
+        <!-- Certifications -->
+        <div class="form-group">
+            <label>Certifications:</label>
+           <!-- If no certifications in the data, still render one blank row for new entry -->
+            {% if data.certifications and data.certifications|length > 0 %}
+            {% for certification in data.certifications %}
+                <fieldset>
+                    <legend>Certification {{ loop.index }}</legend>
+                    <div>
+                        <label for="certification_name_{{ loop.index }}">Name:</label>
+                        <input type="text" id="certification_name_{{ loop.index }}" name="certification_name_{{ loop.index }}" value="{{ certification.name }}">
+                    </div>
+                    <div>
+                        <label for="certification_issuer_{{ loop.index }}">Issuer:</label>
+                        <input type="text" id="certification_issuer_{{ loop.index }}" name="certification_issuer_{{ loop.index }}" value="{{ certification.issuer }}">
+                    </div>
+                </fieldset>
+            {% endfor %}
+            {% else %}
+            <!-- Show one empty row if no certifications are present -->
+            <fieldset>
+                <legend>Certification 1</legend>
+                <div>
+                    <label for="certification_name_1">Name:</label>
+                    <input type="text" id="certification_name_1" name="certification_name_1" value="">
+                </div>
+                <div>
+                    <label for="certification_issuer_1">Issuer:</label>
+                    <input type="text" id="certification_issuer_1" name="certification_issuer_1" value="">
+                </div>
+            </fieldset>
+            {% endif %}
+        </div>
+
+
         <button type="submit">Generate CV</button>
     </form>
 </body>

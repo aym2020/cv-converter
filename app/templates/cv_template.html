@@ -43,6 +43,7 @@
     {% for page in data.page_2_content %}
     <div class="page page-2">
         {% for block in page %}
+
         {% if block.type == "skills" %}
             <div class="section-title">{{ block.heading }}</div>
             <div class="skills-list">
@@ -53,7 +54,33 @@
                 </div>
             {% endfor %}
             </div>
-
+        
+        {% elif block.type == "education" %}
+            <div class="section-title">{{ block.heading }}</div>
+            <div class="education-list">
+            {% for item in block["items"] %}
+                <h3>
+                {{ item.degree }}
+                {% if item.institution %}
+                    - {{ item.institution }}
+                {% endif %}
+                </h3>
+                <p><em>{{ item.duration }}</em></p>
+                <p>{{ item.description }}</p>
+            {% endfor %}
+            </div>
+            
+        {% elif block.type == "certifications" %}
+            <div class="section-title">{{ block.heading }}</div>
+            <div class="certifications-list">
+                {% for item in block["items"] %}
+                    <div class="certification-item">
+                        <span class="certification-name">{{ item.name }}</span>
+                        <span class="certification-issuer"> - {{ item.issuer }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        
         {% elif block.type == "languages" %}
             <div class="section-title">{{ block.heading }}</div>
             <div class="languages-list">
@@ -92,22 +119,6 @@
                   </ul>
                 {% endfor %}
               </div>
-              
-
-        {% elif block.type == "education" %}
-            <div class="section-title">{{ block.heading }}</div>
-            <div class="education-list">
-            {% for item in block["items"] %}
-                <h3>
-                {{ item.degree }}
-                {% if item.institution %}
-                    - {{ item.institution }}
-                {% endif %}
-                </h3>
-                <p><em>{{ item.duration }}</em></p>
-                <p>{{ item.description }}</p>
-            {% endfor %}
-            </div>
         {% endif %}
         {% endfor %}
     </div>
