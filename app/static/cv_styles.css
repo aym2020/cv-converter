@@ -1,30 +1,185 @@
-/* Global Styles */
+/* --------------------------------------------------
+   GLOBAL STYLES
+-------------------------------------------------- */
 body {
     font-family: 'Open Sans', sans-serif;
     margin: 0;
     padding: 0;
     color: #0f1840;
-    background-color: white;
+    background-color: rgb(220, 220, 220);
 }
 
-/* Print Button */
-.print-button {
+/* --------------------------------------------------
+   BUTTONS
+-------------------------------------------------- */
+
+/* Home Button */
+.home-button {
     position: fixed;
     top: 20px;
-    right: 20px;
+    left: 20px;
     background-color: #2f7dda;
     color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
     cursor: pointer;
     z-index: 1000;
 }
+.home-button:hover {
+    background-color: #1e5bb5;
+    transform: translateY(-2px);
+}
+.home-button i {
+    font-size: 18px;
+}
+/* Tooltip for Home Button */
+.home-button .tooltip {
+    visibility: hidden;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+.home-button:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
 
-.print-button:hover {
+/* Action Buttons Container (Print & Settings) */
+.action-buttons {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 15px; /* Space between buttons */
+    z-index: 1000;
+}
+
+/* Print Button and Settings Toggle share similar styles */
+.print-button,
+.settings-toggle {
+    background-color: #2f7dda;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover states */
+.print-button:hover,
+.settings-toggle:hover {
+    background-color: #1e5bb5;
+    transform: translateY(-2px);
+}
+
+.print-button i,
+.settings-toggle i {
+    font-size: 20px;
+}
+
+/* Tooltip for Print and Settings */
+.print-button .tooltip,
+.settings-toggle .tooltip {
+    visibility: hidden;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    position: absolute;
+    top: 55px; /* Slightly lower than home button's tooltip to avoid overlap */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+.print-button:hover .tooltip,
+.settings-toggle:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Settings Panel */
+.settings-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    display: none;
+    width: 300px; /* Fixed width for better readability */
+    position: fixed;
+    top: 70px; /* Position below the buttons */
+    right: 20px;
+    z-index: 1000;
+}
+.settings-content.visible {
+    display: block;
+}
+.settings-content h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #2f7dda;
+}
+.settings-content label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 14px;
+    color: #555;
+}
+.settings-content input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.regenerate-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #2f7dda;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+.regenerate-button:hover {
     background-color: #1e5bb5;
 }
+
+/* --------------------------------------------------
+   PAGE LAYOUT
+-------------------------------------------------- */
 
 /* A4 Page Size */
 .page {
@@ -49,7 +204,6 @@ body {
     position: relative;
     min-height: 297mm;
 }
-
 .page-1 h1 {
     font-size: 70px;
     color: #00ffff;
@@ -57,7 +211,6 @@ body {
     font-family: 'Tahoma', sans-serif;
     font-weight: 400;
 }
-
 .page-1 h2 {
     font-size: 35px;
     color: white;
@@ -84,17 +237,14 @@ body {
 .skills-list {
     margin: 20px 0;
 }
-
 .skill-category {
     margin: 10px 0;
 }
-
 .skill-category-name {
     color: #0f1840;
     font-size: 16px;
     font-weight: bold;
 }
-
 .skill-items {
     color: #2f7dda;
     font-size: 16px;
@@ -104,17 +254,14 @@ body {
 .languages-list {
     margin: 20px 0;
 }
-
 .language-item {
     margin: 10px 0;
 }
-
 .language-name {
     color: #0f1840;
     font-size: 16px;
     font-weight: bold;
 }
-
 .language-level {
     color: #2f7dda;
     font-size: 16px;
@@ -126,7 +273,6 @@ body {
     font-size: 18px;
     margin: 10px 0;
 }
-
 .experiences-list p {
     margin: 5px 0;
 }
@@ -135,13 +281,11 @@ body {
 .education-list {
     margin: 20px 0;
 }
-
 .education-list h3 {
     color: #0f1840;
     font-size: 18px;
     margin: 10px 0;
 }
-
 .education-list p {
     margin: 5px 0;
 }
@@ -158,13 +302,11 @@ body {
     box-sizing: border-box;
     overflow: hidden;
 }
-
 .last-page h3 {
     color: #00ffff;
     font-size: 24px;
     margin-bottom: 20px;
 }
-
 .last-page p {
     font-size: 16px;
     line-height: 1.6;
@@ -179,8 +321,6 @@ body {
     top: 10mm;
     right: 10mm;
 }
-
-/* Company Logo */
 .company-logo {
     width: 400px;
     height: auto;
@@ -196,17 +336,14 @@ body {
     font-size: 20px;
     line-height: 1.2;
 }
-
 .manager-info .delivery-manager {
     color: #00ffff;
     font-weight: bold;
     margin-bottom: 5px;
 }
-
 .manager-info .manager-name {
     color: white;
 }
-
 .manager-info .manager-email {
     color: white;
 }
@@ -219,8 +356,6 @@ body {
     z-index: 10;
     text-align: center;
 }
-
-/* Bulles Image */
 .bulles-image {
     width: 900px;
     height: auto;
@@ -236,8 +371,6 @@ body {
     text-align: center;
     max-width: 100%;
 }
-
-/* Laser Image */
 .laser-image {
     width: 800px;
     height: auto;
@@ -245,16 +378,23 @@ body {
 
 /* Print Styles */
 @media print {
+    /* Hide the Print, Home, Settings buttons, and Settings panel */
+    .home-button,
+    .print-button,
+    .settings-toggle,
+    .action-buttons,
+    .settings-content {
+        display: none !important;
+    }
+
+    /* Ensure the page background and text colors are preserved */
     .page-1, .last-page {
         background-color: #0f1840 !important;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
 
-    .print-button {
-        display: none;
-    }
-
+    /* Force page breaks */
     .page-2, .last-page {
         page-break-before: always;
     }
@@ -264,62 +404,7 @@ body {
 .page-1 h1, .page-1 h2 {
     text-align: left !important;
 }
-
-/* Ensure text alignment is consistent during capture */
 .capture-mode .page-1 h1,
 .capture-mode .page-1 h2 {
     text-align: left !important;
-}
-
-/* Home Button */
-.home-button {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background-color: #2f7dda;
-    color: white;
-    padding: 12px;
-    border-radius: 8px; /* Slightly rounded corners for a modern look */
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    cursor: pointer;
-    z-index: 1000; /* Ensure it's above other elements */
-}
-
-.home-button:hover {
-    background-color: #1e5bb5;
-    transform: translateY(-2px); /* Slight lift effect on hover */
-}
-
-.home-button i {
-    font-size: 18px;
-}
-
-/* Tooltip */
-.home-button .tooltip {
-    visibility: hidden;
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    position: absolute;
-    top: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    white-space: nowrap;
-}
-
-.home-button:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
 }

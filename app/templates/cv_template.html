@@ -19,8 +19,36 @@
         <i class="fas fa-home"></i>
         <span class="tooltip">Go Home</span>
     </a>
-    <!-- Print Button -->
-    <button onclick="window.print()" class="print-button">Print to PDF</button>
+
+    <!-- Print and Settings Buttons -->
+    <div class="action-buttons">
+        <!-- Print Button -->
+        <button class="print-button" onclick="window.print()">
+            <i class="fas fa-print"></i>
+            <span class="tooltip">Print to PDF</span>
+        </button>
+
+        <!-- Settings Button -->
+        <button class="settings-toggle" onclick="toggleSettings()">
+            <i class="fas fa-cog"></i>
+            <span class="tooltip">Settings</span>
+        </button>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-content">
+        <h3>Page Settings</h3>
+        <label for="page-height">Page Height (mm):</label>
+        <input type="number" id="page-height" value="{{ data.page_height }}" min="100" max="500">
+        
+        <label for="page-width">Page Width (mm):</label>
+        <input type="number" id="page-width" value="{{ data.page_width }}" min="100" max="500">
+        
+        <label for="page-padding">Page Padding (mm):</label>
+        <input type="number" id="page-padding" value="{{ data.page_padding }}" min="0" max="100">
+        
+        <button class="regenerate-button" onclick="regenerateCV()">Regenerate CV</button>
+    </div>
     
     <!-- Page 1 -->
     <div class="page page-1">
@@ -56,8 +84,8 @@
             <div class="skills-list">
             {% for item in block["items"] %}
                 <div class="skill-category">
-                <span class="skill-category-name">{{ item.category }}:</span>
-                <span class="skill-items">{{ item.skills | join(', ') }}</span>
+                    <span class="skill-category-name">{{ item.category }}:</span>
+                    <span class="skill-items">{{ item.skills | join(', ') }}</span>
                 </div>
             {% endfor %}
             </div>
@@ -146,5 +174,52 @@
             <img src="{{ url_for('static', filename='laser.png') }}" alt="Laser Image" class="laser-image">
         </div>
     </div>
+
+    <script>
+        // Toggle settings panel visibility
+        function toggleSettings() {
+            const settingsContent = document.querySelector('.settings-content');
+            settingsContent.classList.toggle('visible');
+        }
+    
+        // Send updated values to the server and regenerate the CV
+        function regenerateCV() {
+            const pageHeight = document.getElementById('page-height').value;
+            const pageWidth = document.getElementById('page-width').value;
+            const pagePadding = document.getElementById('page-padding').value;
+    
+            // Send the data to the server
+            fetch('/regenerate_cv', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    page_height: pageHeight,
+                    page_width: pageWidth,
+                    page_padding: pagePadding,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert('Failed to regenerate CV. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+
+            function toggleSettings() {
+                console.log("Settings button clicked"); // Debugging
+                const settingsContent = document.querySelector('.settings-content');
+                settingsContent.classList.toggle('visible');
+            }
+        }
+    </script>
+
 </body>
 </html>

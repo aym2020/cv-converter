@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, Flask, url_for
+from flask import render_template, request, redirect, Flask, url_for, jsonify
 import fitz  # PyMuPDF
 import os
 import json
@@ -6,6 +6,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import re
 from app import app
+from datetime import datetime
 
 # Load environment variables
 load_dotenv()
@@ -19,6 +20,11 @@ app.config['UPLOAD_FOLDER'] = 'app/uploads'
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
+
+# Default page dimensions and padding
+PAGE_HEIGHT_MM = 280  # Default height
+PAGE_WIDTH_MM = 210   # Default width
+PADDING_MM = 30       # Default padding
 
 @app.route('/')
 def index():
@@ -65,8 +71,6 @@ def extract_text_from_pdf(filepath):
         return None
     return text
 
-import json  # Ensure json is imported
-
 def send_to_openai_api(text):
     try:
         response = client.chat.completions.create(
@@ -97,7 +101,7 @@ Extract the following information from the CV text. **Output must be valid JSON*
 
 1. **name**: Last name (string).
 2. **first_name**: First name (string).
-3. **skills**: An **object** with up to 5 categories. Keys are category names (capitalized if relevant), each a **list** of skill strings. No blank categories. Example:
+3. **skills**: An **object** with up to 5 categories (Business Intelligence, Programming, ETL, Cloud, etc.). Keys are category names (capitalized if relevant), each a **list** of skill strings. No blank categories. Example:
    "skills": {{ "Programming": ["Python", "JavaScript"], "Business Intelligence": ["Tableau"] }}
    If no skills, return `"skills": {{}}`.
 
@@ -155,9 +159,10 @@ CV Text:
         print(f"Error calling OpenAI API: {e}")
         return None
 
-
 @app.route('/generate_cv', methods=['GET', 'POST'])
 def generate_cv():
+    global PAGE_HEIGHT_MM, PAGE_WIDTH_MM, PADDING_MM
+
     if request.method == 'POST':
         data = {
             "first_name": request.form.get("first_name"),
@@ -169,16 +174,18 @@ def generate_cv():
             "languages": {},
             "experiences": [],
             "education": [],
-            "certifications": [],  # Add certifications
+            "certifications": [],
         }
 
         # Dynamically process skills
         for key, value in request.form.items():
             if key.startswith("skills_"):
+                # e.g. "skills_Programming" -> "Programming"
                 category = key.replace("skills_", "")
-                skills_list = value.split(", ")
-                if skills_list:
-                    data["skills"][category] = skills_list
+                skill_list = value.split(", ")
+                # Only add if non-empty
+                if skill_list and skill_list != [""]:
+                    data["skills"][category] = skill_list
 
         # Dynamically process languages
         languages = {}
@@ -272,6 +279,11 @@ def generate_cv():
                 },
             ],
         }
+
+    # Pass the hardcoded values to the template
+    data["page_height"] = PAGE_HEIGHT_MM
+    data["page_width"] = PAGE_WIDTH_MM
+    data["page_padding"] = PADDING_MM
 
     # 2) Build sections in the desired order
     sections = []
@@ -481,6 +493,27 @@ def generate_cv():
     print("Page 2 Content:", json.dumps(data["page_2_content"], indent=2))
     return render_template('cv_template.html', data=data)
 
+
+@app.route('/regenerate_cv', methods=['POST'])
+def regenerate_cv():
+    global PAGE_HEIGHT_MM, PAGE_WIDTH_MM, PADDING_MM
+
+    try:
+        # Get the updated values from the request
+        PAGE_HEIGHT_MM = int(request.json.get('page_height', 280))
+        PAGE_WIDTH_MM = int(request.json.get('page_width', 210))
+        PADDING_MM = int(request.json.get('page_padding', 30))
+
+        # Return a success message
+        return jsonify({
+            'success': True,
+            'page_height': PAGE_HEIGHT_MM,
+            'page_width': PAGE_WIDTH_MM,
+            'page_padding': PADDING_MM,
+        })
+    except Exception as e:
+        print(f"Error regenerating CV: {e}")
+        return jsonify({'success': False, 'error': str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True)

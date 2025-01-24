@@ -44,12 +44,23 @@
             <!-- Skills -->
             <div class="form-group">
                 <label>Skills:</label>
-                {% for category, skills in data.skills.items() if skills %}
-                    <div>
-                        <label for="skills_{{ category }}">{{ category }}:</label>
-                        <textarea id="skills_{{ category }}" name="skills_{{ category }}">{{ skills | join(', ') }}</textarea>
-                    </div>
-                {% endfor %}
+                <div id="skills-container">
+                    {% for category, skills in data.skills.items() if skills %}
+                        <fieldset class="skill-category">
+                            <legend>Skill Category</legend>
+                            <div class="form-group">
+                                <label for="category_name_{{ loop.index }}">Category Name:</label>
+                                <input type="text" id="category_name_{{ loop.index }}" name="category_name_{{ loop.index }}" value="{{ category }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="skills_{{ category }}">Skills:</label>
+                                <textarea id="skills_{{ category }}" name="skills_{{ category }}">{{ skills | join(', ') }}</textarea>
+                            </div>
+                            <button type="button" class="remove-button" onclick="removeSkillCategory(this)">Remove</button>
+                        </fieldset>
+                    {% endfor %}
+                </div>
+                <button type="button" class="add-button" onclick="addSkillCategory()">Add Skill Category</button>
             </div>
 
             <!-- Languages -->
@@ -58,13 +69,18 @@
                 <div id="languages-container">
                     {% set lang_index = 1 %}
                     {% for language, level in data.languages.items() %}
-                        <div class="language-item">
-                            <label for="language_{{ lang_index }}">Language:</label>
-                            <input type="text" id="language_{{ lang_index }}" name="language_{{ lang_index }}" value="{{ language }}">
-                            <label for="level_{{ lang_index }}">Proficiency:</label>
-                            <input type="text" id="level_{{ lang_index }}" name="level_{{ lang_index }}" value="{{ level }}">
+                        <fieldset class="language-item">
+                            <legend>Language {{ lang_index }}</legend>
+                            <div class="form-group">
+                                <label for="language_{{ lang_index }}">Language:</label>
+                                <input type="text" id="language_{{ lang_index }}" name="language_{{ lang_index }}" value="{{ language }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="level_{{ lang_index }}">Proficiency:</label>
+                                <input type="text" id="level_{{ lang_index }}" name="level_{{ lang_index }}" value="{{ level }}">
+                            </div>
                             <button type="button" class="remove-button" onclick="removeLanguage(this)">Remove</button>
-                        </div>
+                        </fieldset>
                         {% set lang_index = lang_index + 1 %}
                     {% endfor %}
                 </div>
@@ -172,8 +188,154 @@
         </form>
     </div>
 
+
     <script>
-        // JavaScript functions for adding/removing fields remain the same
+        // Function to add a new language field
+        function addLanguage() {
+            const container = document.getElementById('languages-container');
+            const index = container.children.length + 1;
+            const newLanguage = document.createElement('fieldset');
+            newLanguage.className = 'language-item';
+            newLanguage.innerHTML = `
+                <legend>Language ${index}</legend>
+                <div class="form-group">
+                    <label for="language_${index}">Language:</label>
+                    <input type="text" id="language_${index}" name="language_${index}">
+                </div>
+                <div class="form-group">
+                    <label for="level_${index}">Proficiency:</label>
+                    <input type="text" id="level_${index}" name="level_${index}">
+                </div>
+                <button type="button" class="remove-button" onclick="removeLanguage(this)">Remove</button>
+            `;
+            container.appendChild(newLanguage);
+        }
+    
+        // Function to remove a language field
+        function removeLanguage(button) {
+            button.parentElement.remove();
+        }
+    
+        // Function to add a new experience field
+        function addExperience() {
+            const container = document.getElementById('experiences-container');
+            const index = container.children.length + 1;
+            const newExperience = document.createElement('fieldset');
+            newExperience.className = 'experience-item';
+            newExperience.innerHTML = `
+                <legend>Experience ${index}</legend>
+                <div class="form-group">
+                    <label for="job_title_${index}">Job Title:</label>
+                    <input type="text" id="job_title_${index}" name="job_title_${index}">
+                </div>
+                <div class="form-group">
+                    <label for="company_${index}">Company:</label>
+                    <input type="text" id="company_${index}" name="company_${index}">
+                </div>
+                <div class="form-group">
+                    <label for="duration_${index}">Duration:</label>
+                    <input type="text" id="duration_${index}" name="duration_${index}">
+                </div>
+                <div class="form-group">
+                    <label for="description_${index}">Description:</label>
+                    <textarea id="description_${index}" name="description_${index}"></textarea>
+                </div>
+                <button type="button" class="remove-button" onclick="removeExperience(this)">Remove</button>
+            `;
+            container.appendChild(newExperience);
+        }
+    
+        // Function to remove an experience field
+        function removeExperience(button) {
+            button.parentElement.remove();
+        }
+    
+        // Function to add a new education field
+        function addEducation() {
+            const container = document.getElementById('education-container');
+            const index = container.children.length + 1;
+            const newEducation = document.createElement('fieldset');
+            newEducation.className = 'education-item';
+            newEducation.innerHTML = `
+                <legend>Education ${index}</legend>
+                <div class="form-group">
+                    <label for="degree_${index}">Degree:</label>
+                    <input type="text" id="degree_${index}" name="degree_${index}">
+                </div>
+                <div class="form-group">
+                    <label for="institution_${index}">Institution:</label>
+                    <input type="text" id="institution_${index}" name="institution_${index}">
+                </div>
+                <div class="form-group">
+                    <label for="education_duration_${index}">Duration:</label>
+                    <input type="text" id="education_duration_${index}" name="education_duration_${index}">
+                </div>
+                <div class="form-group">
+                    <label for="education_description_${index}">Description:</label>
+                    <textarea id="education_description_${index}" name="education_description_${index}"></textarea>
+                </div>
+                <button type="button" class="remove-button" onclick="removeEducation(this)">Remove</button>
+            `;
+            container.appendChild(newEducation);
+        }
+    
+        // Function to remove an education field
+        function removeEducation(button) {
+            button.parentElement.remove();
+        }
+    
+        // Function to add a new certification field
+        function addCertification() {
+            const container = document.getElementById('certifications-container');
+            const index = container.children.length + 1;
+            const newCertification = document.createElement('fieldset');
+            newCertification.className = 'certification-item';
+            newCertification.innerHTML = `
+                <legend>Certification ${index}</legend>
+                <div class="form-group">
+                    <label for="certification_name_${index}">Name:</label>
+                    <input type="text" id="certification_name_${index}" name="certification_name_${index}">
+                </div>
+                <div class="form-group">
+                    <label for="certification_issuer_${index}">Issuer:</label>
+                    <input type="text" id="certification_issuer_${index}" name="certification_issuer_${index}">
+                </div>
+                <button type="button" class="remove-button" onclick="removeCertification(this)">Remove</button>
+            `;
+            container.appendChild(newCertification);
+        }
+    
+        // Function to remove a certification field
+        function removeCertification(button) {
+            button.parentElement.remove();
+        }
+
+        // Function to add a new skill category
+        function addSkillCategory() {
+            const container = document.getElementById('skills-container');
+            const index = container.children.length + 1;
+            const newSkillCategory = document.createElement('fieldset');
+            newSkillCategory.className = 'skill-category';
+            newSkillCategory.innerHTML = `
+                <legend>Skill Category</legend>
+                <div class="form-group">
+                    <label for="category_name_${index}">Category Name:</label>
+                    <input type="text" id="category_name_${index}" name="category_name_${index}">
+                </div>
+                <div class="form-group">
+                    <label for="skills_${index}">Skills:</label>
+                    <textarea id="skills_${index}" name="skills_${index}"></textarea>
+                </div>
+                <button type="button" class="remove-button" onclick="removeSkillCategory(this)">Remove</button>
+            `;
+            container.appendChild(newSkillCategory);
+        }
+
+        // Function to remove a skill category
+        function removeSkillCategory(button) {
+            button.parentElement.remove();
+        }
     </script>
+    
 </body>
 </html>
