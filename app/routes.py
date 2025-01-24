@@ -82,7 +82,7 @@ def send_to_openai_api(text):
                         - job_title: Job title.
                         - company: Company name.
                         - duration: Start and end dates (e.g., '11/2023 – 09/2024').
-                        - description: Description of responsibilities. Enhance the description to make it more interesting and relevant.
+                        - description: Description of responsibilities. Enhance the description to make it more interesting and relevant. Use bullet points (-) and line breaks to make it more readable.
                     - education: A list of education entries. Each entry should include:
                         - degree: The degree obtained (e.g., Bachelor of Science, Master of Arts).
                         - institution: The name of the educational institution. If the institution is not known, let it blank.
@@ -120,11 +120,9 @@ def send_to_openai_api(text):
 @app.route('/generate_cv', methods=['GET', 'POST'])
 def generate_cv():
     """
-    This version does item-by-item chunking so that if there's space left on the page,
-    the next items in the same section can appear there, rather than forcing the entire block
-    to a new page.
+    This version does item-by-item chunking. For experiences, we count
+    how many lines are in 'description' to estimate the height. 
     """
-    # 1) Collect or load CV data
     if request.method == 'POST':
         data = {
             "first_name": request.form.get("first_name"),
@@ -201,7 +199,7 @@ def generate_cv():
                     "job_title": "IT Support Specialist",
                     "company": "Company XYZ",
                     "duration": "01/2020 – Present",
-                    "description": "Provided technical support and resolved IT issues.",
+                    "description": "Provided technical support\n- Resolved IT issues\n- Assisted in deployments",
                 },
             ],
             "education": [
@@ -254,87 +252,159 @@ def generate_cv():
             "items": data["education"],
         })
 
-    # 3) Approximate item heights
-    #    Each item in a block might have a different height. We define a small function:
-    def heading_height(): 
-        return 10  # mm
+    # 3) heading_height
+    def heading_height():
+        return 10  # ~10 mm for each section heading
 
-    def item_height(section_type):
-        """
-        Return the approximate height for a single item in the section.
-        Adjust these values as needed for your layout.
-        """
+    # 4) item_height (now dynamic based on lines in the description, etc.)
+    def item_height(section_type, item):
         if section_type == "skills":
-            return 12   # Each skill category is small
+            base_height = 5  # overhead for category line
+            skill_count = len(item.get("skills", []))
+            return base_height + skill_count * 3  # ~3 mm per skill
+
         elif section_type == "languages":
-            return 10   # A single line per language
+            # each item is 1-2 lines at most
+            return 8
+
         elif section_type == "experiences":
-            return 35  # Could be multiple lines describing the job
+            desc = item.get("description", "")
+            lines = desc.split("\n")
+            line_height = 10  # mm per bullet/line
+            base_height = 20  # job title + duration overhead
+            line_count = len(lines) if lines else 1
+            return base_height + line_count * line_height
+
         elif section_type == "education":
-            return 30  # Enough space for degree, institution, dates
+            desc = item.get("description", "")
+            lines = desc.split("\n")
+            base_height = 8  # for degree/institution
+            line_height = 4
+            line_count = len(lines) if lines else 1
+            return base_height + line_count * line_height
+
         return 10
 
-    # 4) Item-by-item chunking
-    PAGE_HEIGHT_MM = 297
-    PADDING_MM = 20
+    # 5) Chunking with bullet point splitting (no repeated headings)
+    PAGE_HEIGHT_MM = 280
+    PADDING_MM = 30
     CONTENT_HEIGHT_MM = PAGE_HEIGHT_MM - 2 * PADDING_MM
 
-    pages = []              # pages -> list of pages
-    current_page = []       # each page -> list of blocks
-    current_height = 0.0
+    pages = []
+    current_page = []
+    current_height = 0
 
     for section in sections:
-        # 4a) Try to place the heading
-        sec_heading_height = heading_height()
-        # If heading won't fit, start a new page
-        if current_height + sec_heading_height > CONTENT_HEIGHT_MM:
+        hh = heading_height()
+        if current_height + hh > CONTENT_HEIGHT_MM:
             pages.append(current_page)
             current_page = []
             current_height = 0
 
-        # Create a new block with an empty items array
-        # We'll fill items as they fit
+        # Add the section heading only once
         new_block = {
             "type": section["type"],
             "heading": section["heading"],
             "items": []
         }
         current_page.append(new_block)
-        current_height += sec_heading_height  # used some vertical space for heading
+        current_height += hh
 
-        # 4b) chunk each item within the section
         for single_item in section["items"]:
-            h = item_height(section["type"])
-            if current_height + h > CONTENT_HEIGHT_MM:
-                # new page
-                pages.append(current_page)
-                current_page = []
-                current_height = 0
+            if section["type"] == "experiences":
+                desc = single_item.get("description", "")
+                lines = desc.split("\n")
+                line_height = 12  # mm per bullet/line
+                base_height = 30  # job title + duration overhead
 
-                # Add heading again (with "continued" if you like)
-                new_block = {
-                    "type": section["type"],
-                    "items": []
-                }
-                current_page.append(new_block)
-                current_height += sec_heading_height
+                remaining_space = CONTENT_HEIGHT_MM - current_height
+                total_height = base_height + len(lines) * line_height
 
-            # Now add this item
-            current_page[-1]["items"].append(single_item)
-            current_height += h
+                if total_height <= remaining_space:
+                    # Entire item fits on this page
+                    current_page[-1]["items"].append(single_item)
+                    current_height += total_height
 
-    # Finish up
+                else:
+                    # Not everything fits
+                    lines_fit = int((remaining_space - base_height) // line_height)
+                    if lines_fit > 0:
+                       
+                        # Some lines can fit on the current page
+                        first_chunk = single_item.copy()
+                        # Keep the same title, but only partial lines in description
+                        first_chunk["description"] = "\n".join(lines[:lines_fit])
+
+                        current_page[-1]["items"].append(first_chunk)
+                        current_height += (base_height + lines_fit * line_height)
+
+                        pages.append(current_page)         # finish this page
+                        current_page = []                  # start a new page
+                        current_height = 0
+
+                        # leftover lines
+                        remaining_lines = lines[lines_fit:]
+                        if remaining_lines:
+                            # second chunk: only leftover lines, no repeated title
+                            second_chunk = single_item.copy()
+                            second_chunk["job_title"] = ""
+                            second_chunk["company"] = ""
+                            second_chunk["duration"] = ""
+                            second_chunk["description"] = "\n".join(remaining_lines)
+
+                            new_block = {
+                                "type": section["type"],
+                                "items": []
+                            }
+                            current_page.append(new_block)
+
+                            # measure height of leftover chunk
+                            leftover_height = len(remaining_lines) * line_height
+                            current_page[-1]["items"].append(second_chunk)
+                            current_height += leftover_height
+
+                    else:
+                        # Nothing fits on this page: move the entire item to the next page
+                        pages.append(current_page)
+                        current_page = []
+                        current_height = 0
+
+                        new_block = {
+                            "type": section["type"],
+                            "items": []
+                        }
+                        current_page.append(new_block)
+
+                        # entire item on the new page
+                        current_page[-1]["items"].append(single_item)
+                        current_height += total_height
+            else:
+                # Handle other section types as before
+                h = item_height(section["type"], single_item)
+                if current_height + h > CONTENT_HEIGHT_MM:
+                    pages.append(current_page)
+                    current_page = []
+                    current_height = 0
+
+                    # Add the section heading only once
+                    new_block = {
+                        "type": section["type"],
+                        "heading": section["heading"],
+                        "items": []
+                    }
+                    current_page.append(new_block)
+                    current_height += hh
+
+                current_page[-1]["items"].append(single_item)
+                current_height += h
+
     if current_page:
         pages.append(current_page)
-
-    # 5) Attach to data
+    
     data["page_2_content"] = pages
-
-    # Debug
     print("Page 2 Content:", json.dumps(data["page_2_content"], indent=2))
-
-    # 6) Render
     return render_template('cv_template.html', data=data)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

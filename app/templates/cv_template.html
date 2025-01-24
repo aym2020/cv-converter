@@ -68,12 +68,31 @@
         {% elif block.type == "experiences" %}
             <div class="section-title">{{ block.heading }}</div>
             <div class="experiences-list">
-            {% for item in block["items"] %}
-                <h3>{{ item.job_title }} - {{ item.company }}</h3>
-                <p><em>{{ item.duration }}</em></p>
-                <p>{{ item.description }}</p>
-            {% endfor %}
-            </div>
+                {% for item in block["items"] %}
+                  {% if item.job_title or item.company %}
+                    <h3>
+                      {{ item.job_title }}
+                      {% if item.job_title and item.company %} - {% endif %}
+                      {{ item.company }}
+                    </h3>
+                  {% endif %}
+                  {% if item.duration %}
+                    <p><em>{{ item.duration }}</em></p>
+                  {% endif %}
+              
+                  {# Now the bullet-point description #}
+                  {% set lines = item.description.split('\n') %}
+                  <ul>
+                    {% for line in lines %}
+                      {% set stripped = line.strip() %}
+                      {% if stripped %}
+                        <li>{{ stripped[2:] if stripped.startswith('- ') else stripped }}</li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                {% endfor %}
+              </div>
+              
 
         {% elif block.type == "education" %}
             <div class="section-title">{{ block.heading }}</div>
