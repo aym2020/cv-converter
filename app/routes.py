@@ -181,10 +181,17 @@ def generate_cv():
                     data["skills"][category] = skills_list
 
         # Dynamically process languages
-        for key, value in request.form.items():
-            if key.startswith("language_"):
-                language = key.replace("language_", "")
-                data["languages"][language] = value
+        languages = {}
+        i = 1
+        while True:
+            language_name = request.form.get(f"language_{i}")
+            proficiency = request.form.get(f"level_{i}")
+            if not language_name:
+                break
+            languages[language_name] = proficiency
+            i += 1
+
+        data["languages"] = languages
 
         # Experiences
         i = 1

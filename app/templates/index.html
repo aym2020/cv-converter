@@ -4,12 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index_styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Welcome to the Flask App</h1>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".pdf" />
-        <button type="submit">Upload PDF</button>
-    </form>
+    <div class="upload-container">
+        <h1 class="upload-title">Upload Your CV</h1>
+
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Upload Box -->
+        <div class="upload-box" id="upload-box">
+            <p>Drag and drop your CV here or <span>click to browse</span></p>
+        </div>
+
+        <!-- File Input -->
+        <form action="/upload" method="POST" enctype="multipart/form-data" id="upload-form">
+            <input type="file" name="file" accept=".pdf" class="file-input" id="file-input" />
+            <button type="submit" class="upload-button" id="upload-button" disabled>Upload PDF</button>
+        </form>
+    </div>
+
+    <script>
+        // Drag and Drop Functionality
+        const uploadBox = document.getElementById('upload-box');
+        const fileInput = document.getElementById('file-input');
+        const uploadButton = document.getElementById('upload-button');
+
+        // Highlight the upload box when a file is dragged over
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.classList.add('dragover');
+        });
+
+        // Remove highlight when the file is dragged out
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.classList.remove('dragover');
+        });
+
+        // Handle file drop
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                uploadButton.disabled = false;
+                uploadBox.innerHTML = `<p>File selected: <span>${files[0].name}</span></p>`;
+            }
+        });
+
+        // Handle file selection via click
+        uploadBox.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Update the upload box when a file is selected via the file input
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                uploadButton.disabled = false;
+                uploadBox.innerHTML = `<p>File selected: <span>${fileInput.files[0].name}</span></p>`;
+            }
+        });
+
+        // Form validation
+        document.getElementById('upload-form').addEventListener('submit', (e) => {
+            if (fileInput.files.length === 0) {
+                e.preventDefault();
+                alert('Please select a PDF file to upload.');
+            }
+        });
+    </script>
 </body>
 </html>

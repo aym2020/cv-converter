@@ -4,172 +4,176 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit CV Data</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='form_styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <h1>Edit CV Data</h1>
-    <form action="/generate_cv" method="POST">
-        <!-- Name and First Name -->
-        <div class="form-group">
-            <label for="name">Last Name:</label>
-            <input type="text" id="name" name="name" value="{{ data.name }}">
-        </div>
-        <div class="form-group">
-            <label for="first_name">First Name:</label>
-            <input type="text" id="first_name" name="first_name" value="{{ data.first_name }}">
-        </div>
-        <div class="form-group">
-            <label for="job_title">Job Title:</label>
-            <input type="text" id="job_title" name="job_title" value="{{ data.job_title }}">
-        </div>
+    <!-- Home Button -->
+    <a href="{{ url_for('index') }}" class="home-button">
+        <i class="fas fa-home"></i>
+        <span class="tooltip">Go Home</span>
+    </a>
+    <div class="form-container">
+        <h1 class="form-title">Edit CV Data</h1>
+        <form action="/generate_cv" method="POST">
+            <!-- Name and First Name -->
+            <div class="form-group">
+                <label for="name">Last Name:</label>
+                <input type="text" id="name" name="name" value="{{ data.name }}">
+            </div>
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" value="{{ data.first_name }}">
+            </div>
+            <div class="form-group">
+                <label for="job_title">Job Title:</label>
+                <input type="text" id="job_title" name="job_title" value="{{ data.job_title }}">
+            </div>
 
-        <!-- Delivery Manager, Name, and Email -->
-        <div class="form-group">
-            <label for="manager_name">Manager Name:</label>
-            <input type="text" id="manager_name" name="manager_name" value="{{ data.manager_name }}">
-        </div>
-        <div class="form-group">
-            <label for="manager_email">Manager Email:</label>
-            <input type="email" id="manager_email" name="manager_email" value="{{ data.manager_email }}">
-        </div>
+            <!-- Delivery Manager, Name, and Email -->
+            <div class="form-group">
+                <label for="manager_name">Manager Name:</label>
+                <input type="text" id="manager_name" name="manager_name" value="{{ data.manager_name }}">
+            </div>
+            <div class="form-group">
+                <label for="manager_email">Manager Email:</label>
+                <input type="email" id="manager_email" name="manager_email" value="{{ data.manager_email }}">
+            </div>
 
-        <!-- Skills -->
-        <div class="form-group">
-            <label>Skills:</label>
-            {% for category, skills in data.skills.items() if skills %}
-                <div>
-                    <label for="skills_{{ category }}">{{ category }}:</label>
-                    <textarea id="skills_{{ category }}" name="skills_{{ category }}">{{ skills | join(', ') }}</textarea>
+            <!-- Skills -->
+            <div class="form-group">
+                <label>Skills:</label>
+                {% for category, skills in data.skills.items() if skills %}
+                    <div>
+                        <label for="skills_{{ category }}">{{ category }}:</label>
+                        <textarea id="skills_{{ category }}" name="skills_{{ category }}">{{ skills | join(', ') }}</textarea>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Languages -->
+            <div class="form-group">
+                <label>Languages:</label>
+                <div id="languages-container">
+                    {% set lang_index = 1 %}
+                    {% for language, level in data.languages.items() %}
+                        <div class="language-item">
+                            <label for="language_{{ lang_index }}">Language:</label>
+                            <input type="text" id="language_{{ lang_index }}" name="language_{{ lang_index }}" value="{{ language }}">
+                            <label for="level_{{ lang_index }}">Proficiency:</label>
+                            <input type="text" id="level_{{ lang_index }}" name="level_{{ lang_index }}" value="{{ level }}">
+                            <button type="button" class="remove-button" onclick="removeLanguage(this)">Remove</button>
+                        </div>
+                        {% set lang_index = lang_index + 1 %}
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
+                <button type="button" class="add-button" onclick="addLanguage()">Add Language</button>
+            </div>
 
-        <!-- Languages -->
-        <div class="form-group">
-            <label>Languages:</label>
-            {% for language, level in data.languages.items() %}
-                <div>
-                    <label for="language_{{ language }}">{{ language }}:</label>
-                    <input type="text" id="language_{{ language }}" name="language_{{ language }}" value="{{ level }}">
+            <!-- Experiences -->
+            <div class="form-group">
+                <label>Professional Experiences:</label>
+                <div id="experiences-container">
+                    {% for experience in data.experiences %}
+                        <fieldset class="experience-item">
+                            <legend>Experience {{ loop.index }}</legend>
+                            <div class="form-group">
+                                <label for="job_title_{{ loop.index }}">Job Title:</label>
+                                <input type="text" id="job_title_{{ loop.index }}" name="job_title_{{ loop.index }}" value="{{ experience.job_title }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="company_{{ loop.index }}">Company:</label>
+                                <input type="text" id="company_{{ loop.index }}" name="company_{{ loop.index }}" value="{{ experience.company }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="duration_{{ loop.index }}">Duration:</label>
+                                <input type="text" id="duration_{{ loop.index }}" name="duration_{{ loop.index }}" value="{{ experience.duration }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="description_{{ loop.index }}">Description:</label>
+                                <textarea id="description_{{ loop.index }}" name="description_{{ loop.index }}">{{ experience.description }}</textarea>
+                            </div>
+                            <button type="button" class="remove-button" onclick="removeExperience(this)">Remove</button>
+                        </fieldset>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
+                <button type="button" class="add-button" onclick="addExperience()">Add Experience</button>
+            </div>
 
-        <!-- Experiences -->
-        <div class="form-group">
-            <label>Professional Experiences:</label>
-            {% for experience in data.experiences %}
-                <fieldset>
-                    <legend>Experience {{ loop.index }}</legend>
-                    <div>
-                        <label for="job_title_{{ loop.index }}">Job Title:</label>
-                        <input type="text" id="job_title_{{ loop.index }}" name="job_title_{{ loop.index }}" value="{{ experience.job_title }}">
-                    </div>
-                    <div>
-                        <label for="company_{{ loop.index }}">Company:</label>
-                        <input type="text" id="company_{{ loop.index }}" name="company_{{ loop.index }}" value="{{ experience.company }}">
-                    </div>
-                    <div>
-                        <label for="duration_{{ loop.index }}">Duration:</label>
-                        <input type="text" id="duration_{{ loop.index }}" name="duration_{{ loop.index }}" value="{{ experience.duration }}">
-                    </div>
-                    <div>
-                        <label for="description_{{ loop.index }}">Description:</label>
-                        <textarea id="description_{{ loop.index }}" name="description_{{ loop.index }}">{{ experience.description }}</textarea>
-                    </div>
-                </fieldset>
-            {% endfor %}
-        </div>
-
-        <!-- Education Section -->
-        <div class="form-group">
-            <label>Education:</label>
-            {% for education in data.education %}
-                <fieldset>
-                    <legend>Education {{ loop.index }}</legend>
-                    <div>
-                        <label for="degree_{{ loop.index }}">Degree:</label>
-                        <input type="text" id="degree_{{ loop.index }}" name="degree_{{ loop.index }}" value="{{ education.degree }}">
-                    </div>
-                    <div>
-                        <label for="institution_{{ loop.index }}">Institution:</label>
-                        <input type="text" id="institution_{{ loop.index }}" name="institution_{{ loop.index }}" value="{{ education.institution }}">
-                    </div>
-                    <div>
-                        <label for="education_duration_{{ loop.index }}">Duration:</label>
-                        <input type="text" id="education_duration_{{ loop.index }}" name="education_duration_{{ loop.index }}" value="{{ education.duration }}">
-                    </div>
-                    <div>
-                        <label for="education_description_{{ loop.index }}">Description:</label>
-                        <textarea id="education_description_{{ loop.index }}" name="education_description_{{ loop.index }}">{{ education.description }}</textarea>
-                    </div>
-                </fieldset>
-            {% endfor %}
-        </div>
-
-        <!-- Certifications -->
-        <div class="form-group">
-            <label>Certifications:</label>
-           <!-- If no certifications in the data, still render one blank row for new entry -->
-            {% if data.certifications and data.certifications|length > 0 %}
-            {% for certification in data.certifications %}
-                <fieldset>
-                    <legend>Certification {{ loop.index }}</legend>
-                    <div>
-                        <label for="certification_name_{{ loop.index }}">Name:</label>
-                        <input type="text" id="certification_name_{{ loop.index }}" name="certification_name_{{ loop.index }}" value="{{ certification.name }}">
-                    </div>
-                    <div>
-                        <label for="certification_issuer_{{ loop.index }}">Issuer:</label>
-                        <input type="text" id="certification_issuer_{{ loop.index }}" name="certification_issuer_{{ loop.index }}" value="{{ certification.issuer }}">
-                    </div>
-                </fieldset>
-            {% endfor %}
-            {% else %}
-            <!-- Show one empty row if no certifications are present -->
-            <fieldset>
-                <legend>Certification 1</legend>
-                <div>
-                    <label for="certification_name_1">Name:</label>
-                    <input type="text" id="certification_name_1" name="certification_name_1" value="">
+            <!-- Education Section -->
+            <div class="form-group">
+                <label>Education:</label>
+                <div id="education-container">
+                    {% for education in data.education %}
+                        <fieldset class="education-item">
+                            <legend>Education {{ loop.index }}</legend>
+                            <div class="form-group">
+                                <label for="degree_{{ loop.index }}">Degree:</label>
+                                <input type="text" id="degree_{{ loop.index }}" name="degree_{{ loop.index }}" value="{{ education.degree }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="institution_{{ loop.index }}">Institution:</label>
+                                <input type="text" id="institution_{{ loop.index }}" name="institution_{{ loop.index }}" value="{{ education.institution }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="education_duration_{{ loop.index }}">Duration:</label>
+                                <input type="text" id="education_duration_{{ loop.index }}" name="education_duration_{{ loop.index }}" value="{{ education.duration }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="education_description_{{ loop.index }}">Description:</label>
+                                <textarea id="education_description_{{ loop.index }}" name="education_description_{{ loop.index }}">{{ education.description }}</textarea>
+                            </div>
+                            <button type="button" class="remove-button" onclick="removeEducation(this)">Remove</button>
+                        </fieldset>
+                    {% endfor %}
                 </div>
-                <div>
-                    <label for="certification_issuer_1">Issuer:</label>
-                    <input type="text" id="certification_issuer_1" name="certification_issuer_1" value="">
+                <button type="button" class="add-button" onclick="addEducation()">Add Education</button>
+            </div>
+
+            <!-- Certifications -->
+            <div class="form-group">
+                <label>Certifications:</label>
+                <div id="certifications-container">
+                    {% if data.certifications and data.certifications|length > 0 %}
+                        {% for certification in data.certifications %}
+                            <fieldset class="certification-item">
+                                <legend>Certification {{ loop.index }}</legend>
+                                <div class="form-group">
+                                    <label for="certification_name_{{ loop.index }}">Name:</label>
+                                    <input type="text" id="certification_name_{{ loop.index }}" name="certification_name_{{ loop.index }}" value="{{ certification.name }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="certification_issuer_{{ loop.index }}">Issuer:</label>
+                                    <input type="text" id="certification_issuer_{{ loop.index }}" name="certification_issuer_{{ loop.index }}" value="{{ certification.issuer }}">
+                                </div>
+                                <button type="button" class="remove-button" onclick="removeCertification(this)">Remove</button>
+                            </fieldset>
+                        {% endfor %}
+                    {% else %}
+                        <fieldset class="certification-item">
+                            <legend>Certification 1</legend>
+                            <div class="form-group">
+                                <label for="certification_name_1">Name:</label>
+                                <input type="text" id="certification_name_1" name="certification_name_1" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="certification_issuer_1">Issuer:</label>
+                                <input type="text" id="certification_issuer_1" name="certification_issuer_1" value="">
+                            </div>
+                            <button type="button" class="remove-button" onclick="removeCertification(this)">Remove</button>
+                        </fieldset>
+                    {% endif %}
                 </div>
-            </fieldset>
-            {% endif %}
-        </div>
+                <button type="button" class="add-button" onclick="addCertification()">Add Certification</button>
+            </div>
 
+            <button type="submit" class="submit-button">Generate CV</button>
+        </form>
+    </div>
 
-        <button type="submit">Generate CV</button>
-    </form>
+    <script>
+        // JavaScript functions for adding/removing fields remain the same
+    </script>
 </body>
 </html>

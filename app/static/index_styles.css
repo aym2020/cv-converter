@@ -1,0 +1,124 @@
+/* index_styles.css */
+
+/* Global Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container */
+.upload-container {
+    text-align: center;
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Title */
+.upload-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2f7dda;
+    margin-bottom: 20px;
+}
+
+/* Upload Box */
+.upload-box {
+    border: 2px dashed #2f7dda;
+    border-radius: 8px;
+    padding: 20px; /* Increased padding for a larger area */
+    background-color: #f0f8ff;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    min-height: 300px; /* Set a minimum height for the box */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+.upload-box:hover {
+    border-color: #1e5bb5;
+    background-color: #e0f0ff;
+}
+
+.upload-box.dragover {
+    border-color: #1e5bb5;
+    background-color: #d0e8ff;
+}
+
+.upload-box p {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
+}
+
+.upload-box p span {
+    color: #2f7dda;
+    font-weight: 500;
+}
+
+/* File Input */
+.file-input {
+    display: none;
+}
+
+/* Upload Button */
+.upload-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: #2f7dda;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload-button:hover {
+    background-color: #1e5bb5;
+}
+
+/* Flash Messages */
+.flash-messages {
+    margin-top: 20px;
+}
+
+.flash-messages p {
+    margin: 0;
+    font-size: 14px;
+    color: #dc3545;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .upload-container {
+        padding: 20px;
+    }
+
+    .upload-title {
+        font-size: 24px;
+    }
+
+    .upload-box p {
+        font-size: 14px;
+    }
+
+    .upload-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
