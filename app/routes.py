@@ -22,9 +22,9 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
 # Default page dimensions and padding
-PAGE_HEIGHT_MM = 280  # Default height
+PAGE_HEIGHT_MM = 290  # Default height
 PAGE_WIDTH_MM = 210   # Default width
-PADDING_MM = 30       # Default padding
+PADDING_MM = 25       # Default padding
 
 @app.route('/')
 def index():
@@ -110,8 +110,8 @@ Extract the following information from the CV text. **Output must be valid JSON*
    "skills": {{ "Programming": ["Python", "JavaScript"], "Business Intelligence": ["Tableau"] }}
    If no skills, return `"skills": {{}}`.
 
-4. **languages**: An **object** where each key is a Language (capitalized), and value is the proficiency level. Example:
-   "languages": {{ "French": "Fluent", "English": "Intermediate" }}
+4. **languages**: An **object** where each key is a Language (capitalized), and value is the proficiency level (Use only the following values: Native or bilingual proficiency – C2, Professional working proficiency – B2, Basic knowledge – A2). Example:
+   "languages": {{ "French": "Beginner - A2", "Italian": "Professional working proficiency - B2" }}
    If none, return `"languages": {{}}`.
 
 5. **experiences**: A **list** of objects, each with:
@@ -168,192 +168,10 @@ CV Text:
 def generate_cv():
     global PAGE_HEIGHT_MM, PAGE_WIDTH_MM, PADDING_MM
 
-    if request.method == 'POST':
-        data = {
-            "first_name": request.form.get("first_name"),
-            "name": request.form.get("name"),
-            "job_title": request.form.get("job_title"),
-            "manager_name": request.form.get("manager_name"),
-            "manager_email": request.form.get("manager_email"),
-            "skills": {},
-            "languages": {},
-            "experiences": [],
-            "education": [],
-            "certifications": [],
-        }
-
-        # Dynamically process skills
-        for key, value in request.form.items():
-            if key.startswith("skills_"):
-                # e.g. "skills_Programming" -> "Programming"
-                category = key.replace("skills_", "")
-                skill_list = value.split(", ")
-                # Only add if non-empty
-                if skill_list and skill_list != [""]:
-                    data["skills"][category] = skill_list
-
-        # Dynamically process languages
-        languages = {}
-        i = 1
-        while True:
-            language_name = request.form.get(f"language_{i}")
-            proficiency = request.form.get(f"level_{i}")
-            if language_name is None:
-                # means there's no language_{i} field at all => done
-                break
-            if not language_name.strip():
-                # if the user left the field blank, skip but keep going
-                i += 1
-                continue
-
-            # we have a real language
-            languages[language_name] = proficiency or "Unknown"
-            i += 1
-            # optional safety check if i is huge
-            if i > 50:
-                break
-
-        data["languages"] = languages   
-
-        # Experiences
-        i = 1
-        while True:
-            job_title = request.form.get(f"job_title_{i}")
-            if not job_title:
-                break
-            data["experiences"].append({
-                "job_title": job_title,
-                "company": request.form.get(f"company_{i}", ""),
-                "duration": request.form.get(f"duration_{i}", ""),
-                "description": request.form.get(f"description_{i}", ""),
-            })
-            i += 1
-
-        # Education
-        j = 1
-        while True:
-            degree = request.form.get(f"degree_{j}")
-            if not degree:
-                break
-            data["education"].append({
-                "degree": degree,
-                "institution": request.form.get(f"institution_{j}", ""),
-                "duration": request.form.get(f"education_duration_{j}", ""),
-                "description": request.form.get(f"education_description_{j}", ""),
-            })
-            j += 1
-
-        # Certifications
-        k = 1
-        while True:
-            certification_name = request.form.get(f"certification_name_{k}")
-            if not certification_name:
-                break
-            data["certifications"].append({
-                "name": certification_name,
-                "issuer": request.form.get(f"certification_issuer_{k}", ""),
-            })
-            k += 1
-
-    else:
-        # Example data if GET
-        data = {
-            "first_name": "Issam",
-            "name": "Elafi",
-            "job_title": "Support IT & Administratif",
-            "manager_name": "John Doe",
-            "manager_email": "john.doe@example.com",
-            "skills": {
-                "Programming": ["Python", "JavaScript", "SQL"],
-                "Business Intelligence": ["Tableau", "Power BI"],
-            },
-            "languages": {
-                "French": "Fluent",
-                "English": "Intermediate",
-            },
-            "experiences": [
-                {
-                    "job_title": "IT Support Specialist",
-                    "company": "Company XYZ",
-                    "duration": "01/2020 – Present",
-                    "description": "Provided technical support\n- Resolved IT issues\n- Assisted in deployments",
-                },
-            ],
-            "education": [
-                {
-                    "degree": "Bachelor of Science in Computer Science",
-                    "institution": "University of Example",
-                    "duration": "09/2015 – 06/2019",
-                    "description": "Graduated with honors.",
-                },
-            ],
-            "certifications": [
-                {
-                    "name": "AWS Certified Solutions Architect",
-                    "issuer": "Amazon Web Services",
-                },
-            ],
-        }
-
-    # Pass the hardcoded values to the template
-    data["page_height"] = PAGE_HEIGHT_MM
-    data["page_width"] = PAGE_WIDTH_MM
-    data["page_padding"] = PADDING_MM
-
-    # 2) Build sections in the desired order
-    sections = []
-
-    # -- Skills
-    if data["skills"]:
-        skill_items = []
-        for category, skill_list in data["skills"].items():
-            skill_items.append({"category": category, "skills": skill_list})
-        sections.append({
-            "type": "skills",
-            "heading": "Technical and Functional Skills.",
-            "items": skill_items,
-        })
-
-    # -- Education
-    if data["education"]:
-        sections.append({
-            "type": "education",
-            "heading": "Education.",
-            "items": data["education"],
-        })
-
-    # -- Certifications (optional)
-    if data["certifications"]:
-        sections.append({
-            "type": "certifications",
-            "heading": "Certifications.",
-            "items": data["certifications"],
-        })
-
-    # -- Languages
-    if data["languages"]:
-        lang_items = []
-        for lang, level in data["languages"].items():
-            lang_items.append({"language": lang, "level": level})
-        sections.append({
-            "type": "languages",
-            "heading": "Languages.",
-            "items": lang_items,
-        })
-
-    # -- Experiences
-    if data["experiences"]:
-        sections.append({
-            "type": "experiences",
-            "heading": "Professional Experiences.",
-            "items": data["experiences"],
-        })
-
-    # 3) heading_height
+    # Define helper functions for heading and item height calculations
     def heading_height():
         return 20  # ~10 mm for each section heading
 
-    # 4) item_height (now dynamic based on lines in the description, etc.)
     def item_height(section_type, item):
         if section_type == "skills":
             base_height = 5  # overhead for category line
@@ -382,78 +200,242 @@ def generate_cv():
 
         return 10
 
-    # 5) Chunking with bullet point splitting (no repeated headings)
-    PAGE_HEIGHT_MM = 280
-    PADDING_MM = 30
-    CONTENT_HEIGHT_MM = PAGE_HEIGHT_MM - 2 * PADDING_MM
+    if request.method == 'POST':
+        # Load the last saved JSON data
+        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'last_cv.json')
+        if not os.path.exists(json_filepath):
+            return jsonify({'success': False, 'error': 'No last JSON found.'})
 
-    pages = []
-    current_page = []
-    current_height = 0
+        with open(json_filepath, 'r') as f:
+            data = json.load(f)
 
-    for section in sections:
-        hh = heading_height()
-        
-        if section["type"] == "experiences" and current_height > 0:
-            pages.append(current_page)
-            current_page = []
-            current_height = 0
-        
-        if current_height + hh > CONTENT_HEIGHT_MM:
-            pages.append(current_page)
-            current_page = []
-            current_height = 0
+        # Update the JSON data with form inputs
+        data["first_name"] = request.form.get("first_name", data.get("first_name", ""))
+        data["name"] = request.form.get("name", data.get("name", ""))
+        data["job_title"] = request.form.get("job_title", data.get("job_title", ""))
+        data["manager_name"] = request.form.get("manager_name", data.get("manager_name", ""))
+        data["manager_email"] = request.form.get("manager_email", data.get("manager_email", ""))
+        data["manager_tel"] = request.form.get("manager_tel", data.get("manager_tel", ""))
+        data["manager_role"] = request.form.get("manager_role", data.get("manager_role", ""))
 
-        # Add the section heading only once
-        new_block = {
-            "type": section["type"],
-            "heading": section["heading"],
-            "items": []
-        }
-        current_page.append(new_block)
-        current_height += hh
+        # Update skills
+        data["skills"] = {}
+        for key, value in request.form.items():
+            if key.startswith("skills_"):
+                category = key.replace("skills_", "")
+                skill_list = value.split(", ")
+                if skill_list and skill_list != [""]:
+                    data["skills"][category] = skill_list
 
-        for single_item in section["items"]:
-            if section["type"] == "experiences":
-                desc = single_item.get("description", "")
-                lines = desc.split("\n")
-                line_height = 12  # mm per bullet/line
-                base_height = 30  # job title + duration overhead
+        # Update languages
+        languages = {}
+        i = 1
+        while True:
+            language_name = request.form.get(f"language_{i}")
+            proficiency = request.form.get(f"level_{i}")
+            if language_name is None:
+                break
+            if not language_name.strip():
+                i += 1
+                continue
+            languages[language_name] = proficiency or "Unknown"
+            i += 1
+            if i > 50:
+                break
+        data["languages"] = languages
 
-                remaining_space = CONTENT_HEIGHT_MM - current_height
-                total_height = base_height + len(lines) * line_height
+        # Update experiences
+        experiences = []
+        i = 1
+        while True:
+            job_title = request.form.get(f"job_title_{i}")
+            if not job_title:
+                break
+            experiences.append({
+                "job_title": job_title,
+                "company": request.form.get(f"company_{i}", ""),
+                "duration": request.form.get(f"duration_{i}", ""),
+                "description": request.form.get(f"description_{i}", ""),
+            })
+            i += 1
+        data["experiences"] = experiences
 
-                if total_height <= remaining_space:
-                    # Entire item fits on this page
-                    current_page[-1]["items"].append(single_item)
-                    current_height += total_height
+        # Update education
+        education = []
+        j = 1
+        while True:
+            degree = request.form.get(f"degree_{j}")
+            if not degree:
+                break
+            education.append({
+                "degree": degree,
+                "institution": request.form.get(f"institution_{j}", ""),
+                "duration": request.form.get(f"education_duration_{j}", ""),
+                "description": request.form.get(f"education_description_{j}", ""),
+            })
+            j += 1
+        data["education"] = education
 
-                else:
-                    # Not everything fits
-                    lines_fit = int((remaining_space - base_height) // line_height)
-                    if lines_fit > 0:
-                       
-                        # Some lines can fit on the current page
-                        first_chunk = single_item.copy()
-                        # Keep the same title, but only partial lines in description
-                        first_chunk["description"] = "\n".join(lines[:lines_fit])
+        # Update certifications
+        certifications = []
+        k = 1
+        while True:
+            certification_name = request.form.get(f"certification_name_{k}")
+            if not certification_name:
+                break
+            certifications.append({
+                "name": certification_name,
+                "issuer": request.form.get(f"certification_issuer_{k}", ""),
+            })
+            k += 1
+        data["certifications"] = certifications
 
-                        current_page[-1]["items"].append(first_chunk)
-                        current_height += (base_height + lines_fit * line_height)
+        # Save the updated JSON data
+        with open(json_filepath, 'w') as f:
+            json.dump(data, f, indent=4)
 
-                        pages.append(current_page)         # finish this page
-                        current_page = []                  # start a new page
-                        current_height = 0
+        # Pass the hardcoded values to the template
+        data["page_height"] = PAGE_HEIGHT_MM
+        data["page_width"] = PAGE_WIDTH_MM
+        data["page_padding"] = PADDING_MM
 
-                        # leftover lines
-                        remaining_lines = lines[lines_fit:]
-                        if remaining_lines:
-                            # second chunk: only leftover lines, no repeated title
-                            second_chunk = single_item.copy()
-                            second_chunk["job_title"] = ""
-                            second_chunk["company"] = ""
-                            second_chunk["duration"] = ""
-                            second_chunk["description"] = "\n".join(remaining_lines)
+        # Build sections in the desired order
+        sections = []
+
+        # -- Skills
+        if data["skills"]:
+            skill_items = []
+            for category, skill_list in data["skills"].items():
+                skill_items.append({"category": category, "skills": skill_list})
+            sections.append({
+                "type": "skills",
+                "heading": "Technical and Functional Skills.",
+                "items": skill_items,
+            })
+
+        # -- Education
+        if data["education"]:
+            sections.append({
+                "type": "education",
+                "heading": "Education.",
+                "items": data["education"],
+            })
+
+        # -- Certifications (optional)
+        if data["certifications"]:
+            sections.append({
+                "type": "certifications",
+                "heading": "Certifications.",
+                "items": data["certifications"],
+            })
+
+        # -- Languages
+        if data["languages"]:
+            lang_items = []
+            for lang, level in data["languages"].items():
+                lang_items.append({"language": lang, "level": level})
+            sections.append({
+                "type": "languages",
+                "heading": "Languages.",
+                "items": lang_items,
+            })
+
+        # -- Experiences
+        if data["experiences"]:
+            sections.append({
+                "type": "experiences",
+                "heading": "Professional Experiences.",
+                "items": data["experiences"],
+            })
+
+        # Chunking with bullet point splitting (no repeated headings)
+        PAGE_HEIGHT_MM = 380
+        PADDING_MM = 30
+        CONTENT_HEIGHT_MM = PAGE_HEIGHT_MM - 2 * PADDING_MM
+
+        pages = []
+        current_page = []
+        current_height = 0
+
+        for section in sections:
+            hh = heading_height()
+            
+            if section["type"] == "experiences" and current_height > 0:
+                pages.append(current_page)
+                current_page = []
+                current_height = 0
+            
+            if current_height + hh > CONTENT_HEIGHT_MM:
+                pages.append(current_page)
+                current_page = []
+                current_height = 0
+
+            # Add the section heading only once
+            new_block = {
+                "type": section["type"],
+                "heading": section["heading"],
+                "items": []
+            }
+            current_page.append(new_block)
+            current_height += hh
+
+            for single_item in section["items"]:
+                if section["type"] == "experiences":
+                    desc = single_item.get("description", "")
+                    lines = desc.split("\n")
+                    line_height = 12  # mm per bullet/line
+                    base_height = 30  # job title + duration overhead
+
+                    remaining_space = CONTENT_HEIGHT_MM - current_height
+                    total_height = base_height + len(lines) * line_height
+
+                    if total_height <= remaining_space:
+                        # Entire item fits on this page
+                        current_page[-1]["items"].append(single_item)
+                        current_height += total_height
+
+                    else:
+                        # Not everything fits
+                        lines_fit = int((remaining_space - base_height) // line_height)
+                        if lines_fit > 0:
+                            # Some lines can fit on the current page
+                            first_chunk = single_item.copy()
+                            # Keep the same title, but only partial lines in description
+                            first_chunk["description"] = "\n".join(lines[:lines_fit])
+
+                            current_page[-1]["items"].append(first_chunk)
+                            current_height += (base_height + lines_fit * line_height)
+
+                            pages.append(current_page)         # finish this page
+                            current_page = []                  # start a new page
+                            current_height = 0
+
+                            # leftover lines
+                            remaining_lines = lines[lines_fit:]
+                            if remaining_lines:
+                                # second chunk: only leftover lines, no repeated title
+                                second_chunk = single_item.copy()
+                                second_chunk["job_title"] = ""
+                                second_chunk["company"] = ""
+                                second_chunk["duration"] = ""
+                                second_chunk["description"] = "\n".join(remaining_lines)
+
+                                new_block = {
+                                    "type": section["type"],
+                                    "items": []
+                                }
+                                current_page.append(new_block)
+
+                                # measure height of leftover chunk
+                                leftover_height = len(remaining_lines) * line_height
+                                current_page[-1]["items"].append(second_chunk)
+                                current_height += leftover_height
+
+                        else:
+                            # Nothing fits on this page: move the entire item to the next page
+                            pages.append(current_page)
+                            current_page = []
+                            current_height = 0
 
                             new_block = {
                                 "type": section["type"],
@@ -461,74 +443,46 @@ def generate_cv():
                             }
                             current_page.append(new_block)
 
-                            # measure height of leftover chunk
-                            leftover_height = len(remaining_lines) * line_height
-                            current_page[-1]["items"].append(second_chunk)
-                            current_height += leftover_height
-
-                    else:
-                        # Nothing fits on this page: move the entire item to the next page
+                            # entire item on the new page
+                            current_page[-1]["items"].append(single_item)
+                            current_height += total_height
+                else:
+                    # Handle other section types as before
+                    h = item_height(section["type"], single_item)
+                    if current_height + h > CONTENT_HEIGHT_MM:
                         pages.append(current_page)
                         current_page = []
                         current_height = 0
 
+                        # Add the section heading only once
                         new_block = {
                             "type": section["type"],
+                            "heading": section["heading"],
                             "items": []
                         }
                         current_page.append(new_block)
+                        current_height += hh
 
-                        # entire item on the new page
-                        current_page[-1]["items"].append(single_item)
-                        current_height += total_height
-            else:
-                # Handle other section types as before
-                h = item_height(section["type"], single_item)
-                if current_height + h > CONTENT_HEIGHT_MM:
-                    pages.append(current_page)
-                    current_page = []
-                    current_height = 0
+                    current_page[-1]["items"].append(single_item)
+                    current_height += h
 
-                    # Add the section heading only once
-                    new_block = {
-                        "type": section["type"],
-                        "heading": section["heading"],
-                        "items": []
-                    }
-                    current_page.append(new_block)
-                    current_height += hh
+        if current_page:
+            pages.append(current_page)
+        
+        data["page_2_content"] = pages
+        print("Page 2 Content:", json.dumps(data["page_2_content"], indent=2))
+        return render_template('cv_template.html', data=data)
 
-                current_page[-1]["items"].append(single_item)
-                current_height += h
+    else:
+        # Handle GET requests (e.g., load example data)
+        data = {}
 
-    if current_page:
-        pages.append(current_page)
-    
-    data["page_2_content"] = pages
-    print("Page 2 Content:", json.dumps(data["page_2_content"], indent=2))
-    return render_template('cv_template.html', data=data)
+        # Pass the hardcoded values to the template
+        data["page_height"] = PAGE_HEIGHT_MM
+        data["page_width"] = PAGE_WIDTH_MM
+        data["page_padding"] = PADDING_MM
 
-
-@app.route('/regenerate_cv', methods=['POST'])
-def regenerate_cv():
-    global PAGE_HEIGHT_MM, PAGE_WIDTH_MM, PADDING_MM
-
-    try:
-        # Get the updated values from the request
-        PAGE_HEIGHT_MM = int(request.json.get('page_height', 280))
-        PAGE_WIDTH_MM = int(request.json.get('page_width', 210))
-        PADDING_MM = int(request.json.get('page_padding', 30))
-
-        # Return a success message
-        return jsonify({
-            'success': True,
-            'page_height': PAGE_HEIGHT_MM,
-            'page_width': PAGE_WIDTH_MM,
-            'page_padding': PADDING_MM,
-        })
-    except Exception as e:
-        print(f"Error regenerating CV: {e}")
-        return jsonify({'success': False, 'error': str(e)})
+        return render_template('cv_template.html', data=data)
 
 @app.route('/reuse_last_json')
 def reuse_last_json():

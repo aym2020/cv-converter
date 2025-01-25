@@ -263,3 +263,175 @@ fieldset legend {
 .skill-category .remove-button:hover {
     background-color: #c82333;
 }
+
+/* Go to Bottom Button */
+.go-to-bottom-button {
+    position: fixed;
+    bottom: 20px; /* Position at the bottom */
+    right: 20px; /* Position on the right */
+    background-color: #2f7dda;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.go-to-bottom-button:hover {
+    background-color: #1e5bb5;
+    transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+.go-to-bottom-button i {
+    font-size: 16px; /* Icon size */
+}
+
+/* Tooltip for Go to Bottom Button */
+.go-to-bottom-button .tooltip {
+    visibility: hidden;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    position: absolute;
+    top: -30px; /* Position above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.go-to-bottom-button:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Go to Top Button */
+.go-to-top-button {
+    position: fixed;
+    bottom: 70px; /* Position above the Go to Bottom button */
+    right: 20px; /* Position on the right */
+    background-color: #2f7dda;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.go-to-top-button:hover {
+    background-color: #1e5bb5;
+    transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+.go-to-top-button i {
+    font-size: 16px; /* Icon size */
+}
+
+/* Tooltip for Go to Top Button */
+.go-to-top-button .tooltip {
+    visibility: hidden;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    position: absolute;
+    top: -30px; /* Position above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.go-to-top-button:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Increase specificity for resizable textareas */
+.form-group .resizable-textarea {
+    resize: vertical; /* Allow vertical resizing */
+    height: 150px; /* Default height */
+    min-height: 100px; /* Minimum height */
+    width: 100%; /* Ensure the textarea takes full width */
+    padding: 8px; /* Add some padding for better readability */
+    font-family: inherit; /* Inherit font from parent */
+    border: 1px solid #ccc; /* Add a border for better visibility */
+    border-radius: 4px; /* Optional: Add rounded corners */
+    margin-bottom: 8px; /* Match the margin from .form-group textarea */
+}
+
+/* Generate CV Button */
+.generate-cv-button {
+    position: fixed;
+    top: 20px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+    background-color: #28a745; /* Green color for consistency */
+    color: white;
+    border: none;
+    border-radius: 6px; /* Slightly larger radius */
+    padding: 15px 17.5px; /* Bigger padding for a larger button */
+    font-size: 16px; /* Larger font size */
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.generate-cv-button:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.generate-cv-button i {
+    font-size: 20px; /* Larger icon size */
+}
+
+/* Tooltip for Generate CV Button */
+.generate-cv-button .tooltip {
+    visibility: hidden;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 6px 12px; /* Slightly larger padding */
+    border-radius: 4px; /* Slightly larger radius */
+    font-size: 12px; /* Slightly larger font size */
+    position: absolute;
+    top: 50px; /* Position below the button */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.generate-cv-button:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}

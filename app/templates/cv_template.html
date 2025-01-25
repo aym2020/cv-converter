@@ -20,34 +20,19 @@
         <span class="tooltip">Go Home</span>
     </a>
 
-    <!-- Print and Settings Buttons -->
+    <!-- Print and Back to Form Buttons -->
     <div class="action-buttons">
+        <!-- Back to Form Button -->
+        <a href="{{ url_for('edit_form') }}" class="back-to-form-button">
+            <i class="fas fa-edit"></i>
+            <span class="tooltip">Edit Form</span>
+        </a>
+
         <!-- Print Button -->
         <button class="print-button" onclick="window.print()">
             <i class="fas fa-print"></i>
             <span class="tooltip">Print to PDF</span>
         </button>
-
-        <!-- Settings Button -->
-        <button class="settings-toggle" onclick="toggleSettings()">
-            <i class="fas fa-cog"></i>
-            <span class="tooltip">Settings</span>
-        </button>
-    </div>
-
-    <!-- Settings Panel -->
-    <div class="settings-content">
-        <h3>Page Settings</h3>
-        <label for="page-height">Page Height (mm):</label>
-        <input type="number" id="page-height" value="{{ data.page_height }}" min="100" max="500">
-        
-        <label for="page-width">Page Width (mm):</label>
-        <input type="number" id="page-width" value="{{ data.page_width }}" min="100" max="500">
-        
-        <label for="page-padding">Page Padding (mm):</label>
-        <input type="number" id="page-padding" value="{{ data.page_padding }}" min="0" max="100">
-        
-        <button class="regenerate-button" onclick="regenerateCV()">Regenerate CV</button>
     </div>
     
     <!-- Page 1 -->
@@ -63,8 +48,9 @@
 
         <!-- Delivery Manager Information -->
         <div class="manager-info">
-            <p class="delivery-manager">Delivery Manager</p>
             <p class="manager-name">{{ data.manager_name }}</p>
+            <p class="delivery-manager">{{ data.manager_role }}</p>
+            <p class="manager-tel">{{ data.manager_tel }}</p>
             <p class="manager-email">{{ data.manager_email }}</p>
         </div>
 
@@ -160,7 +146,7 @@
 
     <!-- Last Page -->
     <div class="page last-page">
-        <h3>We are Randstad Digital</h3>
+        <span class="we-are-randstad-digital">we are randstad digital.<br><br></span>
         <p>
             Randstad Digital is a leading technology partner that accelerates digital transformation for businesses by providing talent, production capabilities, and packaged solutions in specialized fields. Our expertise enables you to strengthen your team while connecting you with skilled professionals worldwide who align with the technologies you’ve chosen.<br><br>
             We focus on packaged solutions, empowering businesses to achieve their objectives quickly and efficiently. We operate across four service lines: customer experience (UX/UI), digital engineering and product engineering, data & analytics, and cloud & infrastructure. To achieve this, we offer our clients three engagement models: expertise, competency centers, and packaged solutions.<br><br>
@@ -175,49 +161,7 @@
     </div>
 
     <script>
-        // Toggle settings panel visibility
-        function toggleSettings() {
-            const settingsContent = document.querySelector('.settings-content');
-            settingsContent.classList.toggle('visible');
-        }
-    
-        // Send updated values to the server and regenerate the CV
-        function regenerateCV() {
-    const pageHeight = document.getElementById('page-height').value;
-    const pageWidth = document.getElementById('page-width').value;
-    const pagePadding = document.getElementById('page-padding').value;
-
-    // Send the data to the server
-    fetch('/regenerate_cv', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            page_height: pageHeight,
-            page_width: pageWidth,
-            page_padding: pagePadding,
-        }),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            window.location.reload(); // Reload the page to reflect changes
-        } else {
-            alert('Failed to regenerate CV. Please try again.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-    });
-}
+       
     </script>
-
 </body>
 </html>

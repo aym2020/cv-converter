@@ -125,56 +125,53 @@ body {
     opacity: 1;
 }
 
-/* Settings Panel */
-.settings-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-top: 10px;
-    display: none;
-    width: 300px; /* Fixed width for better readability */
-    position: fixed;
-    top: 70px; /* Position below the buttons */
-    right: 20px;
-    z-index: 1000;
-}
-.settings-content.visible {
-    display: block;
-}
-.settings-content h3 {
-    margin-top: 0;
-    font-size: 18px;
-    color: #2f7dda;
-}
-.settings-content label {
-    display: block;
-    margin: 10px 0 5px;
-    font-size: 14px;
-    color: #555;
-}
-.settings-content input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-.regenerate-button {
-    width: 100%;
-    padding: 10px;
+/* Back to Form Button */
+.back-to-form-button {
     background-color: #2f7dda;
     color: white;
     border: none;
-    border-radius: 4px;
-    font-size: 14px;
+    border-radius: 8px;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-decoration: none; /* Remove underline from link */
 }
-.regenerate-button:hover {
+
+/* Hover states */
+.back-to-form-button:hover {
     background-color: #1e5bb5;
+    transform: translateY(-2px);
+}
+
+.back-to-form-button i {
+    font-size: 20px;
+}
+
+/* Tooltip for Back to Form Button */
+.back-to-form-button .tooltip {
+    visibility: hidden;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    position: absolute;
+    top: 55px; /* Slightly lower than home button's tooltip to avoid overlap */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+.back-to-form-button:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* --------------------------------------------------
@@ -185,7 +182,7 @@ body {
 .page {
     width: 210mm; /* A4 width */
     min-height: 297mm; /* A4 height */
-    padding: 20mm; /* Simulate margins with padding */
+    padding: 40mm; /* Simulate margins with padding */
     box-sizing: border-box; /* Include padding in width/height calculations */
     background-color: white;
     margin: 0 auto; /* Center the page horizontally */
@@ -205,14 +202,14 @@ body {
     min-height: 297mm;
 }
 .page-1 h1 {
-    font-size: 70px;
+    font-size: 36pt;
     color: #00ffff;
     margin: 0;
     font-family: 'Tahoma', sans-serif;
     font-weight: 400;
 }
 .page-1 h2 {
-    font-size: 35px;
+    font-size: 20pt;
     color: white;
     margin: 10px 0 0;
     font-family: 'Tahoma', sans-serif;
@@ -222,13 +219,14 @@ body {
 /* Page 2 Styles */
 .page-2 {
     background-color: white;
+    padding: 25mm;
 }
 
 /* Section Titles */
 .section-title {
     color: #2175d9;
     font-size: 24px;
-    margin-top: 25px;
+    margin-top: 10px;
     margin-bottom: 10px;
 }
 
@@ -266,13 +264,13 @@ body {
 
 /* Experiences List */
 .experiences-list p {
-    color: #0f1840;
+    color: #2175d9;
     font-size: 18px;
     margin: 10px 0;
 }
 
 .experiences-list ul {
-    color: #2175d9;
+    color: #0f1840;
 }
 
 /* Education List */
@@ -299,14 +297,14 @@ body {
     background-color: #0f1840;
     color: white;
     text-align: left;
-    padding: 50px;
+    padding: 25mm;
     position: relative;
     width: 210mm;
     min-height: 297mm;
     box-sizing: border-box;
     overflow: hidden;
 }
-.last-page h3 {
+.we-are-randstad-digital {
     color: #00ffff;
     font-size: 24px;
     margin-bottom: 20px;
@@ -341,21 +339,31 @@ body {
     line-height: 1.2;
 }
 .manager-info .delivery-manager {
-    color: #00ffff;
-    font-weight: bold;
-    margin-bottom: 5px;
+    color: white;
+    margin: 5px 5px;
 }
 .manager-info .manager-name {
-    color: white;
+    color: #00FFFF;
+    margin: 5px 5px;
+
 }
 .manager-info .manager-email {
     color: white;
+    margin: 5px 5px;
+}
+.manager-info .manager-tel {
+    color: white;
+    margin: 5px 5px;
+}
+.manager-info .manager-role {
+    color: white;
+    margin: 5px 5px;
 }
 
 /* Bulles Container */
 .bulles-container {
     position: absolute;
-    bottom: 50mm;
+    bottom: 30mm;
     left: -150px;
     z-index: 10;
     text-align: center;
@@ -368,7 +376,7 @@ body {
 /* Laser Image Container */
 .laser-container {
     position: absolute;
-    bottom: 20mm;
+    bottom: 5mm;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -380,22 +388,21 @@ body {
     height: auto;
 }
 
-/* Print Styles */
 @media print {
-    /* Hide the Print, Home, Settings buttons, and Settings panel */
+    /* Hide the Print, Home, and Back to Form buttons */
     .home-button,
     .print-button,
-    .settings-toggle,
-    .action-buttons,
-    .settings-content {
+    .back-to-form-button,
+    .action-buttons {
         display: none !important;
     }
 
     /* Ensure the page background and text colors are preserved */
     .page-1, .last-page {
-        background-color: #0f1840 !important;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
+        background-color: #0f1840 !important; /* Use the exact color you want */
+        -webkit-print-color-adjust: exact; /* Force background color in WebKit browsers */
+        color-adjust: exact; /* Standard property for forcing background color */
+        color: white !important; /* Ensure text color is white */
     }
 
     /* Force page breaks */
@@ -412,3 +419,4 @@ body {
 .capture-mode .page-1 h2 {
     text-align: left !important;
 }
+
