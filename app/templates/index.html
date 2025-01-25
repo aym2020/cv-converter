@@ -32,6 +32,9 @@
             <input type="file" name="file" accept=".pdf" class="file-input" id="file-input" />
             <button type="submit" class="upload-button" id="upload-button" disabled>Upload PDF</button>
         </form>
+
+        <!-- Reuse Last JSON Button -->
+        <button class="upload-button" id="reuse-last-json">Reuse Last JSON</button>
     </div>
 
     <script>
@@ -39,18 +42,18 @@
         const uploadBox = document.getElementById('upload-box');
         const fileInput = document.getElementById('file-input');
         const uploadButton = document.getElementById('upload-button');
-
+    
         // Highlight the upload box when a file is dragged over
         uploadBox.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadBox.classList.add('dragover');
         });
-
+    
         // Remove highlight when the file is dragged out
         uploadBox.addEventListener('dragleave', () => {
             uploadBox.classList.remove('dragover');
         });
-
+    
         // Handle file drop
         uploadBox.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -62,12 +65,12 @@
                 uploadBox.innerHTML = `<p>File selected: <span>${files[0].name}</span></p>`;
             }
         });
-
+    
         // Handle file selection via click
         uploadBox.addEventListener('click', () => {
             fileInput.click();
         });
-
+    
         // Update the upload box when a file is selected via the file input
         fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
@@ -75,13 +78,42 @@
                 uploadBox.innerHTML = `<p>File selected: <span>${fileInput.files[0].name}</span></p>`;
             }
         });
-
+    
         // Form validation
-        document.getElementById('upload-form').addEventListener('submit', (e) => {
+        document.getElementById('upload-form').addEventListener('submit', function (e) {
+            const fileInput = document.getElementById('file-input');
             if (fileInput.files.length === 0) {
-                e.preventDefault();
-                alert('Please select a PDF file to upload.');
+                e.preventDefault(); // Prevent form submission
+                alert('Please select a PDF file to upload.'); // Show popup
             }
+        });
+
+    // Debugging: Log when the form submission is intercepted
+    console.log('Form submission handler attached');
+
+        // Reuse Last JSON Button
+        document.getElementById('reuse-last-json').addEventListener('click', () => {
+            fetch('/reuse_last_json')
+                .then(response => {
+                    if (!response.ok) {
+                        // If the response is not OK (e.g., 404, 500), throw an error
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/edit_form'; // Redirect to edit form
+                    } else {
+                        // Show a popup if no JSON file exists
+                        alert('No previous JSON file found. Please upload a PDF first.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Show a popup for any unexpected errors
+                    alert('An error occurred. Please try again.');
+                });
         });
     </script>
 </body>

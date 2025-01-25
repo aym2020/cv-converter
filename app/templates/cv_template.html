@@ -93,16 +93,15 @@
         {% elif block.type == "education" %}
             <div class="section-title">{{ block.heading }}</div>
             <div class="education-list">
-            {% for item in block["items"] %}
-                <h3>
-                {{ item.degree }}
-                {% if item.institution %}
-                    - {{ item.institution }}
-                {% endif %}
-                </h3>
-                <p><em>{{ item.duration }}</em></p>
-                <p>{{ item.description }}</p>
-            {% endfor %}
+                {% for item in block["items"] %}
+                    <p>
+                        <span class="education-date">{{ item.duration }}</span>: 
+                        <span class="education-degree">{{ item.degree }}</span>
+                        {% if item.institution %}
+                            - <span class="education-institution">{{ item.institution }}</span>
+                        {% endif %}
+                    </p>
+                {% endfor %}
             </div>
             
         {% elif block.type == "certifications" %}
@@ -119,12 +118,12 @@
         {% elif block.type == "languages" %}
             <div class="section-title">{{ block.heading }}</div>
             <div class="languages-list">
-            {% for item in block["items"] %}
-                <div class="language-item">
-                <span class="language-name">{{ item.language }}:</span>
-                <span class="language-level">{{ item.level }}</span>
-                </div>
-            {% endfor %}
+                {% for item in block["items"] %}
+                    <div class="language-item">
+                        <span class="language-name">{{ item.language }}:</span>
+                        <span class="language-level">{{ item.level }}</span>
+                    </div>
+                {% endfor %}
             </div>
 
         {% elif block.type == "experiences" %}
@@ -132,11 +131,11 @@
             <div class="experiences-list">
                 {% for item in block["items"] %}
                   {% if item.job_title or item.company %}
-                    <h3>
+                    <p>
                       {{ item.job_title }}
                       {% if item.job_title and item.company %} - {% endif %}
                       {{ item.company }}
-                    </h3>
+                    </p>
                   {% endif %}
                   {% if item.duration %}
                     <p><em>{{ item.duration }}</em></p>
@@ -184,41 +183,40 @@
     
         // Send updated values to the server and regenerate the CV
         function regenerateCV() {
-            const pageHeight = document.getElementById('page-height').value;
-            const pageWidth = document.getElementById('page-width').value;
-            const pagePadding = document.getElementById('page-padding').value;
-    
-            // Send the data to the server
-            fetch('/regenerate_cv', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    page_height: pageHeight,
-                    page_width: pageWidth,
-                    page_padding: pagePadding,
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload(); // Reload the page to reflect changes
-                } else {
-                    alert('Failed to regenerate CV. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
+    const pageHeight = document.getElementById('page-height').value;
+    const pageWidth = document.getElementById('page-width').value;
+    const pagePadding = document.getElementById('page-padding').value;
 
-            function toggleSettings() {
-                console.log("Settings button clicked"); // Debugging
-                const settingsContent = document.querySelector('.settings-content');
-                settingsContent.classList.toggle('visible');
-            }
+    // Send the data to the server
+    fetch('/regenerate_cv', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            page_height: pageHeight,
+            page_width: pageWidth,
+            page_padding: pagePadding,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            window.location.reload(); // Reload the page to reflect changes
+        } else {
+            alert('Failed to regenerate CV. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
+}
     </script>
 
 </body>

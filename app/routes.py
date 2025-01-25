@@ -53,6 +53,11 @@ def upload_file():
         # Send the extracted text to the OpenAI API
         response = send_to_openai_api(text)
         if response:
+            # Save the JSON to a file
+            json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'last_cv.json')
+            with open(json_filepath, 'w') as f:
+                json.dump(response, f, indent=4)
+            
             # Render the editable form with the API response
             return render_template('edit_form.html', data=response)
         else:
@@ -193,12 +198,22 @@ def generate_cv():
         while True:
             language_name = request.form.get(f"language_{i}")
             proficiency = request.form.get(f"level_{i}")
-            if not language_name:
+            if language_name is None:
+                # means there's no language_{i} field at all => done
                 break
-            languages[language_name] = proficiency
-            i += 1
+            if not language_name.strip():
+                # if the user left the field blank, skip but keep going
+                i += 1
+                continue
 
-        data["languages"] = languages
+            # we have a real language
+            languages[language_name] = proficiency or "Unknown"
+            i += 1
+            # optional safety check if i is huge
+            if i > 50:
+                break
+
+        data["languages"] = languages   
 
         # Experiences
         i = 1
@@ -295,7 +310,7 @@ def generate_cv():
             skill_items.append({"category": category, "skills": skill_list})
         sections.append({
             "type": "skills",
-            "heading": "Technical and Functional Skills",
+            "heading": "Technical and Functional Skills.",
             "items": skill_items,
         })
 
@@ -303,7 +318,7 @@ def generate_cv():
     if data["education"]:
         sections.append({
             "type": "education",
-            "heading": "Education",
+            "heading": "Education.",
             "items": data["education"],
         })
 
@@ -311,7 +326,7 @@ def generate_cv():
     if data["certifications"]:
         sections.append({
             "type": "certifications",
-            "heading": "Certifications",
+            "heading": "Certifications.",
             "items": data["certifications"],
         })
 
@@ -322,7 +337,7 @@ def generate_cv():
             lang_items.append({"language": lang, "level": level})
         sections.append({
             "type": "languages",
-            "heading": "Languages",
+            "heading": "Languages.",
             "items": lang_items,
         })
 
@@ -330,7 +345,7 @@ def generate_cv():
     if data["experiences"]:
         sections.append({
             "type": "experiences",
-            "heading": "Professional Experiences",
+            "heading": "Professional Experiences.",
             "items": data["experiences"],
         })
 
@@ -514,6 +529,40 @@ def regenerate_cv():
     except Exception as e:
         print(f"Error regenerating CV: {e}")
         return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/reuse_last_json')
+def reuse_last_json():
+    try:
+        # Load the last saved JSON
+        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'last_cv.json')
+        if not os.path.exists(json_filepath):
+            return jsonify({'success': False, 'error': 'No last JSON found.'})
+
+        with open(json_filepath, 'r') as f:
+            data = json.load(f)
+
+        # Return the JSON data
+        return jsonify({'success': True, 'data': data})
+    except Exception as e:
+        print(f"Error reusing last JSON: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500  # Return 500 status code for server errors
+
+@app.route('/edit_form')
+def edit_form():
+    try:
+        # Load the last saved JSON
+        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'last_cv.json')
+        if not os.path.exists(json_filepath):
+            return jsonify({'success': False, 'error': 'No last JSON found.'})
+
+        with open(json_filepath, 'r') as f:
+            data = json.load(f)
+
+        # Render the edit form with the JSON data
+        return render_template('edit_form.html', data=data)
+    except Exception as e:
+        print(f"Error loading edit form: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -193,7 +193,8 @@
         // Function to add a new language field
         function addLanguage() {
             const container = document.getElementById('languages-container');
-            const index = container.children.length + 1;
+            const index = container.children.length + 1; // child #2 => "language_2"
+            
             const newLanguage = document.createElement('fieldset');
             newLanguage.className = 'language-item';
             newLanguage.innerHTML = `
@@ -210,6 +211,7 @@
             `;
             container.appendChild(newLanguage);
         }
+                
     
         // Function to remove a language field
         function removeLanguage(button) {

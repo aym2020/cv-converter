@@ -2,7 +2,7 @@
    GLOBAL STYLES
 -------------------------------------------------- */
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Tahoma', sans-serif;
     margin: 0;
     padding: 0;
     color: #0f1840;
@@ -226,9 +226,8 @@ body {
 
 /* Section Titles */
 .section-title {
-    color: #2f7dda;
+    color: #2175d9;
     font-size: 24px;
-    font-weight: bold;
     margin-top: 25px;
     margin-bottom: 10px;
 }
@@ -243,10 +242,9 @@ body {
 .skill-category-name {
     color: #0f1840;
     font-size: 16px;
-    font-weight: bold;
 }
 .skill-items {
-    color: #2f7dda;
+    color: #2175d9;
     font-size: 16px;
 }
 
@@ -260,34 +258,40 @@ body {
 .language-name {
     color: #0f1840;
     font-size: 16px;
-    font-weight: bold;
 }
 .language-level {
-    color: #2f7dda;
+    color: #2175d9;
     font-size: 16px;
 }
 
 /* Experiences List */
-.experiences-list h3 {
+.experiences-list p {
     color: #0f1840;
     font-size: 18px;
     margin: 10px 0;
 }
-.experiences-list p {
-    margin: 5px 0;
+
+.experiences-list ul {
+    color: #2175d9;
 }
 
 /* Education List */
 .education-list {
     margin: 20px 0;
 }
-.education-list h3 {
-    color: #0f1840;
-    font-size: 18px;
+
+.education-list p {
+    font-size: 16px;
     margin: 10px 0;
 }
-.education-list p {
-    margin: 5px 0;
+
+.education-date {
+    color: black; /* Black color for the date */
+}
+
+.education-degree,
+.education-institution {
+    color: #2175d9; /* Blue color for degree and institution */
 }
 
 /* Last Page Styles */
