@@ -1,31 +1,37 @@
 {
-    "name": "Rijo",
-    "first_name": "Yoni",
-    "job_title": "",
+    "name": "RIJO",
+    "first_name": "YONI",
+    "job_title": "HelpDesk L2",
     "skills": {
-        "IT Support": [
+        "Cloud & Identity Management": [
             "Active Directory",
             "Microsoft Azure AD",
             "Intune",
             "Mobile Device Management",
             "Airwatch",
+            "Okta",
+            "Microsoft Identity Manager"
+        ],
+        "Device & Application Management": [
             "EDI",
             "SAP",
             "AS400",
             "Microsoft Office 365 Pro Pack",
             "Sharepoint",
             "Sales Force",
-            "Windows Server",
-            "DHCP",
-            "DNS",
             "Lotus Note",
             "ServiceNow",
             "Smart IT",
-            "Okta",
             "Bomgar",
-            "Teamviewer",
-            "Microsoft Identity Manager",
-            "CISCO 360",
+            "Teamviewer"
+        ],
+        "Networking & Infrastructure": [
+            "Windows Server",
+            "DHCP",
+            "DNS",
+            "CISCO 360"
+        ],
+        "Software & Operating Systems": [
             "Citrix",
             "IOS",
             "Android",
@@ -47,86 +53,58 @@
     "experiences": [
         {
             "job_title": "IT Technical Support",
-            "company": "Cognizant",
+            "company": "COGNIZANT",
             "duration": "07/2023 \u2013 08/2024",
-            "description": "- Assist users on-site or remotely\r\n- Manage an IT equipment fleet with remote phone control by Bomgar\r\n- Windows 10, Active Directory hardware management\r\n- Comprehensive computer equipment management with 2 level 2 colleagues and a level 3 supervisor\r\n- Creation of IAM profiles and Active Directory. Azure portal management\r\n- Connection via VPN pulse secure\r\n- Ticketing tool ServiceNow",
+            "description": "- Assisted users on-site or remotely\r\n- Managed IT assets and provided remote control support via Bomgar\r\n- Hands-on experience with Windows 10 and Active Directory\r\n- Managed a complete IT device fleet along with 2 colleagues at level 2 and a level 3 supervisor\r\n- Created IAM and Active Directory profiles via Azure portal\r\n- Utilized VPN pulse secure and ServiceNow ticketing tool",
             "client_references": []
         },
         {
-            "job_title": "Content Manager on a Platform",
-            "company": "Accenture",
+            "job_title": "Content Manager",
+            "company": "ACCENTURE",
             "duration": "09/2022 \u2013 06/2023",
-            "description": "- Maintain content on social media\r\n- Prevent sensitive, violent, and other violations forbidden by the client",
+            "description": "- Managed content on social networks and ensured compliance with client policies against sensitive, violent, and other prohibited content",
             "client_references": []
         },
         {
             "job_title": "IT Field Agent",
             "company": "CTG",
-            "duration": "05/2022 \u2013 09/2022",
-            "description": "- Identity and Access Management for the European Investment Bank\r\n- Profile creation, distribution list management, shared mailbox setup, and access granting according to ITSM protocols\r\n- Ticketing tool Smart IT\r\n- Management of external emails and their legitimacy",
+            "duration": "05/2022-09/2022",
+            "description": "- Performed Identity and Access Management for the European Investment Bank\r\n- Created profiles, distribution lists, shared mailboxes, and assigned access according to ITSM protocols\r\n- Managed Smart IT ticketing tool and handled external email legitimacy",
             "client_references": []
         },
         {
             "job_title": "IT Field Agent",
-            "company": "GlobalBlue (Gitec)",
-            "duration": "03/2021 \u2013 05/2022",
-            "description": "- Assist users with remote control tools or privilege escalations\r\n- Technical support for client's hardware or software through chat (teams), email, remote phone control by Teamviewer\r\n- Account resets and assistance for application users (stores) across France\r\n- Windows 7/10, Active Directory hardware management\r\n- Comprehensive IT equipment fleet management with 2 level 2 colleagues and a level 3 supervisor\r\n- Profile creation and admin right assignments via IAM and Active Directory. Azure portal management\r\n- Connection via VPN pulse secure\r\n- Work tool on SmartIT",
+            "company": "GLOBALBLUE (GITEC)",
+            "duration": "03/2021-05/2022",
+            "description": "- Assisted users via remote support tools and administrative elevations\r\n- Provided client hardware or software technical support through chat (teams), email, and phone\r\n- Controlled remote devices by Teamviewer\r\n- Reset accounts and offered assistance to application users across France\r\n- Handled Windows 7/10, Active Directory, and managed the IT device fleet with 2 colleagues at level 2 and a level 3 supervisor\r\n- Created profiles and managed admin rights through IAM and Active Directory\r\n- Operated Azure portal and VPN pulse secure, with SmartIT as the work tool",
             "client_references": []
         },
         {
             "job_title": "1st Line of Expert Service",
-            "company": "Bosch",
-            "duration": "10/ \u2013 03/2021",
-            "description": "- Provide technical automotive service for Bosch workshops\r\n- Diagnose failures and errors for service technicians\r\n- Offer specific software diagnostic after-sales service\r\n- Use DDM and ESI Tronic for diagnosis, CDB for ticket management, Genesys for phone, and MS Office for other channels",
+            "company": "BOSCH",
+            "duration": "10/2021 \u2013 03/2021",
+            "description": "- Provided automotive technical service support for Bosch workshops\r\n- Diagnosed faults and errors for service technicians\r\n- Offered after-sales diagnostic software services\r\n- Utilized DDM and ESI Tronic for diagnostics, CDB for ticket management, Genesys for calls, and MS Office for other channels",
             "client_references": []
         },
         {
             "job_title": "B2B Support",
-            "company": "Fujitsu",
+            "company": "FUJITSU",
             "duration": "07/2018 \u2013 03/2020",
-            "description": "- Assist users remotely\r\n- Technical support through chat, email, phone remote control by Bomgar\r\n- Support for office 365, IAM, Lotus Notes, Adobe, TeamCenter, Ariane, Sharepoint, Windows 7/10, Active Directory\r\n- Level 3 escalation\r\n- Profile creation and admin rights assignment via IAM and Active Directory. Azure portal\r\n- Connection via VPN pulse secure\r\n- ServiceNow job aid\r\n- Use of Citrix virtual machines\r\n- Level 2 support on the Microsoft Azure console\r\n- Profile creation for Skype\r\n- Level 1 assistance\r\n- Restore Sharepoint and shared files\r\n- Update of knowledge base, reactivation of connected printers, management of level 2 telephone lines",
+            "description": "- Assisted users remotely\r\n- Offered technical support through chat, email, and phone with Bomgar remote control\r\n- Supported Office 365, IAM, Lotus Notes, Adobe, TeamCenter, Ariane, Sharepoint, and Windows 7/10\r\n- Handled escalations to Level 3\r\n- Managed profile creation and admin rights assignments via IAM and Active Directory\r\n- Operated VPN pulse secure, Citrix virtual machines, and ServiceNow tool\r\n- Supported Microsoft Azure console at level 2\r\n- Created Skype profiles, assisted level 1\r\n- Restored Sharepoint and shared files, updated knowledge base, reactivated connected printers, and managed level 2 telephone lines",
             "client_references": []
         },
         {
             "job_title": "B2B Support",
-            "company": "Sitel",
+            "company": "SITEL",
             "duration": "12/2016 \u2013 06/2018",
-            "description": "- Assist users remotely\r\n- Technical support through chat, email, phone\r\n- Remote control with Bomgar\r\n- Support for Office 365, Adobe, TeamCenter, Ariane, Sharepoint, Windows 7/10, Active Directory\r\n- Promoted to Level 2\r\n- Profile creation and admin rights assignment. Azure portal\r\n- Connection via VPN pulse secure\r\n- ServiceNow\r\n- Use of Citrix virtual machine",
-            "client_references": []
-        },
-        {
-            "job_title": "Commercial Engineer",
-            "company": "Descours & Cabaud",
-            "duration": "04/2012 \u2013 10/2016",
-            "description": "",
-            "client_references": []
-        },
-        {
-            "job_title": "Expert Seller",
-            "company": "GrosBill",
-            "duration": "09/2010 \u2013 04/2012",
-            "description": "",
-            "client_references": []
-        },
-        {
-            "job_title": "Salesman",
-            "company": "Fnac",
-            "duration": "10/2008 \u2013 06/2010",
-            "description": "",
-            "client_references": []
-        },
-        {
-            "job_title": "Automotive Parts Salesman",
-            "company": "Norauto",
-            "duration": "2004 \u2013 2008",
-            "description": "",
+            "description": "- Provided remote user assistance\r\n- Technical support through chat, email, and Bomgar remote control\r\n- Supported Office 365, Adobe, TeamCenter, Ariane, Sharepoint, Windows 7/10, Active Directory\r\n- Promoted to Level 2\r\n- Responsible for profile creation and admin rights assignment. Used Azure portal\r\n- Utilized VPN pulse secure, ServiceNow, and Citrix virtual machines",
             "client_references": []
         }
     ],
     "education": [],
     "certifications": [],
-    "manager_name": "Sara Doe",
-    "manager_email": "john.doe@example.com",
-    "manager_tel": "+1234567890",
-    "manager_role": "Sales Lead"
+    "manager_name": "Reda QORCHI",
+    "manager_email": "reda.qorchi@randstaddigital.lu",
+    "manager_tel": "",
+    "manager_role": "Delivery Manager"
 }

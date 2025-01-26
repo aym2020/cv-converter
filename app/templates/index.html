@@ -132,11 +132,11 @@
                         </div>
                         <div class="form-group">
                             <label for="new_email">Email:</label>
-                            <input type="email" id="new_email" name="email" required>
+                            <input type="email" id="new_email" name="email">
                         </div>
                         <div class="form-group">
                             <label for="new_tel">Telephone:</label>
-                            <input type="tel" id="new_tel" name="tel" required>
+                            <input type="tel" id="new_tel" name="tel">
                         </div>
                         <button type="submit" class="upload-button" id="save-button">Add</button>
                         <button type="button" class="cancel-button" onclick="closeAddSalesManagerForm()">Cancel</button>
@@ -450,7 +450,7 @@
             const email = document.getElementById('new_email').value.trim();
             const tel = document.getElementById('new_tel').value.trim();
 
-            if (!first_name || !name || !role || !email || !tel) {
+            if (!first_name || !name || !role) {
                 alert('Please fill in all fields.');
                 return;
             }
@@ -520,7 +520,7 @@
                             const updated_email = document.getElementById('new_email').value.trim();
                             const updated_tel = document.getElementById('new_tel').value.trim();
 
-                            if (!updated_first_name || !updated_name || !updated_role || !updated_email || !updated_tel) {
+                            if (!updated_first_name || !updated_name || !updated_role) {
                                 alert('Please fill in all fields.');
                                 return;
                             }

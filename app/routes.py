@@ -146,6 +146,7 @@ Extract the following information from this CV text and, if needed, translate it
 
 4. **skills**: 
    - An **object** with up to 4 or 5 relevant categories for a professional CV (e.g., 'Programming', 'Cloud & Identity Management', 'Device & Application Management', 'Collaboration & Productivity Tools', 'Networking & Infrastructure', etc.).
+   - **3 categories minimum**
    - **Category names** must remain in **English** (do not translate them).
    - Each key is a category name, and each value is a **list** of skill strings.
    - Do your best to create the most accurate categories
@@ -621,11 +622,6 @@ def edit_form():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-
-
-
-
-
 # Helper functions to load and save sales managers
 def load_sales_managers():
     json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
@@ -678,11 +674,12 @@ def add_sales_manager():
         first_name = data.get('first_name')
         name = data.get('name')
         role = data.get('role')
-        email = data.get('email')
-        tel = data.get('tel')
+        email = data.get('email', "")  # Optional, default to empty string
+        tel = data.get('tel', "")      # Optional, default to empty string
 
-        if not all([first_name, name, role, email, tel]):
-            return jsonify({'success': False, 'error': 'All fields are required.'}), 400
+        # Validate required fields
+        if not all([first_name, name, role]):
+            return jsonify({'success': False, 'error': 'First name, last name, and role are required.'}), 400
 
         json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
         if not os.path.exists(json_filepath):
@@ -691,7 +688,7 @@ def add_sales_manager():
             with open(json_filepath, 'r') as f:
                 managers = json.load(f)
 
-        # Generate a unique ID
+        # Generate a unique ID for the new manager
         new_id = str(uuid.uuid4())
 
         # Append the new sales manager
@@ -708,10 +705,10 @@ def add_sales_manager():
             json.dump(managers, f, indent=4)
 
         return jsonify({'success': True, 'id': new_id}), 200
+
     except Exception as e:
         print(f"Error adding sales manager: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
-
 
 
 @app.route('/remove_sales_manager', methods=['POST'])

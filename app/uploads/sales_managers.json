@@ -1,18 +1,18 @@
 [
     {
-        "id": "184a1df0-17a4-40ae-97e8-7fe2c2d4d4a4",
-        "first_name": "sara",
-        "name": "Doe",
-        "role": "Sales Lead",
-        "email": "john.doe@example.com",
-        "tel": "+1234567890"
+        "id": "93ebafb0-5e22-4493-8799-8c8938cd652c",
+        "first_name": "Reda",
+        "name": "QORCHI",
+        "role": "Delivery Manager",
+        "email": "reda.qorchi@randstaddigital.lu",
+        "tel": ""
     },
     {
-        "id": "8fe659de-5d0c-44ac-b355-473f84b2daac",
-        "first_name": "aymeric",
-        "name": "mislah_\u00e7\u00e7",
+        "id": "6260f0fb-14a7-40e0-902a-400c3fd86100",
+        "first_name": "Sara",
+        "name": "MINHAS",
         "role": "Sales Manager",
-        "email": "ay.mislah@gmail.com",
+        "email": "sara.minhas.job@gmail.com",
         "tel": "0661865386"
     }
 ]
