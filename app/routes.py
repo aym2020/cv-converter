@@ -245,7 +245,7 @@ def generate_cv():
     global PAGE_HEIGHT_MM, PAGE_WIDTH_MM, PADDING_MM
 
     # Page dimensions and padding (A4 size)
-    PAGE_HEIGHT_MM = 270  # A4 height in mm
+    PAGE_HEIGHT_MM = 290  # A4 height in mm
     PAGE_WIDTH_MM = 210   # A4 width in mm
     PADDING_MM = 30       # Padding around the content
 
@@ -256,23 +256,23 @@ def generate_cv():
     SECTION_HEADING_HEIGHT = 20  # Height of section headings in mm
     SKILL_CATEGORY_HEIGHT = 5    # Base height for skill categories
     SKILL_ITEM_HEIGHT = 3        # Height per skill item
-    LANGUAGE_ITEM_HEIGHT = 8     # Height per language item
+    LANGUAGE_ITEM_HEIGHT = 3     # Height per language item
     EDUCATION_BASE_HEIGHT = 8    # Base height for education items
     EDUCATION_LINE_HEIGHT = 4    # Height per line in education descriptions
     EXPERIENCE_BASE_HEIGHT = 15  # Base height for experiences (job title + duration)
     EXPERIENCE_LINE_HEIGHT = 10  # Height per line in experience descriptions
     # Heights for Experiences Section
-    EXPERIENCE_SECTION_TITLE_HEIGHT = 8.0  # Increased from 7.4mm (28px)
-    EXPERIENCE_TABLE_HEIGHT = 9.0          # Increased from 8.5mm (32px)
-    EXPERIENCE_DESCRIPTION_LABEL_HEIGHT = 8.0  # Increased from 7.4mm (28px)
-    EXPERIENCE_BULLET_LINE_HEIGHT = 5.5    # Increased from 5mm per line
-    EXPERIENCE_BULLET_PADDING_TOP = 6.0    # Increased from 5.3mm (20px)
-    EXPERIENCE_BULLET_PADDING_BOTTOM = 6.0 # Increased from 5.3mm (20px)
-    EXPERIENCE_CLIENT_REF_TITLE_HEIGHT = 6.0  # Increased from 5.3mm (20px)
-    EXPERIENCE_CLIENT_REF_MARGIN_TOP = 3.0    # Increased from 2.6mm (10px)
-    EXPERIENCE_CLIENT_REF_MARGIN_BOTTOM = 3.0 # Increased from 2.6mm (10px)
-    EXPERIENCE_CLIENT_REF_LINE_HEIGHT = 5.5   # Increased from 5mm per line
-    EXPERIENCE_SKIPPED_LINE_HEIGHT = 5.5      # Increased from 5mm for skipped line
+    EXPERIENCE_SECTION_TITLE_HEIGHT = 8  # 28px
+    EXPERIENCE_TABLE_HEIGHT = 8.5          # 32px
+    EXPERIENCE_DESCRIPTION_LABEL_HEIGHT = 7.4  # 28px
+    EXPERIENCE_BULLET_LINE_HEIGHT = 8    # 5mm per line
+    EXPERIENCE_BULLET_PADDING_TOP = 7    # 20px
+    EXPERIENCE_BULLET_PADDING_BOTTOM = 7 # 20px
+    EXPERIENCE_CLIENT_REF_TITLE_HEIGHT = 6  # 20px
+    EXPERIENCE_CLIENT_REF_MARGIN_TOP = 3    # 10px
+    EXPERIENCE_CLIENT_REF_MARGIN_BOTTOM = 3 # 10px
+    EXPERIENCE_CLIENT_REF_LINE_HEIGHT = 5.0   # 5mm per line
+    EXPERIENCE_SKIPPED_LINE_HEIGHT = 5.0      # 5mm for skipped line
 
     # Helper function to calculate heading height
     def heading_height():
@@ -282,7 +282,7 @@ def generate_cv():
     def item_height(section_type, item):
         if section_type == "skills":
             skill_count = len(item.get("skills", []))
-            return SKILL_CATEGORY_HEIGHT + skill_count * SKILL_ITEM_HEIGHT
+            return SKILL_CATEGORY_HEIGHT + (skill_count/4) * SKILL_ITEM_HEIGHT
 
         elif section_type == "languages":
             return LANGUAGE_ITEM_HEIGHT

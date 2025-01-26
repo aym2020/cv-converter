@@ -75,6 +75,7 @@
                 </div>
             {% endfor %}
             </div>
+            <br>
         
         {% elif block.type == "education" %}
             <div class="section-title">{{ block.heading }}</div>
@@ -89,6 +90,7 @@
                     </p>
                 {% endfor %}
             </div>
+            <br>
             
         {% elif block.type == "certifications" %}
             <div class="section-title">{{ block.heading }}</div>
@@ -100,6 +102,7 @@
                     </div>
                 {% endfor %}
             </div>
+            <br>
         
         {% elif block.type == "languages" %}
             <div class="section-title">{{ block.heading }}</div>
@@ -111,8 +114,9 @@
                     </div>
                 {% endfor %}
             </div>
+            <br>
 
-        {% elif block.type == "experiences" %}
+            {% elif block.type == "experiences" %}
             <div class="section-title">{{ block.heading }}</div>
             <div class="experiences-list">
                 {% for item in block["items"] %}
@@ -186,24 +190,24 @@
 
     <!-- Last Page 2 -->
     <div class="page last-page-2">
-        <div class="our-solutions-title">Our Solutions</div>
+        <div class="our-solutions-title">our solutions</div>
 
-        <div class="section-title">Customer Experience</div>
+        <div class="section-title">customer experience</div>
         <div class="section-description">
             We help you improve the way you interact with your customers by designing and creating a differentiated digital experience, giving meaning to every step of the customer journey.
         </div>
 
-    <div class="section-title">Data & Analytics</div>
+    <div class="section-title">data & analytics</div>
     <div class="section-description">
         We help you catalog, gather, and structure your data, transforming it into actionable insights for your organization.
     </div>
 
-    <div class="section-title">Product & Digital Engineering</div>
+    <div class="section-title">product & digital engineering</div>
     <div class="section-description">
         We provide the expertise needed to accelerate digital innovation, from product design to tailor-made solutions.
     </div>
 
-    <div class="section-title">Cloud & Infrastructure</div>
+    <div class="section-title">cloud & infrastructure</div>
     <div class="section-description">
         We provide the expertise to accelerate cloud migration and help you create an agile, digitally-focused infrastructure.
     </div>

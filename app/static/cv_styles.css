@@ -324,6 +324,14 @@ body {
     margin-bottom: 5px; /* Space between bullet points */
 }
 
+/* Certifications List */
+.certifications-list {
+    margin: 20px 0;
+}
+.certification-item {
+    margin: 10px 0;
+}
+
 /* Client References */
 .client-references {
     margin-left: 20px; /* Match indentation of other sections */
