@@ -117,24 +117,85 @@
                 <label>Professional Experiences:</label>
                 <div id="experiences-container">
                     {% for experience in data.experiences %}
-                        <fieldset class="experience-item">
-                            <legend>Experience {{ loop.index }}</legend>
+                        <!-- Store the parent loop index in a variable -->
+                        {% set expIndex = loop.index %}
+                        <fieldset class="experience-item" data-expindex="{{ expIndex }}">
+                            <legend>Experience {{ expIndex }}</legend>
+                            
+                            <!-- Existing fields for the experience -->
                             <div class="form-group">
-                                <label for="job_title_{{ loop.index }}">Job Title:</label>
-                                <input type="text" id="job_title_{{ loop.index }}" name="job_title_{{ loop.index }}" value="{{ experience.job_title }}">
+                                <label for="job_title_{{ expIndex }}">Job Title:</label>
+                                <input type="text" id="job_title_{{ expIndex }}" name="job_title_{{ expIndex }}" value="{{ experience.job_title }}">
                             </div>
                             <div class="form-group">
-                                <label for="company_{{ loop.index }}">Company:</label>
-                                <input type="text" id="company_{{ loop.index }}" name="company_{{ loop.index }}" value="{{ experience.company }}">
+                                <label for="company_{{ expIndex }}">Company:</label>
+                                <input type="text" id="company_{{ expIndex }}" name="company_{{ expIndex }}" value="{{ experience.company }}">
                             </div>
                             <div class="form-group">
-                                <label for="duration_{{ loop.index }}">Duration:</label>
-                                <input type="text" id="duration_{{ loop.index }}" name="duration_{{ loop.index }}" value="{{ experience.duration }}">
+                                <label for="duration_{{ expIndex }}">Duration:</label>
+                                <input type="text" id="duration_{{ expIndex }}" name="duration_{{ expIndex }}" value="{{ experience.duration }}">
                             </div>
                             <div class="form-group">
-                                <label for="description_{{ loop.index }}">Description:</label>
-                                <textarea class="resizable-textarea" id="description_{{ loop.index }}" name="description_{{ loop.index }}">{{ experience.description }}</textarea>
+                                <label for="description_{{ expIndex }}">Description:</label>
+                                <textarea class="resizable-textarea" id="description_{{ expIndex }}" name="description_{{ expIndex }}">{{ experience.description }}</textarea>
                             </div>
+
+                            <!-- Client References -->
+                            <div class="form-group">
+                                <label>Client References:</label>
+                                <div class="client-references-container">
+                                    {% if experience.client_references %}
+                                        {% for reference in experience.client_references %}
+                                            <!-- Use the stored expIndex for the experience index and loop.index for the reference index -->
+                                            <fieldset class="client-reference-item">
+                                                <legend>Client Reference {{ loop.index }}</legend>
+                                                
+                                                <div class="form-group">
+                                                    <label for="client_first_name_{{ expIndex }}_{{ loop.index }}">First Name:</label>
+                                                    <input type="text"
+                                                        id="client_first_name_{{ expIndex }}_{{ loop.index }}"
+                                                        name="client_first_name_{{ expIndex }}_{{ loop.index }}"
+                                                        value="{{ reference.first_name }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="client_last_name_{{ expIndex }}_{{ loop.index }}">Last Name:</label>
+                                                    <input type="text"
+                                                        id="client_last_name_{{ expIndex }}_{{ loop.index }}"
+                                                        name="client_last_name_{{ expIndex }}_{{ loop.index }}"
+                                                        value="{{ reference.last_name }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="client_role_{{ expIndex }}_{{ loop.index }}">Role:</label>
+                                                    <input type="text"
+                                                        id="client_role_{{ expIndex }}_{{ loop.index }}"
+                                                        name="client_role_{{ expIndex }}_{{ loop.index }}"
+                                                        value="{{ reference.role }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="client_email_{{ expIndex }}_{{ loop.index }}">Email:</label>
+                                                    <input type="email"
+                                                        id="client_email_{{ expIndex }}_{{ loop.index }}"
+                                                        name="client_email_{{ expIndex }}_{{ loop.index }}"
+                                                        value="{{ reference.email }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="client_tel_{{ expIndex }}_{{ loop.index }}">Telephone:</label>
+                                                    <input type="tel"
+                                                        id="client_tel_{{ expIndex }}_{{ loop.index }}"
+                                                        name="client_tel_{{ expIndex }}_{{ loop.index }}"
+                                                        value="{{ reference.tel }}">
+                                                </div>
+                                                
+                                                <button type="button" class="remove-button" onclick="removeClientReference(this)">Remove</button>
+                                            </fieldset>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Pass the parent's experience index to addClientReference -->
+                                <button type="button" class="add-button" onclick="addClientReference(this, {{ expIndex }})">Add Client Reference</button>
+                            </div>
+
                             <button type="button" class="remove-button" onclick="removeExperience(this)">Remove</button>
                         </fieldset>
                     {% endfor %}
@@ -209,6 +270,7 @@
                 <button type="button" class="add-button" onclick="addCertification()">Add Certification</button>
             </div>
 
+        
             <button type="submit" class="submit-button">Generate CV</button>
         </form>
     </div>
@@ -382,6 +444,59 @@
          // Function to submit the form
         function submitForm() {
             document.querySelector('form').submit(); // Submit the form
+        }
+
+        // Function to add a new client reference field
+        function addClientReference(button, experienceIndex) {
+            // The container is the .client-references-container
+            const container = button.previousElementSibling;
+            // referenceIndex is how many references +1
+            const refIndex = container.children.length + 1;
+            
+            const newReference = document.createElement('fieldset');
+            newReference.className = 'client-reference-item';
+            newReference.innerHTML = `
+                <legend>Client Reference ${refIndex}</legend>
+                
+                <div class="form-group">
+                    <label for="client_first_name_${experienceIndex}_${refIndex}">First Name:</label>
+                    <input type="text"
+                           id="client_first_name_${experienceIndex}_${refIndex}"
+                           name="client_first_name_${experienceIndex}_${refIndex}">
+                </div>
+                <div class="form-group">
+                    <label for="client_last_name_${experienceIndex}_${refIndex}">Last Name:</label>
+                    <input type="text"
+                           id="client_last_name_${experienceIndex}_${refIndex}"
+                           name="client_last_name_${experienceIndex}_${refIndex}">
+                </div>
+                <div class="form-group">
+                    <label for="client_role_${experienceIndex}_${refIndex}">Role:</label>
+                    <input type="text"
+                           id="client_role_${experienceIndex}_${refIndex}"
+                           name="client_role_${experienceIndex}_${refIndex}">
+                </div>
+                <div class="form-group">
+                    <label for="client_email_${experienceIndex}_${refIndex}">Email:</label>
+                    <input type="email"
+                           id="client_email_${experienceIndex}_${refIndex}"
+                           name="client_email_${experienceIndex}_${refIndex}">
+                </div>
+                <div class="form-group">
+                    <label for="client_tel_${experienceIndex}_${refIndex}">Telephone:</label>
+                    <input type="tel"
+                           id="client_tel_${experienceIndex}_${refIndex}"
+                           name="client_tel_${experienceIndex}_${refIndex}">
+                </div>
+                
+                <button type="button" class="remove-button" onclick="removeClientReference(this)">Remove</button>
+            `;
+            container.appendChild(newReference);
+        }
+
+        // Function to remove a client reference field
+        function removeClientReference(button) {
+        button.parentElement.remove();
         }
     </script>
     

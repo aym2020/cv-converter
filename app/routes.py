@@ -119,7 +119,13 @@ Extract the following information from the CV text. **Output must be valid JSON*
    - **company** (string)
    - **duration** (string, e.g. '11/2023 – 09/2024')
    - **description** (string). Enhance responsibilities, use bullet points (`- `) and line breaks for readability.
-   If none, return `"experiences": []`.
+   - **client_references** (list of objects, optional). Each object contains:
+     - **first_name** (string)
+     - **last_name** (string)
+     - **role** (string)
+     - **email** (string)
+     - **tel** (string)
+   If no experiences, return `"experiences": []`.
 
 6. **education**: A **list** of objects, each with:
    - **degree** (string, capitalized)
@@ -157,7 +163,7 @@ CV Text:
 
         # Print the JSON in a readable format
         print("Raw JSON from OpenAI API:")
-        print(json.dumps(json.loads(json_str), indent=4))  # Pretty-print JSON
+        # print(json.dumps(json.loads(json_str), indent=4))  # Pretty-print JSON
 
         return json.loads(json_str)
     except Exception as e:
@@ -166,39 +172,91 @@ CV Text:
 
 @app.route('/generate_cv', methods=['GET', 'POST'])
 def generate_cv():
+    # Define global variables for page dimensions
     global PAGE_HEIGHT_MM, PAGE_WIDTH_MM, PADDING_MM
 
-    # Define helper functions for heading and item height calculations
-    def heading_height():
-        return 20  # ~10 mm for each section heading
+    # Page dimensions and padding (A4 size)
+    PAGE_HEIGHT_MM = 280  # A4 height in mm
+    PAGE_WIDTH_MM = 210   # A4 width in mm
+    PADDING_MM = 30       # Padding around the content
 
+    # Content height after accounting for padding
+    CONTENT_HEIGHT_MM = PAGE_HEIGHT_MM - 2 * PADDING_MM
+
+    # Define heights for different elements based on CSS
+    SECTION_HEADING_HEIGHT = 20  # Height of section headings in mm
+    SKILL_CATEGORY_HEIGHT = 5    # Base height for skill categories
+    SKILL_ITEM_HEIGHT = 3        # Height per skill item
+    LANGUAGE_ITEM_HEIGHT = 8     # Height per language item
+    EDUCATION_BASE_HEIGHT = 8    # Base height for education items
+    EDUCATION_LINE_HEIGHT = 4    # Height per line in education descriptions
+    EXPERIENCE_BASE_HEIGHT = 15  # Base height for experiences (job title + duration)
+    EXPERIENCE_LINE_HEIGHT = 10  # Height per line in experience descriptions
+    # Heights for Experiences Section
+    EXPERIENCE_SECTION_TITLE_HEIGHT = 8.0  # Increased from 7.4mm (28px)
+    EXPERIENCE_TABLE_HEIGHT = 9.0          # Increased from 8.5mm (32px)
+    EXPERIENCE_DESCRIPTION_LABEL_HEIGHT = 8.0  # Increased from 7.4mm (28px)
+    EXPERIENCE_BULLET_LINE_HEIGHT = 5.5    # Increased from 5mm per line
+    EXPERIENCE_BULLET_PADDING_TOP = 6.0    # Increased from 5.3mm (20px)
+    EXPERIENCE_BULLET_PADDING_BOTTOM = 6.0 # Increased from 5.3mm (20px)
+    EXPERIENCE_CLIENT_REF_TITLE_HEIGHT = 6.0  # Increased from 5.3mm (20px)
+    EXPERIENCE_CLIENT_REF_MARGIN_TOP = 3.0    # Increased from 2.6mm (10px)
+    EXPERIENCE_CLIENT_REF_MARGIN_BOTTOM = 3.0 # Increased from 2.6mm (10px)
+    EXPERIENCE_CLIENT_REF_LINE_HEIGHT = 5.5   # Increased from 5mm per line
+    EXPERIENCE_SKIPPED_LINE_HEIGHT = 5.5      # Increased from 5mm for skipped line
+
+    # Helper function to calculate heading height
+    def heading_height():
+        return SECTION_HEADING_HEIGHT
+
+    # Helper function to calculate item height based on section type
     def item_height(section_type, item):
         if section_type == "skills":
-            base_height = 5  # overhead for category line
             skill_count = len(item.get("skills", []))
-            return base_height + skill_count * 3  # ~3 mm per skill
+            return SKILL_CATEGORY_HEIGHT + skill_count * SKILL_ITEM_HEIGHT
 
         elif section_type == "languages":
-            # each item is 1-2 lines at most
-            return 8
+            return LANGUAGE_ITEM_HEIGHT
 
         elif section_type == "experiences":
+            # Base height for the experience item
+            height = (
+                EXPERIENCE_TABLE_HEIGHT +  # Table height
+                EXPERIENCE_DESCRIPTION_LABEL_HEIGHT  # Description label height
+            )
+
+            # Add height for bullet points
             desc = item.get("description", "")
             lines = desc.split("\n")
-            line_height = 10  # mm per bullet/line
-            base_height = 20  # job title + duration overhead
             line_count = len(lines) if lines else 1
-            return base_height + line_count * line_height
+            height += (
+                EXPERIENCE_BULLET_PADDING_TOP +  # Padding top
+                (line_count * EXPERIENCE_BULLET_LINE_HEIGHT) +  # Bullet lines
+                EXPERIENCE_BULLET_PADDING_BOTTOM  # Padding bottom
+            )
+
+            # Add height for client references (if they exist)
+            client_references = item.get("client_references", [])
+            if client_references:
+                height += (
+                    EXPERIENCE_CLIENT_REF_TITLE_HEIGHT +  # Client references title
+                    EXPERIENCE_CLIENT_REF_MARGIN_TOP +    # Margin top
+                    (len(client_references) * 3 * EXPERIENCE_CLIENT_REF_LINE_HEIGHT) +  # Client references lines
+                    EXPERIENCE_CLIENT_REF_MARGIN_BOTTOM   # Margin bottom
+                )
+
+            # Add height for skipped line between experiences
+            height += EXPERIENCE_SKIPPED_LINE_HEIGHT
+
+            return height
 
         elif section_type == "education":
             desc = item.get("description", "")
             lines = desc.split("\n")
-            base_height = 8  # for degree/institution
-            line_height = 4
             line_count = len(lines) if lines else 1
-            return base_height + line_count * line_height
+            return EDUCATION_BASE_HEIGHT + line_count * EDUCATION_LINE_HEIGHT
 
-        return 10
+        return 10  # Default height for other sections
 
     if request.method == 'POST':
         # Load the last saved JSON data
@@ -244,19 +302,48 @@ def generate_cv():
                 break
         data["languages"] = languages
 
-        # Update experiences
+        # Update experiences with client references
         experiences = []
         i = 1
         while True:
             job_title = request.form.get(f"job_title_{i}")
             if not job_title:
                 break
-            experiences.append({
-                "job_title": job_title,
-                "company": request.form.get(f"company_{i}", ""),
-                "duration": request.form.get(f"duration_{i}", ""),
-                "description": request.form.get(f"description_{i}", ""),
-            })
+
+            # Collect client references for this experience
+            client_references = []
+            j = 1
+            while True:
+                first_name = request.form.get(f"client_first_name_{i}_{j}")
+                last_name = request.form.get(f"client_last_name_{i}_{j}")
+                role = request.form.get(f"client_role_{i}_{j}")
+                email = request.form.get(f"client_email_{i}_{j}")
+                tel = request.form.get(f"client_tel_{i}_{j}")
+
+                # Break if both first_name and last_name are empty
+                if not first_name and not last_name:
+                    break
+
+                # Append the client reference
+                client_references.append({
+                    "first_name": (first_name or "").strip(),
+                    "last_name": (last_name or "").strip(),
+                    "role": (role or "").strip(),
+                    "email": (email or "").strip(),
+                    "tel": (tel or "").strip(),
+                })
+
+                j += 1
+
+            # Append experience if job title exists
+            if job_title:
+                experiences.append({
+                    "job_title": job_title.strip(),
+                    "company": request.form.get(f"company_{i}", "").strip(),
+                    "duration": request.form.get(f"duration_{i}", "").strip(),
+                    "description": request.form.get(f"description_{i}", "").strip(),
+                    "client_references": client_references,  # Add client references
+                })
             i += 1
         data["experiences"] = experiences
 
@@ -293,6 +380,8 @@ def generate_cv():
         # Save the updated JSON data
         with open(json_filepath, 'w') as f:
             json.dump(data, f, indent=4)
+        
+        # print("Updated JSON data:", json.dumps(data, indent=4))
 
         # Pass the hardcoded values to the template
         data["page_height"] = PAGE_HEIGHT_MM
@@ -349,123 +438,61 @@ def generate_cv():
             })
 
         # Chunking with bullet point splitting (no repeated headings)
-        PAGE_HEIGHT_MM = 380
-        PADDING_MM = 30
-        CONTENT_HEIGHT_MM = PAGE_HEIGHT_MM - 2 * PADDING_MM
-
         pages = []
         current_page = []
         current_height = 0
 
         for section in sections:
-            hh = heading_height()
-            
+            hh = heading_height()  # Height of the section heading
+            heading_placed = False  # Flag to track if the heading has been placed
+
+            # If the section is "experiences" and current_height > 0, start a new page
             if section["type"] == "experiences" and current_height > 0:
                 pages.append(current_page)
                 current_page = []
                 current_height = 0
-            
-            if current_height + hh > CONTENT_HEIGHT_MM:
-                pages.append(current_page)
-                current_page = []
-                current_height = 0
 
-            # Add the section heading only once
-            new_block = {
-                "type": section["type"],
-                "heading": section["heading"],
-                "items": []
-            }
-            current_page.append(new_block)
-            current_height += hh
-
+            # Iterate through items in the section
             for single_item in section["items"]:
-                if section["type"] == "experiences":
-                    desc = single_item.get("description", "")
-                    lines = desc.split("\n")
-                    line_height = 12  # mm per bullet/line
-                    base_height = 30  # job title + duration overhead
+                # Calculate the height of the current item
+                item_h = item_height(section["type"], single_item)
 
-                    remaining_space = CONTENT_HEIGHT_MM - current_height
-                    total_height = base_height + len(lines) * line_height
+                # Check if the item fits on the current page
+                # If the heading hasn't been placed yet, account for its height
+                required_height = item_h + (0 if heading_placed else hh)
+                if current_height + required_height > CONTENT_HEIGHT_MM:
+                    # Save the current page and start a new one
+                    pages.append(current_page)
+                    current_page = []
+                    current_height = 0
+                    # Do not reset heading_placed; it remains True for the section
 
-                    if total_height <= remaining_space:
-                        # Entire item fits on this page
-                        current_page[-1]["items"].append(single_item)
-                        current_height += total_height
-
-                    else:
-                        # Not everything fits
-                        lines_fit = int((remaining_space - base_height) // line_height)
-                        if lines_fit > 0:
-                            # Some lines can fit on the current page
-                            first_chunk = single_item.copy()
-                            # Keep the same title, but only partial lines in description
-                            first_chunk["description"] = "\n".join(lines[:lines_fit])
-
-                            current_page[-1]["items"].append(first_chunk)
-                            current_height += (base_height + lines_fit * line_height)
-
-                            pages.append(current_page)         # finish this page
-                            current_page = []                  # start a new page
-                            current_height = 0
-
-                            # leftover lines
-                            remaining_lines = lines[lines_fit:]
-                            if remaining_lines:
-                                # second chunk: only leftover lines, no repeated title
-                                second_chunk = single_item.copy()
-                                second_chunk["job_title"] = ""
-                                second_chunk["company"] = ""
-                                second_chunk["duration"] = ""
-                                second_chunk["description"] = "\n".join(remaining_lines)
-
-                                new_block = {
-                                    "type": section["type"],
-                                    "items": []
-                                }
-                                current_page.append(new_block)
-
-                                # measure height of leftover chunk
-                                leftover_height = len(remaining_lines) * line_height
-                                current_page[-1]["items"].append(second_chunk)
-                                current_height += leftover_height
-
-                        else:
-                            # Nothing fits on this page: move the entire item to the next page
-                            pages.append(current_page)
-                            current_page = []
-                            current_height = 0
-
-                            new_block = {
-                                "type": section["type"],
-                                "items": []
-                            }
-                            current_page.append(new_block)
-
-                            # entire item on the new page
-                            current_page[-1]["items"].append(single_item)
-                            current_height += total_height
+                # If the heading hasn't been placed yet, add it to the current page
+                if not heading_placed:
+                    new_block = {
+                        "type": section["type"],
+                        "heading": section["heading"],  # Add the section heading
+                        "items": []
+                    }
+                    current_page.append(new_block)
+                    current_height += hh
+                    heading_placed = True  # Mark the heading as placed
                 else:
-                    # Handle other section types as before
-                    h = item_height(section["type"], single_item)
-                    if current_height + h > CONTENT_HEIGHT_MM:
-                        pages.append(current_page)
-                        current_page = []
-                        current_height = 0
-
-                        # Add the section heading only once
+                    # If the heading has already been placed, add a new block without a heading
+                    # Ensure the block belongs to the same section
+                    if not current_page or current_page[-1]["type"] != section["type"]:
                         new_block = {
                             "type": section["type"],
-                            "heading": section["heading"],
+                            "heading": "",  # No repeated heading
                             "items": []
                         }
                         current_page.append(new_block)
-                        current_height += hh
 
-                    current_page[-1]["items"].append(single_item)
-                    current_height += h
+                # Add the item to the last block
+                current_page[-1]["items"].append(single_item)
+                current_height += item_h
 
+        # After processing all sections, save the last page if it has content
         if current_page:
             pages.append(current_page)
         

@@ -264,13 +264,93 @@ body {
 
 /* Experiences List */
 .experiences-list p {
-    color: #2175d9;
-    font-size: 18px;
-    margin: 10px 0;
+    font-size: 16px;
+    margin: 10px 0 0 0;
 }
 
 .experiences-list ul {
     color: #0f1840;
+}
+
+/* Experiences Section */
+.experiences-list {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.experience-table {
+    width: 100%;
+    border-collapse: collapse; /* Remove spacing between cells */
+    margin: 20px 0 15px 0;
+}
+
+.experience-table td {
+    padding: 8px; /* Add padding for better readability */
+    border: 1px solid #ddd; /* Add borders for clarity */
+    text-align: center; /* Align text to the left */
+    color: #2175d9; /* Set text color to #2175d9 */
+    font-size: 13px;
+}
+
+.experience-duration {
+    width: 30%; /* Adjust width as needed */
+}
+
+.experience-job-title {
+    width: 35%; /* Adjust width as needed */
+}
+
+.experience-company {
+    width: 35%; /* Adjust width as needed */
+}
+
+.experience-description {
+    margin-left: 20px; /* Indent bullet points */
+}
+
+.description-label {
+    font-style: italic; /* Italicize the description label */
+    margin-bottom: 5px; /* Space between label and bullet points */
+    color: #0f1840;
+}
+
+.experience-description ul {
+    list-style-type: disc; /* Use bullet points */
+    padding-left: 20px; /* Indent bullet points */
+    margin-bottom: 0;
+}
+
+.experience-description li {
+    margin-bottom: 5px; /* Space between bullet points */
+}
+
+/* Client References */
+.client-references {
+    margin-left: 20px; /* Match indentation of other sections */
+    margin-bottom: 0px; /* Space between sections */
+}
+
+.client-references .description-label {
+    font-style: italic; /* Italicize the label */
+    color: #0f1840; /* Match color of "Description of the role" */
+    margin-bottom: 5px; /* Space between label and references */
+}
+
+.client-reference {
+    margin-left: 20px;
+    color: #0f1840; /* Match color of "Description of the role" */
+    margin: 10px 0 0 0;
+}
+
+.client-reference p {
+    margin: 0; /* Remove default margin for paragraphs */
+}
+
+/* Style for email addresses (hyperlink-like appearance) */
+.email-style {
+    color: #0000EE; /* Blue color */
+    text-decoration: underline; /* Underline */
+    cursor: text; /* Non-clickable cursor */
 }
 
 /* Education List */
@@ -311,10 +391,11 @@ body {
 }
 .last-page p {
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.45;
     text-align: justify;
     max-width: 800px;
     margin: 0 auto;
+    padding-left: 40px; /* Add padding to the left */
 }
 
 /* Logo Container */
@@ -341,23 +422,28 @@ body {
 .manager-info .delivery-manager {
     color: white;
     margin: 5px 5px;
+    font-size: 11pt;
 }
 .manager-info .manager-name {
     color: #00FFFF;
     margin: 5px 5px;
+    font-size: 11pt;
 
 }
 .manager-info .manager-email {
     color: white;
     margin: 5px 5px;
+    font-size: 11pt;
 }
 .manager-info .manager-tel {
     color: white;
     margin: 5px 5px;
+    font-size: 11pt;
 }
 .manager-info .manager-role {
     color: white;
     margin: 5px 5px;
+    font-size: 11pt;
 }
 
 /* Bulles Container */
@@ -397,16 +483,24 @@ body {
         display: none !important;
     }
 
-    /* Ensure the page background and text colors are preserved */
+    /* Ensure the page background and text colors are preserved for Page 1 and Last Page */
     .page-1, .last-page {
-        background-color: #0f1840 !important; /* Use the exact color you want */
+        background-color: #0f1840 !important; /* Dark blue background */
         -webkit-print-color-adjust: exact; /* Force background color in WebKit browsers */
         color-adjust: exact; /* Standard property for forcing background color */
         color: white !important; /* Ensure text color is white */
     }
 
+    /* Ensure Last Page 2 has a white background and dark blue text */
+    .last-page-2 {
+        background-color: white !important; /* White background */
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+        color: #0f1840 !important; /* Dark blue text */
+    }
+
     /* Force page breaks */
-    .page-2, .last-page {
+    .page-2, .last-page, .last-page-2 {
         page-break-before: always;
     }
 }
@@ -420,3 +514,39 @@ body {
     text-align: left !important;
 }
 
+/* Last Page 2 Styles */
+.last-page-2 {
+    background-color: white; /* White background */
+    color: #0f1840; /* Dark blue text for descriptions */
+    text-align: left;
+    padding: 25mm; /* Same padding as the last page */
+    position: relative;
+    width: 210mm;
+    min-height: 297mm;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.last-page-2 .our-solutions-title {
+    color: #0f1840; /* Dark blue for "Our Solutions" */
+    font-size: 16pt; /* 16pt font size */
+    margin-bottom: 20px;
+}
+
+.last-page-2 .section-title {
+    color: #2175d9; /* Blue for section titles */
+    font-size: 12pt; /* 12pt font size */
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-left: 40px; /* Padding left 40px */
+}
+
+.last-page-2 .section-description {
+    color: #0f1840; /* Dark blue for descriptions */
+    font-size: 11pt; /* 11pt font size */
+    line-height: 1.6;
+    text-align: justify;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 40px; /* Padding left 40px */
+}

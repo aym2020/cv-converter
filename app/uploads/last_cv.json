@@ -4,58 +4,70 @@
     "skills": {
         "Software Development": [
             "C#",
-            "SQL",
-            "C",
-            "OOP"
+            "SQL"
         ],
-        "Data Management": [
-            "ERP",
-            "PG Admin"
+        "Electronics": [
+            "Electronic diagnostics"
         ],
-        "Office Software": [
+        "General": [
             "Word",
             "Excel",
-            "PowerPoint"
+            "Powerpoint"
         ],
-        "Development Environments": [
+        "Development Tools": [
+            "ERP",
             "Visual Studio",
+            "PG Admin",
             "Linux"
         ]
     },
     "languages": {
-        "French": "Native - C2",
+        "French": "Native or bilingual proficiency - C2",
         "English": "Professional working proficiency - B2"
     },
     "experiences": [
         {
             "job_title": "Junior Application Architect",
-            "company": "Empirys - Advanzia Bank",
+            "company": "Empirys \u2013 Advanzia Bank",
             "duration": "07/2023 \u2013 10/2023",
-            "description": "- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment."
+            "description": "- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment.",
+            "client_references": [
+                {
+                    "first_name": "aymeric",
+                    "last_name": "mislah",
+                    "role": "role",
+                    "email": "ay.mislah@gmail.com",
+                    "tel": "0661865386"
+                },
+                {
+                    "first_name": "Jean-Louis",
+                    "last_name": "THI\u00c9RIOT",
+                    "role": "Commission de la d\u00e9fense nationale et des forces arm\u00e9es (Vice-pr\u00e9sident)",
+                    "email": "jean-louis.thieriot@assemblee-nationale.fr",
+                    "tel": "01 64 32 02 81"
+                }
+            ]
         },
         {
             "job_title": "Study Coordinator",
-            "company": "TransPerfect Data Force",
+            "company": "Transperfect Data Force",
             "duration": "09/2022 \u2013 06/2023",
-            "description": "- Coordinated data collection projects aimed at improving AI-driven speech recognition systems.\r\n- Managed large-scale datasets, ensuring data quality and accuracy for use in machine learning models."
+            "description": "- Coordinated data collection projects aimed at improving AI-driven speech recognition systems.\r\n- Managed large-scale datasets, ensuring data quality and accuracy for use in machine learning models.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.",
+            "client_references": []
         },
         {
             "job_title": "C# Developer Intern",
             "company": "Stick Attack",
             "duration": "05/2022 \u2013 10/2022",
-            "description": "- Designed and developed a stock management desktop application to streamline the company\u2019s logistics operations.\r\n- Collaborated with the team to ensure the solution met the company's operational needs, significantly enhancing their logistical workflow.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment."
+            "description": "- Designed and developed a stock management desktop application to streamline the company\u2019s logistics operations.\r\n- Collaborated with the team to ensure the solution met the company's operational needs, significantly enhancing their logistical workflow.",
+            "client_references": []
         },
         {
             "job_title": "Electronic Technician",
             "company": "Ujet Manufacturing",
             "duration": "01/2019 \u2013 09/2021",
-            "description": "- Diagnosed, identified, and resolved electronic faults in electric scooters, ensuring reliable and safe operation of vehicles\r\n- Gained hands-on experience in high-tech electric vehicle production, focusing on quality control and system reliability."
-        },
-        {
-            "job_title": "fe",
-            "company": "fefe",
-            "duration": "fgefe",
-            "description": "- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment."
+            "description": "- Diagnosed, identified, and resolved electronic faults in electric scooters, ensuring reliable and safe operation of vehicles\r\n- Gained hands-on experience in high-tech electric vehicle production, focusing on quality control and system reliability.",
+            "client_references": []
         }
     ],
     "education": [
@@ -73,26 +85,26 @@
         },
         {
             "degree": "Application Designer and Developer",
-            "institution": "",
+            "institution": "Unknown",
             "duration": "11/2021 \u2013 07/2022",
             "description": "- Design and develop desktop applications\r\n- Design a database\r\n- Introduction to OOP"
         },
         {
             "degree": "BTS Electronic Diagnostic Automotive",
-            "institution": "",
+            "institution": "Unknown",
             "duration": "09/2013 \u2013 06/2015",
             "description": "- Managing and creating electrical diagrams\r\n- Learning the elements of Auto mechanics\r\n- Learning multiplexing"
         },
         {
-            "degree": "Bac Vehicle Maintenance",
-            "institution": "",
+            "degree": "BAC Vehicle Maintenance",
+            "institution": "Unknown",
             "duration": "09/2010 \u2013 06/2013",
             "description": "- Introduction to car mechanics."
         }
     ],
     "certifications": [],
     "job_title": "Support IT & Administratif",
-    "manager_name": "reda qorchi",
+    "manager_name": "Reda QORCHI",
     "manager_email": "reda.qorchi@randstaddigital.lu",
     "manager_tel": "+32 4 12 34 475",
     "manager_role": "delivery manager"

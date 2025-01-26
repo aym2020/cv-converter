@@ -116,29 +116,53 @@
             <div class="section-title">{{ block.heading }}</div>
             <div class="experiences-list">
                 {% for item in block["items"] %}
-                  {% if item.job_title or item.company %}
-                    <p>
-                      {{ item.job_title }}
-                      {% if item.job_title and item.company %} - {% endif %}
-                      {{ item.company }}
-                    </p>
-                  {% endif %}
-                  {% if item.duration %}
-                    <p><em>{{ item.duration }}</em></p>
-                  {% endif %}
-              
-                  {# Now the bullet-point description #}
-                  {% set lines = item.description.split('\n') %}
-                  <ul>
-                    {% for line in lines %}
-                      {% set stripped = line.strip() %}
-                      {% if stripped %}
-                        <li>{{ stripped[2:] if stripped.startswith('- ') else stripped }}</li>
-                      {% endif %}
-                    {% endfor %}
-                  </ul>
+                    <!-- Table for Duration, Job Title, and Company -->
+                    <table class="experience-table">
+                        <tr>
+                            <td class="experience-duration">{{ item.duration }}</td>
+                            <td class="experience-job-title">{{ item.job_title }}</td>
+                            <td class="experience-company">{{ item.company }}</td>
+                        </tr>
+                    </table>
+        
+                    <!-- Description with Bullet Points -->
+                    <div class="experience-description">
+                        <p class="description-label"><em>Description of the role:</em></p>
+                        {% set lines = item.description.split('\n') %}
+                        <ul>
+                            {% for line in lines %}
+                                {% set stripped = line.strip() %}
+                                {% if stripped %}
+                                    <li>{{ stripped[2:] if stripped.startswith('- ') else stripped }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    {% if not loop.last %}<br>{% endif %} <!-- Add a line break between references -->
+
+                    <!-- Client References -->
+                    {% if item.client_references %}
+                        <div class="client-references">
+                            <p class="description-label"><em>Client References:</em></p>
+                            {% for reference in item.client_references %}
+                                <div class="client-reference">
+                                    <p>{{ reference.first_name }} {{ reference.last_name }}</p>
+                                    <p>{{ reference.role }}</p>
+                                    <!-- Apply the email-style class to the email -->
+                                    <p><span class="email-style">{{ reference.email }}</span> - {{ reference.tel }}</p>
+                                </div>
+                                {% if not loop.last %}<br>{% endif %} <!-- Add a line break between references -->
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+        
+                    <!-- Add a skipped line between experiences -->
+                    {% if not loop.last %}
+                        <br> <!-- Skip a line -->
+                    {% endif %}
                 {% endfor %}
-              </div>
+            </div>
         {% endif %}
         {% endfor %}
     </div>
@@ -160,6 +184,30 @@
         </div>
     </div>
 
+    <!-- Last Page 2 -->
+    <div class="page last-page-2">
+        <div class="our-solutions-title">Our Solutions</div>
+
+        <div class="section-title">Customer Experience</div>
+        <div class="section-description">
+            We help you improve the way you interact with your customers by designing and creating a differentiated digital experience, giving meaning to every step of the customer journey.
+        </div>
+
+    <div class="section-title">Data & Analytics</div>
+    <div class="section-description">
+        We help you catalog, gather, and structure your data, transforming it into actionable insights for your organization.
+    </div>
+
+    <div class="section-title">Product & Digital Engineering</div>
+    <div class="section-description">
+        We provide the expertise needed to accelerate digital innovation, from product design to tailor-made solutions.
+    </div>
+
+    <div class="section-title">Cloud & Infrastructure</div>
+    <div class="section-description">
+        We provide the expertise to accelerate cloud migration and help you create an agile, digitally-focused infrastructure.
+    </div>
+</div>
     <script>
        
     </script>
