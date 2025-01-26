@@ -123,7 +123,9 @@ Extract the following information from this CV text and, if needed, translate it
 4. **skills**: 
    - An **object** with up to 4 or 5 relevant categories for a professional CV (e.g., 'Programming', 'Cloud & Identity Management', 'Device & Application Management', 'Collaboration & Productivity Tools', 'Networking & Infrastructure', etc.).
    - **Category names** must remain in **English** (do not translate them).
-   - Each key is a category name, and each value is a **list** of skill strings. 
+   - Each key is a category name, and each value is a **list** of skill strings.
+   - Do your best to create the most accurate categories
+   - Avoids creating overcrowded groups
    - Include **all found skills** in the parsed text, placing them into these categories. 
    - **No blank categories**. Example:
      "skills": {{ 
@@ -322,10 +324,17 @@ def generate_cv():
         data["skills"] = {}
         for key, value in request.form.items():
             if key.startswith("skills_"):
-                category = key.replace("skills_", "")
-                skill_list = value.split(", ")
-                if skill_list and skill_list != [""]:
-                    data["skills"][category] = skill_list
+                # Extract the index from the key (e.g., "skills_1" -> "1")
+                index = key.replace("skills_", "")
+                
+                # Get the category name from the corresponding input field
+                category_name = request.form.get(f"category_name_{index}", "").strip()
+                
+                # Only add the category if the name is not empty
+                if category_name:
+                    skill_list = value.split(", ")
+                    if skill_list and skill_list != [""]:
+                        data["skills"][category_name] = skill_list
 
         # Update languages
         languages = {}

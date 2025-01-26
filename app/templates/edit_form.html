@@ -80,8 +80,8 @@
                                 <input type="text" id="category_name_{{ loop.index }}" name="category_name_{{ loop.index }}" value="{{ category }}">
                             </div>
                             <div class="form-group">
-                                <label for="skills_{{ category }}">Skills:</label>
-                                <textarea id="skills_{{ category }}" name="skills_{{ category }}">{{ skills | join(', ') }}</textarea>
+                                <label for="skills_{{ loop.index }}">Skills:</label>
+                                <textarea id="skills_{{ loop.index }}" name="skills_{{ loop.index }}">{{ skills | join(', ') }}</textarea>
                             </div>
                             <button type="button" class="remove-button" onclick="removeSkillCategory(this)">Remove</button>
                         </fieldset>
@@ -391,7 +391,7 @@
         // Function to add a new skill category
         function addSkillCategory() {
             const container = document.getElementById('skills-container');
-            const index = container.children.length + 1;
+            const index = container.children.length + 1; // Unique index for each category
             const newSkillCategory = document.createElement('fieldset');
             newSkillCategory.className = 'skill-category';
             newSkillCategory.innerHTML = `

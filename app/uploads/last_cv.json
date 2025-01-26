@@ -3,22 +3,15 @@
     "first_name": "YONI",
     "job_title": "HelpDesk L2",
     "skills": {
-        "Operating Systems": [
-            "Windows 7",
-            "Windows 10",
-            "Windows 11",
-            "Mac OS",
-            "IOS",
-            "Android",
-            "Google Chrome",
-            "Internet Explorer",
-            "Mozilla Firefox",
-            "Safari"
-        ],
-        "IT Support & Management": [
+        "Cloud & Identity Management": [
             "Active Directory",
             "Microsoft Azure AD",
             "Intune",
+            "Okta",
+            "Microsoft Identity Manager",
+            "Identity and Access Management"
+        ],
+        "Device & Application Management": [
             "Mobile Device Management",
             "Airwatch",
             "EDI",
@@ -29,21 +22,36 @@
             "Sales Force",
             "Windows Server",
             "DHCP",
-            "DNS",
+            "DNS"
+        ],
+        "Collaboration & Productivity Tools": [
             "Lotus Note",
             "ServiceNow",
-            "SmartIT",
-            "Okta",
-            "Bomgar",
-            "Teamviewer",
-            "Microsoft Identity Manager",
+            "Smart IT"
+        ],
+        "Networking & Infrastructure": [
             "CISCO 360",
+            "VPN pulse secure"
+        ],
+        "Operating Systems & Browsers": [
             "Citrix",
-            "VPN pulse secure",
-            "DDM",
-            "ESI Tronic",
-            "CDB",
-            "Genesys"
+            "IOS",
+            "Android",
+            "Mac OS",
+            "Windows 7",
+            "Windows 10",
+            "Windows 11",
+            "Google Chrome",
+            "Internet Explorer",
+            "Mozilla Firefox",
+            "Safari"
+        ],
+        "Remote Assistance Tools": [
+            "Bomgar",
+            "Teamviewer"
+        ],
+        "jjjjj": [
+            "jjj"
         ]
     },
     "languages": {
@@ -54,47 +62,58 @@
     "experiences": [
         {
             "job_title": "IT Technical Support",
-            "company": "COGNIZANT (Client: Gilead Sciences)",
+            "company": "Cognizant",
             "duration": "07/2023 \u2013 08/2024",
-            "description": "- Assisted users on site or remotely\n- Information technology park management\n- Remote phone control by Bomgar\n- Windows 10, Active Directory, Hardware management\n- Managed a complete IT park with 3 level 2 colleagues and a level 3 supervisor\n- IAM and Active Directory profile creation on Azure portal\n- VPN pulse secure, Ticket tool ServiceNow"
+            "description": "- Assisted users on-site or remotely\r\n- Managed IT assets\r\n- Remote control by Bomgar\r\n- Windows 10, Active Directory management\r\n- Managed entire IT assets with 2 L2 colleagues and a L3 supervisor\r\n- Created IAM profiles and Active Directory accounts on Azure portal\r\n- Used VPN pulse secure and ServiceNow ticketing tool",
+            "client_references": []
         },
         {
-            "job_title": "Content Manager on a Platform",
-            "company": "ACCENTURE",
+            "job_title": "Content Manager on a platform",
+            "company": "Accenture",
             "duration": "09/2022 \u2013 06/2023",
-            "description": "- Managed content on social networks to avoid sensitive, violent, and other prohibitions by the client"
+            "description": "- Managed content on social media and avoided sensitive, violent, and other client-prohibited violations",
+            "client_references": []
         },
         {
             "job_title": "IT Field Agent",
             "company": "CTG",
             "duration": "05/2022 \u2013 09/2022",
-            "description": "- Identity and Access Management for the European Investment Bank\n- Profile creation, distribution list setup, shared mailbox setup, and granting access following ITSM protocols\n- Managed external emails and their legitimacy\n- Ticket tool Smart IT"
+            "description": "- Performed Identity and Access Management for European Investment Bank\r\n- Created profiles, distribution lists, shared mailboxes, and assigned access according to ITSM protocols\r\n- Managed ticketing with Smart IT tool\r\n- Handled external email management and legitimacy checks",
+            "client_references": []
         },
         {
             "job_title": "IT Field Agent",
-            "company": "GLOBALBLUE (GITEC)",
+            "company": "GlobalBlue (GITEC)",
             "duration": "03/2021 \u2013 05/2022",
-            "description": "- Assisted users with remote control tools and elevations\n- Technical support for client hardware or software via chat (teams), email, remote phone control by Teamviewer\n- Account reset and assistance for application users (stores) in all of France\n- Managed a complete IT park with 2 level 2 colleagues and a level 3 supervisor\n- IAM and Active Directory admin rights and profile creation on Azure portal\n- Work tool on SmartIT, VPN pulse secure"
+            "description": "- Assisted users with remote control tools or privilege escalations\r\n- Technical support for client's hardware or software via Teams chat, email, phone\r\n- Remote control by Teamviewer\r\n- Account reset and user assistance (stores) for the application across France\r\n- Windows 7/10, Active Directory management\r\n- Managed an entire IT assets with 2 L2 colleagues and a L3 supervisor\r\n- Created profiles and assigned admin rights through IAM and Active Directory\r\n- Used Azure portal, VPN pulse secure, and SmartIT work tool",
+            "client_references": []
         },
         {
             "job_title": "1st Line of Expert Service",
-            "company": "BOSCH",
-            "duration": "10/2020 \u2013 03/2021",
-            "description": "- Provided technical service for Bosch workshops, identifying malfunctions and errors for service technicians\n- Offered post-sale service of specific software diagnostics\n- Used DDM and ESI Tronic for diagnostics, CDB for ticket management, Genesys for phone, and MS Office for other channels"
+            "company": "Bosch",
+            "duration": "10/???? \u2013 03/2021",
+            "description": "- Provided technical automotive service for Bosch workshops\r\n- Identified malfunctions and errors for service technicians\r\n- Offered after-sales diagnostic software service\r\n- Used DDM and ESI Tronic for diagnostics, CDB for ticket management, Genesys for phone services, and MS Office for other channels",
+            "client_references": []
         },
         {
             "job_title": "B2B Support",
-            "company": "FUJITSU",
+            "company": "Fujitsu",
             "duration": "07/2018 \u2013 03/2020",
-            "description": "- Assisted users remotely\n- Technical support via chat, email, phone remote control by Bomgar\n- Supported Office 365, IAM, Lotus Notes, Adobe, TeamCenter, Ariane, Sharepoint, Windows 7/10, Showbiz, Baan, Active Directory\n- Escalation to Level 3\n- Profile creation and admin rights through IAM and Active Directory on Azure portal\n- Utilized Citrix virtual machine\n- Level 2 support on Microsoft Azure console\n- Created Skype profiles, level 1 assistance, restored SharePoint and shared files\n- Updated knowledge database, printer connectivity reactivation, and managed level 2 phone line"
+            "description": "- Assisted users remotely\r\n- Technical support via chat, email, phone\r\n- Remote control by Bomgar\r\n- Supported Office 365, IAM, Lotus Notes, Adobe, TeamCenter, Ariane, Sharepoint, Windows 7/10\r\n- Active Directory management\r\n- Escalated Level 3 issues\r\n- Created profiles and assigned admin rights through IAM and Active Directory\r\n- Used Azure portal, VPN pulse secure, ServiceNow job aid\r\n- Utilized Citrix virtual machine\r\n- L2 support on Microsoft Azure console\r\n- Created Skype profiles, level 1 assistance\r\n- Restored Sharepoint and shared files\r\n- Updated knowledge base, reactivated connected printers, managed L2 phone line",
+            "client_references": []
         },
         {
             "job_title": "B2B Support",
-            "company": "SITEL",
+            "company": "Sitel",
             "duration": "12/2016 \u2013 06/2018",
-            "description": "- Assisted users remotely\n- Technical support via chat, email, phone remote control by Bomgar\n- Supported Office 365, Adobe, TeamCenter, Ariane, Sharepoint, Windows 7/10, and Active Directory\n- Elevated to Level 2 support\n- Profile and admin rights creation on Azure portal\n- Used Citrix virtual machine and ServiceNow"
+            "description": "- Assisted users remotely\r\n- Technical support via chat, email, phone\r\n- Remote control by Bomgar\r\n- Office 365 support, Adobe, TeamCenter, Ariane, Sharepoint, Windows 7/10, and Active Directory\r\n- Promoted to Level 2\r\n- Created profiles and assigned admin rights through IAM and Active Directory\r\n- Used Azure portal, VPN pulse secure, and ServiceNow\r\n- Utilized Citrix virtual machine",
+            "client_references": []
         }
     ],
     "education": [],
-    "certifications": []
+    "certifications": [],
+    "manager_name": "",
+    "manager_email": "",
+    "manager_tel": "",
+    "manager_role": ""
 }
