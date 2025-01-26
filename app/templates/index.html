@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='index_styles.css') }}">
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='index_styles.css') }}">
+
 </head>
 <body>
     <div class="upload-container">
@@ -24,6 +31,7 @@
 
         <!-- File Input Form -->
         <form action="/upload" method="POST" enctype="multipart/form-data" id="upload-form">
+
             <!-- Job Title Context Field -->
             <div class="form-group">
                 <label for="job_title_context">Job Title Context:</label>
@@ -40,42 +48,17 @@
                         <span class="arrow">▼</span>
                     </div>
                     <div class="dropdown-options" id="dropdown-options">
+                        <!-- Language Options -->
                         <div class="option" data-value="en" onclick="selectOption(this)">
                             <img src="{{ url_for('static', filename='flags/us.svg') }}" alt="English" class="flag-icon">
                             <span>English</span>
                         </div>
+                        <!-- Repeat for other languages -->
                         <div class="option" data-value="fr" onclick="selectOption(this)">
                             <img src="{{ url_for('static', filename='flags/fr.svg') }}" alt="French" class="flag-icon">
                             <span>French</span>
                         </div>
-                        <div class="option" data-value="de" onclick="selectOption(this)">
-                            <img src="{{ url_for('static', filename='flags/de.svg') }}" alt="German" class="flag-icon">
-                            <span>German</span>
-                        </div>
-                        <div class="option" data-value="es" onclick="selectOption(this)">
-                            <img src="{{ url_for('static', filename='flags/es.svg') }}" alt="Spanish" class="flag-icon">
-                            <span>Spanish</span>
-                        </div>
-                        <div class="option" data-value="it" onclick="selectOption(this)">
-                            <img src="{{ url_for('static', filename='flags/it.svg') }}" alt="Italian" class="flag-icon">
-                            <span>Italian</span>
-                        </div>
-                        <div class="option" data-value="pt" onclick="selectOption(this)">
-                            <img src="{{ url_for('static', filename='flags/pt.svg') }}" alt="Portuguese" class="flag-icon">
-                            <span>Portuguese</span>
-                        </div>
-                        <div class="option" data-value="nl" onclick="selectOption(this)">
-                            <img src="{{ url_for('static', filename='flags/nl.svg') }}" alt="Dutch" class="flag-icon">
-                            <span>Dutch</span>
-                        </div>
-                        <div class="option" data-value="zh" onclick="selectOption(this)">
-                            <img src="{{ url_for('static', filename='flags/cn.svg') }}" alt="Chinese" class="flag-icon">
-                            <span>Chinese</span>
-                        </div>
-                        <div class="option" data-value="ja" onclick="selectOption(this)">
-                            <img src="{{ url_for('static', filename='flags/jp.svg') }}" alt="Japanese" class="flag-icon">
-                            <span>Japanese</span>
-                        </div>
+                        <!-- ... -->
                         <div class="option" data-value="ru" onclick="selectOption(this)">
                             <img src="{{ url_for('static', filename='flags/ru.svg') }}" alt="Russian" class="flag-icon">
                             <span>Russian</span>
@@ -85,6 +68,22 @@
                 <input type="hidden" id="language_selection" name="language_selection" value="en">
             </div>
 
+            <!-- Sales Manager Selection Dropdown -->
+            <div class="form-group">
+                <label for="sales_manager_selection">Select Sales Manager:</label>
+                <select id="sales_manager_selection" name="sales_manager_selection" style="width: 100%;" onchange="fetchSalesManagerDetails(this.value)">
+                    <option value="">Select a Sales Manager</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+
+             <!-- Hidden Manager Detail Fields -->
+            <!-- These fields will store the selected manager's details -->
+            <input type="hidden" id="manager_name" name="manager_name" value="">
+            <input type="hidden" id="manager_role" name="manager_role" value="">
+            <input type="hidden" id="manager_email" name="manager_email" value="">
+            <input type="hidden" id="manager_tel" name="manager_tel" value="">
+
             <!-- Upload Box -->
             <div class="upload-box" id="upload-box">
                 <p>Drag and drop your CV here or <span>click to browse</span></p>
@@ -92,13 +91,71 @@
 
             <!-- File Input -->
             <input type="file" name="file" accept=".pdf" class="file-input" id="file-input" />
+
+            <!-- View Sales Managers Button -->
+            <button type="button" class="view-sales-managers-button" onclick="openSalesManagersPanel()">View Sales Managers</button>
+
             <button type="submit" class="upload-button" id="upload-button" disabled>Upload PDF</button>
         </form>
+
+        <!-- Sales Managers Modal (Moved outside the main form) -->
+        <div id="sales-managers-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeSalesManagersPanel()">&times;</span>
+                <h2>Sales Managers</h2>
+                <div id="sales-managers-list" class="sales-managers-list">
+                    <!-- Existing Sales Managers will be dynamically inserted here -->
+
+                    <!-- Add Sales Manager Card -->
+                    <div class="sales-manager-card add-card" onclick="openAddSalesManagerForm()">
+                        <i class="fas fa-plus"></i>
+                        <p>Add Sales Manager</p>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Sales Manager Form (Hidden by Default) -->
+                <div id="add-sales-manager-form-container" class="add-form-container hidden">
+                    <h3 id="form-title">Add New Sales Manager</h3>
+                    <form id="add-sales-manager-form">
+                        <input type="hidden" id="manager_id" name="manager_id" value="">
+                        <div class="form-group">
+                            <label for="new_first_name">First Name:</label>
+                            <input type="text" id="new_first_name" name="first_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_name">Last Name:</label>
+                            <input type="text" id="new_name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_role">Role:</label>
+                            <input type="text" id="new_role" name="role" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_email">Email:</label>
+                            <input type="email" id="new_email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_tel">Telephone:</label>
+                            <input type="tel" id="new_tel" name="tel" required>
+                        </div>
+                        <button type="submit" class="upload-button" id="save-button">Add</button>
+                        <button type="button" class="cancel-button" onclick="closeAddSalesManagerForm()">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <!-- Reuse Last JSON Button -->
         <button class="upload-button" id="reuse-last-json">Reuse Last JSON</button>
     </div>
 
+    <!-- jQuery (Select2 Dependency) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    
     <script>
         // Custom Dropdown Functionality
         function toggleDropdown() {
@@ -194,6 +251,452 @@
                     alert('An error occurred. Please try again.');
                 });
         });
+
+        // Function to populate the Sales Manager Dropdown
+        function populateSalesManagerDropdown() {
+            const salesManagerSelect = $('#sales_manager_selection');
+
+            // Clear existing options except the first placeholder
+            salesManagerSelect.find('option:not(:first)').remove();
+
+            fetch('/sales_managers')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let managers = data.data;
+
+                        // Sort managers by name (last name, then first name)
+                        managers.sort((a, b) => {
+                            const nameA = a.name.toUpperCase(); // Last name
+                            const nameB = b.name.toUpperCase();
+                            if (nameA < nameB) return -1;
+                            if (nameA > nameB) return 1;
+                            // If last names are equal, sort by first name
+                            const firstNameA = a.first_name.toUpperCase();
+                            const firstNameB = b.first_name.toUpperCase();
+                            if (firstNameA < firstNameB) return -1;
+                            if (firstNameA > firstNameB) return 1;
+                            return 0;
+                        });
+
+                        // Populate the dropdown with sorted managers
+                        managers.forEach(manager => {
+                            const optionText = `${manager.first_name} ${manager.name}`;
+                            const option = new Option(optionText, manager.id, false, false);
+                            salesManagerSelect.append(option);
+                        });
+
+                        // Refresh Select2 to recognize new options
+                        salesManagerSelect.trigger('change');
+                    } else {
+                        console.error('Failed to load sales managers:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching sales managers:', error);
+                });
+        }
+
+        // Initialize Select2 on the Sales Manager Dropdown
+        $(document).ready(function() {
+            $('#sales_manager_selection').select2({
+                placeholder: "Select a Sales Manager",
+                allowClear: true
+            });
+
+            // Populate the dropdown on page load
+            populateSalesManagerDropdown();
+        });
+
+        // Function to refresh the Sales Manager Dropdown
+        function refreshSalesManagerDropdown() {
+            populateSalesManagerDropdown();
+        }
+
+        // Function to open the Sales Managers Panel
+        function openSalesManagersPanel() {
+            const modal = document.getElementById('sales-managers-modal');
+            const salesManagersList = document.getElementById('sales-managers-list');
+            const addFormContainer = document.getElementById('add-sales-manager-form-container');
+
+            // Clear previous content except the add card
+            salesManagersList.innerHTML = `
+                <div class="sales-manager-card add-card" onclick="openAddSalesManagerForm()">
+                    <i class="fas fa-plus"></i>
+                    <p>Add Sales Manager</p>
+                </div>
+            `;
+            addFormContainer.classList.add('hidden');
+
+            // Fetch sales managers data
+            fetch('/sales_managers')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const managers = data.data;
+                        if (managers.length === 0) {
+                            salesManagersList.innerHTML += `
+                                <p>No sales managers available.</p>
+                            `;
+                        } else {
+                            managers.forEach(manager => {
+                                const card = document.createElement('div');
+                                card.className = 'sales-manager-card';
+                                card.innerHTML = `
+                                    <button type="button" class="remove-sales-manager" data-id="${manager.id}" title="Remove Sales Manager">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button type="button" class="edit-sales-manager" data-id="${manager.id}" title="Edit Sales Manager">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                    <h3>${manager.first_name} ${manager.name}</h3>
+                                    <p><strong>Role:</strong> ${manager.role}</p>
+                                    <p><strong>Email:</strong> <a href="mailto:${manager.email}">${manager.email}</a></p>
+                                    <p><strong>Telephone:</strong> <a href="tel:${manager.tel}">${manager.tel}</a></p>
+                                `;
+                                salesManagersList.insertBefore(card, salesManagersList.lastElementChild);
+                            });
+
+                            // Attach event listeners to remove and edit buttons
+                            attachRemoveButtonListeners();
+                            attachEditButtonListeners();
+                        }
+
+                        modal.style.display = 'block';
+                    } else {
+                        alert('Failed to load sales managers: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching sales managers:', error);
+                    alert('An error occurred while fetching sales managers.');
+                });
+        }
+
+        // Function to attach event listeners to remove buttons
+        function attachRemoveButtonListeners() {
+            const removeButtons = document.querySelectorAll('.remove-sales-manager');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    const id = this.getAttribute('data-id');
+                    removeSalesManager(id, this);
+                });
+            });
+        }
+
+        // Function to attach event listeners to edit buttons
+        function attachEditButtonListeners() {
+            const editButtons = document.querySelectorAll('.edit-sales-manager');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    const id = this.getAttribute('data-id');
+                    openEditSalesManagerForm(id);
+                });
+            });
+        }
+
+        // Function to open the Add Sales Manager Form
+        function openAddSalesManagerForm() {
+            const addFormContainer = document.getElementById('add-sales-manager-form-container');
+            addFormContainer.classList.remove('hidden');
+            // Reset the form to add mode
+            resetFormToAddMode();
+            // Scroll to the form
+            addFormContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Function to close the Add/Edit Sales Manager Form
+        function closeAddSalesManagerForm() {
+            const addFormContainer = document.getElementById('add-sales-manager-form-container');
+            addFormContainer.classList.add('hidden');
+            // Reset the form
+            const form = document.getElementById('add-sales-manager-form');
+            form.reset();
+            // Reset the form's submit handler to add mode
+            resetFormToAddMode();
+        }
+
+        // Function to reset the form to Add Mode
+        function resetFormToAddMode() {
+            const form = document.getElementById('add-sales-manager-form');
+            const formTitle = document.getElementById('form-title');
+            const saveButton = document.getElementById('save-button');
+
+            // Reset hidden manager_id
+            document.getElementById('manager_id').value = '';
+
+            // Update form title and button text
+            formTitle.textContent = 'Add New Sales Manager';
+            saveButton.textContent = 'Add';
+
+            // Remove any existing submit event listeners to prevent duplication
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+
+            // Reassign the form element with the new cloned form
+            const updatedForm = document.getElementById('add-sales-manager-form');
+
+            // Attach the add sales manager handler
+            updatedForm.addEventListener('submit', addSalesManagerHandler);
+        }
+
+        // Handler for adding a new sales manager
+        function addSalesManagerHandler(e) {
+            e.preventDefault();
+
+            const first_name = document.getElementById('new_first_name').value.trim();
+            const name = document.getElementById('new_name').value.trim();
+            const role = document.getElementById('new_role').value.trim();
+            const email = document.getElementById('new_email').value.trim();
+            const tel = document.getElementById('new_tel').value.trim();
+
+            if (!first_name || !name || !role || !email || !tel) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            fetch('/add_sales_manager', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ first_name, name, role, email, tel })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Sales manager added successfully.');
+                    // Close the form
+                    closeAddSalesManagerForm();
+                    // Refresh the sales managers list and dropdown
+                    refreshSalesManagerDropdown();
+                    openSalesManagersPanel();
+                } else {
+                    alert('Failed to add sales manager: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error adding sales manager:', error);
+                alert('An error occurred while adding the sales manager.');
+            });
+        }
+
+        // Function to handle editing a sales manager
+        function openEditSalesManagerForm(id) {
+            fetch(`/get_sales_manager/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const manager = data.data;
+                        // Populate the form with the manager's details
+                        document.getElementById('manager_id').value = manager.id;
+                        document.getElementById('new_first_name').value = manager.first_name;
+                        document.getElementById('new_name').value = manager.name;
+                        document.getElementById('new_role').value = manager.role;
+                        document.getElementById('new_email').value = manager.email;
+                        document.getElementById('new_tel').value = manager.tel;
+
+                        // Change the form's title and button text to Edit Mode
+                        const formTitle = document.getElementById('form-title');
+                        const saveButton = document.getElementById('save-button');
+                        formTitle.textContent = 'Edit Sales Manager';
+                        saveButton.textContent = 'Save';
+
+                        // Remove any existing submit handlers to prevent conflicts
+                        const form = document.getElementById('add-sales-manager-form');
+                        const newForm = form.cloneNode(true);
+                        form.parentNode.replaceChild(newForm, form);
+
+                        // Reassign the form element with the new cloned form
+                        const updatedForm = document.getElementById('add-sales-manager-form');
+
+                        // Attach the edit handler
+                        updatedForm.addEventListener('submit', function editHandler(e) {
+                            e.preventDefault();
+
+                            const updated_first_name = document.getElementById('new_first_name').value.trim();
+                            const updated_name = document.getElementById('new_name').value.trim();
+                            const updated_role = document.getElementById('new_role').value.trim();
+                            const updated_email = document.getElementById('new_email').value.trim();
+                            const updated_tel = document.getElementById('new_tel').value.trim();
+
+                            if (!updated_first_name || !updated_name || !updated_role || !updated_email || !updated_tel) {
+                                alert('Please fill in all fields.');
+                                return;
+                            }
+
+                            fetch(`/update_sales_manager/${id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    first_name: updated_first_name,
+                                    name: updated_name,
+                                    role: updated_role,
+                                    email: updated_email,
+                                    tel: updated_tel
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Sales manager updated successfully.');
+                                    // Close the form
+                                    closeAddSalesManagerForm();
+                                    // Refresh the sales managers list and dropdown
+                                    refreshSalesManagerDropdown();
+                                    openSalesManagersPanel();
+                                } else {
+                                    alert('Failed to update sales manager: ' + data.error);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error updating sales manager:', error);
+                                alert('An error occurred while updating the sales manager.');
+                            });
+                        });
+
+                        // Open the form
+                        const addFormContainer = document.getElementById('add-sales-manager-form-container');
+                        addFormContainer.classList.remove('hidden');
+                        addFormContainer.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert('Failed to fetch sales manager details: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching sales manager:', error);
+                    alert('An error occurred while fetching the sales manager.');
+                });
+        }
+
+        // Function to handle removing a sales manager
+        function removeSalesManager(id, button) {
+            if (!confirm('Are you sure you want to remove this sales manager?')) {
+                return;
+            }
+
+            fetch('/remove_sales_manager', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the sales manager card from the DOM
+                    const card = button.parentElement;
+                    card.remove();
+                    alert('Sales manager removed successfully.');
+
+                    // Refresh the dropdown
+                    refreshSalesManagerDropdown();
+
+                    // Optionally, check if no managers are left
+                    const salesManagersList = document.getElementById('sales-managers-list');
+                    const addCard = salesManagersList.querySelector('.add-card');
+                    if (salesManagersList.children.length === 1) { // Only add card remains
+                        salesManagersList.innerHTML += `
+                            <p>No sales managers available.</p>
+                        `;
+                    }
+                } else {
+                    alert('Failed to remove sales manager: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error removing sales manager:', error);
+                alert('An error occurred while removing the sales manager.');
+            });
+        }
+
+        // Function to close the Sales Managers Panel
+        function closeSalesManagersPanel() {
+            const modal = document.getElementById('sales-managers-modal');
+            modal.style.display = 'none';
+        }
+
+        // Close modal when clicking outside of the modal content
+        window.onclick = function(event) {
+            const modal = document.getElementById('sales-managers-modal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Ensure the form is in Add Mode on initial load
+        window.onload = function() {
+            resetFormToAddMode();
+        };
+
+        // Function to fetch sales manager details
+        function fetchSalesManagerDetails(managerId) {
+            if (!managerId) {
+                // Clear the fields if no manager is selected
+                clearManagerFields();
+                return;
+            }
+
+            // Show loading spinner if you have one (optional)
+            // document.getElementById('manager_loading').style.display = 'inline-block';
+
+            // Fetch the sales manager details from the backend
+            fetch(`/get_sales_manager/${managerId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading spinner
+                    // document.getElementById('manager_loading').style.display = 'none';
+
+                    if (data.success) {
+                        // Populate the fields with the fetched data
+                        populateManagerFields(data.data);
+                    } else {
+                        alert('Failed to fetch sales manager details: ' + data.error);
+                        clearManagerFields();
+                    }
+                })
+                .catch(error => {
+                    // Hide loading spinner
+                    // document.getElementById('manager_loading').style.display = 'none';
+
+                    console.error('Error fetching sales manager details:', error);
+                    alert('An error occurred while fetching sales manager details.');
+                    clearManagerFields();
+                });
+        }
+
+        // Function to populate the manager fields
+        function populateManagerFields(manager) {
+            const managerName = document.getElementById('manager_name');
+            const managerRole = document.getElementById('manager_role');
+            const managerEmail = document.getElementById('manager_email');
+            const managerTel = document.getElementById('manager_tel');
+
+            if (managerName) managerName.value = `${manager.first_name} ${manager.name}`;
+            if (managerRole) managerRole.value = manager.role;
+            if (managerEmail) managerEmail.value = manager.email;
+            if (managerTel) managerTel.value = manager.tel;
+        }
+
+        // Function to clear the manager fields
+        function clearManagerFields() {
+            const managerName = document.getElementById('manager_name');
+            const managerRole = document.getElementById('manager_role');
+            const managerEmail = document.getElementById('manager_email');
+            const managerTel = document.getElementById('manager_tel');
+
+            if (managerName) managerName.value = '';
+            if (managerRole) managerRole.value = '';
+            if (managerEmail) managerEmail.value = '';
+            if (managerTel) managerTel.value = '';
+        }
+
+        
+
+        
     </script>
 </body>
 </html>

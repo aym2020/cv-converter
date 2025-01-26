@@ -1,45 +1,74 @@
 /* index_styles.css */
 
-/* Global Styles */
+/* 1. CSS Variables for Consistent Theming */
+:root {
+    --primary-color: #2f7dda;      /* Blue */
+    --secondary-color: #6c757d;    /* Gray */
+    --danger-color: #dc3545;       /* Red */
+    --success-color: #28a745;      /* Green */
+    --background-color: #f0f8ff;   /* Light Blue */
+    --text-color: #333333;         /* Dark Gray */
+    --border-color: #cccccc;       /* Light Gray */
+    --hover-background: #e0f0ff;   /* Slightly Darker Light Blue */
+    --hover-border-color: #1e5bb5; /* Darker Blue */
+    --font-family: 'Inter', sans-serif;
+    --transition-speed: 0.3s;
+}
+
+/* 2. Global Styles */
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-family);
     margin: 0;
     padding: 0;
     background-color: rgb(220, 220, 220);
-    color: #333;
+    color: var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
-/* Container */
+/* 3. Container */
 .upload-container {
     text-align: center;
     background-color: white;
     padding: 40px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 100%;
+    max-width: 600px;
+    width: 90%;
+    box-sizing: border-box;
+    position: relative;
 }
 
-/* Title */
+/* 4. Title */
 .upload-title {
     font-size: 28px;
     font-weight: 600;
-    color: #2f7dda;
+    color: var(--primary-color);
     margin-bottom: 20px;
 }
 
-/* Job Title Context Field */
+/* 5. Flash Messages */
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+.flash-messages p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--danger-color);
+}
+
+/* 6. Form Styling */
 .form-group {
     margin-bottom: 20px;
     text-align: left;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group label {
-    display: block;
     font-size: 14px;
     font-weight: 500;
     color: #555;
@@ -51,62 +80,215 @@ body {
 .form-group input[type="tel"],
 .form-group select {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    transition: border-color 0.3s ease;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    box-sizing: border-box;
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="email"]:focus,
 .form-group input[type="tel"]:focus,
 .form-group select:focus {
-    border-color: #2f7dda;
+    border-color: var(--primary-color);
     outline: none;
+    box-shadow: 0 0 5px rgba(47, 125, 218, 0.5);
 }
 
-/* Language Selection Dropdown with Flags */
-.form-group select {
-    appearance: none;
+/* 7. Custom Dropdown (Language Selection) */
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.selected-option {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
     background-color: white;
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
-    padding-right: 30px;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 
-/* Flag Icons in Dropdown */
-.form-group select option {
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 25px;
+.selected-option:hover {
+    border-color: var(--primary-color);
 }
 
-/* Upload Box */
+.selected-option img.flag-icon {
+    width: 20px;
+    height: 15px;
+    margin-right: 10px;
+}
+
+.selected-option .arrow {
+    margin-left: auto;
+    font-size: 12px;
+    color: #555;
+}
+
+.dropdown-options {
+    display: none;
+    position: absolute;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    background-color: white;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-options.show {
+    display: block;
+}
+
+.dropdown-options .option {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.dropdown-options .option:hover {
+    background-color: var(--hover-background);
+}
+
+.dropdown-options .option img.flag-icon {
+    width: 20px;
+    height: 15px;
+    margin-right: 10px;
+}
+
+/* 8. Sales Manager Dropdown (Select2 Integration) */
+#sales_manager_selection {
+    width: 100%;
+}
+
+/* Select2 Container */
+.select2-container--default .select2-selection--single {
+    height: 44px; /* Match the height of the custom dropdown */
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px 15px; /* Match the padding of the custom dropdown */
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    background-color: white; /* Match the background color */
+    display: flex;
+    align-items: center; /* Center text vertically */
+}
+
+/* Hover State */
+.select2-container--default .select2-selection--single:hover {
+    border-color: var(--primary-color); /* Match the hover border color */
+}
+
+/* Focus State */
+.select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: var(--primary-color); /* Match the focus border color */
+    box-shadow: 0 0 5px rgba(47, 125, 218, 0.5); /* Match the focus shadow */
+}
+
+/* Text Styling */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 1.5; /* Match the line height */
+    color: #555; /* Match the text color */
+    font-size: 14px; /* Match the font size */
+    display: flex;
+    align-items: center; /* Center text vertically */
+    padding: 0; /* Remove default padding */
+}
+
+/* Select2 Dropdown Arrow Positioning */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important; /* Center arrow vertically */
+    position: absolute !important;
+    right: 10px !important; /* Move arrow to the right */
+    top: 50% !important;
+    transform: translateY(-50%) !important; /* Center arrow vertically */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #555 transparent transparent transparent !important; /* Match the arrow color */
+    border-width: 8px 4px 0 4px !important; /* Match the arrow size */
+    margin-top: 0 !important; /* Remove default margin */
+}
+
+/* Dropdown Options */
+.select2-container--default .select2-dropdown {
+    border: 1px solid var(--border-color); /* Match the border color */
+    border-radius: 6px; /* Match the border radius */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Match the shadow */
+    background-color: white; /* Match the background color */
+}
+
+/* Individual Options */
+.select2-container--default .select2-results__option {
+    padding: 10px 15px; /* Match the padding */
+    font-size: 14px; /* Match the font size */
+    color: #555; /* Match the text color */
+    transition: background-color var(--transition-speed) ease; /* Match the transition */
+}
+
+/* Hover State for Options */
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--hover-background); /* Match the hover background */
+    color: var(--primary-color); /* Match the hover text color */
+}
+
+/* Selected Option */
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: var(--background-color); /* Match the selected background */
+    color: var(--primary-color); /* Match the selected text color */
+}
+
+/* Search Field (if enabled) */
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border: 1px solid var(--border-color); /* Match the border color */
+    border-radius: 6px; /* Match the border radius */
+    padding: 8px 12px; /* Match the padding */
+    font-size: 14px; /* Match the font size */
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+/* Focus State for Search Field */
+.select2-container--default .select2-search--dropdown .select2-search__field:focus {
+    border-color: var(--primary-color); /* Match the focus border color */
+    outline: none;
+    box-shadow: 0 0 5px rgba(47, 125, 218, 0.5); /* Match the focus shadow */
+}
+
+/* 9. Upload Box Styling */
 .upload-box {
-    border: 2px dashed #2f7dda;
+    border: 2px dashed var(--primary-color);
     border-radius: 8px;
     padding: 20px;
-    background-color: #f0f8ff;
+    background-color: var(--background-color);
     cursor: pointer;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+    transition: border-color var(--transition-speed) ease, background-color var(--transition-speed) ease;
     min-height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     margin-bottom: 20px;
+    box-sizing: border-box;
 }
 
 .upload-box:hover {
-    border-color: #1e5bb5;
+    border-color: var(--hover-border-color);
     background-color: #e0f0ff;
 }
 
 .upload-box.dragover {
-    border-color: #1e5bb5;
+    border-color: var(--hover-border-color);
     background-color: #d0e8ff;
 }
 
@@ -117,52 +299,308 @@ body {
 }
 
 .upload-box p span {
-    color: #2f7dda;
+    color: var(--primary-color);
     font-weight: 500;
 }
 
-/* File Input */
+/* 10. File Input (Hidden) */
 .file-input {
     display: none;
 }
 
-/* Upload Button */
-.upload-button {
-    margin-top: 20px;
+/* 11. Buttons Styling */
+.upload-button,
+.view-sales-managers-button,
+.cancel-button {
     padding: 12px 24px;
-    background-color: #2f7dda;
-    color: white;
     border: none;
     border-radius: 6px;
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-speed) ease;
     width: 100%;
+    box-sizing: border-box;
 }
 
-.upload-button:hover {
+.upload-button {
+    background-color: var(--primary-color);
+    color: white;
+    margin-top: 10px;
+}
+
+.upload-button:hover:not(:disabled) {
     background-color: #1e5bb5;
 }
 
 .upload-button:disabled {
-    background-color: #ccc;
+    background-color: #cccccc;
     cursor: not-allowed;
 }
 
-/* Flash Messages */
-.flash-messages {
+.view-sales-managers-button {
+    background-color: #28a745; /* Green */
+    color: white;
+}
+
+.view-sales-managers-button:hover {
+    background-color: #218838;
+}
+
+.cancel-button {
+    background-color: var(--danger-color);
+    color: white;
+    margin-top: 10px;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}
+
+/* 12. Modal Styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1001; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.5); /* Black with opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 5% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%; /* Could be more or less, depending on screen size */
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color var(--transition-speed) ease;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+.sales-managers-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between cards */
     margin-top: 20px;
+    justify-content: center;
 }
 
-.flash-messages p {
+/* Sales Manager Card */
+.sales-manager-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: calc(33.333% - 40px); /* 3 cards per row with gap */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    box-sizing: border-box;
+}
+
+.sales-manager-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.sales-manager-card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.sales-manager-card p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.sales-manager-card a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.sales-manager-card a:hover {
+    text-decoration: underline;
+}
+
+/* Remove Sales Manager Button */
+.remove-sales-manager {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #ff4d4d;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color var(--transition-speed) ease;
+}
+
+.remove-sales-manager:hover {
+    color: #ff0000;
+}
+
+/* Edit Sales Manager Button */
+.edit-sales-manager {
+    position: absolute;
+    top: 10px;
+    right: 40px; /* Adjust spacing from the remove button */
+    background: transparent;
+    border: none;
+    color: #2f7dda;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color var(--transition-speed) ease;
+}
+
+.edit-sales-manager:hover {
+    color: #1e5bb5;
+}
+
+/* Add Sales Manager Card */
+.sales-manager-card.add-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--primary-color);
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    padding: 15px;
+    width: calc(33.333% - 40px); /* 3 cards per row with gap */
+    box-sizing: border-box;
+    min-height: 130px;
+    background-color: #f9f9f9;
+}
+
+.sales-manager-card.add-card:hover {
+    background-color: var(--background-color);
+    border-color: #1e5bb5;
+    color: white;
+}
+
+.sales-manager-card.add-card i {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.sales-manager-card.add-card p {
     margin: 0;
-    font-size: 14px;
-    color: #dc3545;
+    font-size: 16px;
+    font-weight: 500;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Add/Edit Sales Manager Form Container */
+.add-form-container {
+    margin-top: 20px;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.add-form-container.hidden {
+    display: none;
+}
+
+.add-form-container h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.add-form-container .form-group {
+    margin-bottom: 15px;
+}
+
+.add-form-container label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.add-form-container input[type="text"],
+.add-form-container input[type="email"],
+.add-form-container input[type="tel"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.add-form-container input[type="text"]:focus,
+.add-form-container input[type="email"]:focus,
+.add-form-container input[type="tel"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 5px rgba(47, 125, 218, 0.5);
+}
+
+/* Cancel Button */
+.cancel-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}
+
+/* View Sales Managers Button */
+.view-sales-managers-button {
+    background-color: #28a745; /* Green */
+    color: white;
+    margin-top: 10px;
+}
+
+.view-sales-managers-button:hover {
+    background-color: #218838;
+}
+
+/* 13. Responsive Design Enhancements */
+@media (max-width: 992px) {
+    .sales-manager-card,
+    .sales-manager-card.add-card {
+        width: calc(50% - 40px); /* 2 cards per row */
+    }
+}
+
+@media (max-width: 600px) {
     .upload-container {
         padding: 20px;
     }
@@ -171,71 +609,24 @@ body {
         font-size: 24px;
     }
 
+    .upload-box {
+        min-height: 120px;
+        padding: 15px;
+    }
+
     .upload-box p {
         font-size: 14px;
     }
 
-    .upload-button {
+    .upload-button,
+    .view-sales-managers-button,
+    .cancel-button {
         padding: 10px 20px;
         font-size: 14px;
     }
-}
 
-/* Custom Dropdown Styles */
-.custom-dropdown {
-    position: relative;
-    width: 100%;
-}
-
-.selected-option {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    cursor: pointer;
-    background-color: white;
-}
-
-.selected-option .flag-icon {
-    width: 20px;
-    height: 15px;
-    margin-right: 10px;
-}
-
-.selected-option .arrow {
-    margin-left: auto;
-}
-
-.dropdown-options {
-    display: none;
-    position: absolute;
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: white;
-    z-index: 1000;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.dropdown-options.show {
-    display: block;
-}
-
-.dropdown-options .option {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    cursor: pointer;
-}
-
-.dropdown-options .option:hover {
-    background-color: #f0f8ff;
-}
-
-.dropdown-options .option .flag-icon {
-    width: 20px;
-    height: 15px;
-    margin-right: 10px;
+    .sales-manager-card,
+    .sales-manager-card.add-card {
+        width: 100%; /* 1 card per row */
+    }
 }

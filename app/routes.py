@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import re
 from app import app
 from datetime import datetime
+import uuid
 
 # Load environment variables
 load_dotenv()
@@ -52,11 +53,30 @@ def upload_file():
         job_title_context = request.form.get('job_title_context')
         target_language = request.form.get('language_selection')
         
-        print(f"Job Title Context: {job_title_context}")
-        print(f"Target Language: {target_language}")
+        # Get the selected sales manager's information
+        manager_id = request.form.get('sales_manager_selection')
+        if manager_id:
+            # Fetch the sales manager details directly using the helper function
+            managers = load_sales_managers()
+            manager = next((m for m in managers if m.get('id') == manager_id), None)
+            if manager:
+                manager_name = f"{manager['first_name']} {manager['name']}"
+                manager_email = manager['email']
+                manager_tel = manager['tel']
+                manager_role = manager['role']
+            else:
+                manager_name = ""
+                manager_email = ""
+                manager_tel = ""
+                manager_role = ""
+        else:
+            manager_name = ""
+            manager_email = ""
+            manager_tel = ""
+            manager_role = ""
 
         # Send the extracted text to the OpenAI API
-        result = send_to_openai_api(text, job_title_context, target_language)
+        result = send_to_openai_api(text, job_title_context, target_language, manager_name, manager_email, manager_tel, manager_role)
         if result:
             # Save the JSON to a file
             json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'last_cv.json')
@@ -81,7 +101,7 @@ def extract_text_from_pdf(filepath):
         return None
     return text
 
-def send_to_openai_api(text, job_title_context, target_language):
+def send_to_openai_api(text, job_title_context, target_language, manager_name, manager_email, manager_tel, manager_role):
     """
     Sends the extracted CV text to OpenAI, requesting a structured JSON output.
     The 'job_title_context' is the position for which the CV is tailored.
@@ -113,7 +133,11 @@ Extract the following information from this CV text and, if needed, translate it
     "languages": {{}},
     "experiences": [],
     "education": [],
-    "certifications": []
+    "certifications": [],
+    "manager_name": "{manager_name}",
+    "manager_email": "{manager_email}",
+    "manager_tel": "{manager_tel}",
+    "manager_role": "{manager_role}"
 }}
 
 1. **name**: Last name (string).
@@ -594,6 +618,171 @@ def edit_form():
         return render_template('edit_form.html', data=data)
     except Exception as e:
         print(f"Error loading edit form: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+
+
+
+
+
+# Helper functions to load and save sales managers
+def load_sales_managers():
+    json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
+    if not os.path.exists(json_filepath):
+        return []
+    with open(json_filepath, 'r') as f:
+        return json.load(f)
+
+def save_sales_managers(managers):
+    json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
+    with open(json_filepath, 'w') as f:
+        json.dump(managers, f, indent=4)
+
+
+
+@app.route('/sales_managers')
+def get_sales_managers():
+    try:
+        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
+        if not os.path.exists(json_filepath):
+            return jsonify({'success': False, 'error': 'No sales managers JSON found.'})
+        
+        with open(json_filepath, 'r') as f:
+            data = json.load(f)
+        
+        return jsonify({'success': True, 'data': data})
+    except Exception as e:
+        print(f"Error fetching sales managers: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/get_sales_manager/<manager_id>', methods=['GET'])
+def get_sales_manager(manager_id):
+    try:
+        managers = load_sales_managers()
+        manager = next((m for m in managers if m.get('id') == manager_id), None)
+        if manager:
+            return jsonify({'success': True, 'data': manager}), 200
+        else:
+            return jsonify({'success': False, 'error': 'Sales manager not found.'}), 404
+    except Exception as e:
+        print(f"Error fetching sales manager: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/add_sales_manager', methods=['POST'])
+def add_sales_manager():
+    try:
+        data = request.get_json()
+        first_name = data.get('first_name')
+        name = data.get('name')
+        role = data.get('role')
+        email = data.get('email')
+        tel = data.get('tel')
+
+        if not all([first_name, name, role, email, tel]):
+            return jsonify({'success': False, 'error': 'All fields are required.'}), 400
+
+        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
+        if not os.path.exists(json_filepath):
+            managers = []
+        else:
+            with open(json_filepath, 'r') as f:
+                managers = json.load(f)
+
+        # Generate a unique ID
+        new_id = str(uuid.uuid4())
+
+        # Append the new sales manager
+        managers.append({
+            "id": new_id,
+            "first_name": first_name,
+            "name": name,
+            "role": role,
+            "email": email,
+            "tel": tel
+        })
+
+        with open(json_filepath, 'w') as f:
+            json.dump(managers, f, indent=4)
+
+        return jsonify({'success': True, 'id': new_id}), 200
+    except Exception as e:
+        print(f"Error adding sales manager: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+
+@app.route('/remove_sales_manager', methods=['POST'])
+def remove_sales_manager():
+    try:
+        data = request.get_json()
+        manager_id = data.get('id')
+        if not manager_id:
+            return jsonify({'success': False, 'error': 'No ID provided.'}), 400
+        
+        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
+        if not os.path.exists(json_filepath):
+            return jsonify({'success': False, 'error': 'No sales managers JSON found.'}), 404
+        
+        with open(json_filepath, 'r') as f:
+            managers = json.load(f)
+        
+        # Find and remove the manager with the given ID
+        updated_managers = [manager for manager in managers if manager.get('id') != manager_id]
+        
+        if len(updated_managers) == len(managers):
+            return jsonify({'success': False, 'error': 'Sales manager not found.'}), 404
+        
+        with open(json_filepath, 'w') as f:
+            json.dump(updated_managers, f, indent=4)
+        
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        print(f"Error removing sales manager: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/update_sales_manager/<manager_id>', methods=['PUT'])
+def update_sales_manager(manager_id):
+    try:
+        data = request.get_json()
+        first_name = data.get('first_name')
+        name = data.get('name')
+        role = data.get('role')
+        email = data.get('email')
+        tel = data.get('tel')
+
+        if not all([first_name, name, role, email, tel]):
+            return jsonify({'success': False, 'error': 'All fields are required.'}), 400
+
+        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
+        if not os.path.exists(json_filepath):
+            return jsonify({'success': False, 'error': 'No sales managers JSON found.'}), 404
+
+        with open(json_filepath, 'r') as f:
+            managers = json.load(f)
+
+        # Find the manager to update
+        for manager in managers:
+            if manager.get('id') == manager_id:
+                manager['first_name'] = first_name
+                manager['name'] = name
+                manager['role'] = role
+                manager['email'] = email
+                manager['tel'] = tel
+                break
+        else:
+            return jsonify({'success': False, 'error': 'Sales manager not found.'}), 404
+
+        with open(json_filepath, 'w') as f:
+            json.dump(managers, f, indent=4)
+
+        return jsonify({'success': True}), 200
+
+    except Exception as e:
+        print(f"Error editing sales manager: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':

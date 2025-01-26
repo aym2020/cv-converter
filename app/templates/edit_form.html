@@ -56,7 +56,7 @@
                 <input type="text" id="manager_name" name="manager_name" value="{{ data.manager_name }}">
             </div>
             <div class="form-group">
-                <label for="manager_name">Manager Role:</label>
+                <label for="manager_role">Manager Role:</label>
                 <input type="text" id="manager_role" name="manager_role" value="{{ data.manager_role }}">
             </div>
             <div class="form-group">
@@ -487,6 +487,72 @@
         function removeClientReference(button) {
         button.parentElement.remove();
         }
+
+        // Function to fetch sales manager details
+        function fetchSalesManagerDetails(managerId) {
+            if (!managerId) {
+                // Clear the fields if no manager is selected
+                clearManagerFields();
+                return;
+            }
+
+            // Show loading spinner if you have one (optional)
+            // document.getElementById('manager_loading').style.display = 'inline-block';
+
+            // Fetch the sales manager details from the backend
+            fetch(`/get_sales_manager/${managerId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading spinner
+                    // document.getElementById('manager_loading').style.display = 'none';
+
+                    if (data.success) {
+                        // Populate the fields with the fetched data
+                        populateManagerFields(data.data);
+                    } else {
+                        alert('Failed to fetch sales manager details: ' + data.error);
+                        clearManagerFields();
+                    }
+                })
+                .catch(error => {
+                    // Hide loading spinner
+                    // document.getElementById('manager_loading').style.display = 'none';
+
+                    console.error('Error fetching sales manager details:', error);
+                    alert('An error occurred while fetching sales manager details.');
+                    clearManagerFields();
+                });
+        }
+
+        // Function to populate the manager fields
+        function populateManagerFields(manager) {
+            const managerName = document.getElementById('manager_name');
+            const managerRole = document.getElementById('manager_role');
+            const managerEmail = document.getElementById('manager_email');
+            const managerTel = document.getElementById('manager_tel');
+
+            if (managerName) managerName.value = `${manager.first_name} ${manager.name}`;
+            if (managerRole) managerRole.value = manager.role;
+            if (managerEmail) managerEmail.value = manager.email;
+            if (managerTel) managerTel.value = manager.tel;
+        }
+
+        // Function to clear the manager fields
+        function clearManagerFields() {
+            const managerName = document.getElementById('manager_name');
+            const managerRole = document.getElementById('manager_role');
+            const managerEmail = document.getElementById('manager_email');
+            const managerTel = document.getElementById('manager_tel');
+
+            if (managerName) managerName.value = '';
+            if (managerRole) managerRole.value = '';
+            if (managerEmail) managerEmail.value = '';
+            if (managerTel) managerTel.value = '';
+        }
+
+
+     
+
     </script>
     
 </body>
