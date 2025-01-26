@@ -253,18 +253,7 @@
                             </fieldset>
                         {% endfor %}
                     {% else %}
-                        <fieldset class="certification-item">
-                            <legend>Certification 1</legend>
-                            <div class="form-group">
-                                <label for="certification_name_1">Name:</label>
-                                <input type="text" id="certification_name_1" name="certification_name_1" value="">
-                            </div>
-                            <div class="form-group">
-                                <label for="certification_issuer_1">Issuer:</label>
-                                <input type="text" id="certification_issuer_1" name="certification_issuer_1" value="">
-                            </div>
-                            <button type="button" class="remove-button" onclick="removeCertification(this)">Remove</button>
-                        </fieldset>
+                        <!-- Display nothing if there are no certifications -->
                     {% endif %}
                 </div>
                 <button type="button" class="add-button" onclick="addCertification()">Add Certification</button>

@@ -22,13 +22,75 @@
             {% endwith %}
         </div>
 
-        <!-- Upload Box -->
-        <div class="upload-box" id="upload-box">
-            <p>Drag and drop your CV here or <span>click to browse</span></p>
-        </div>
-
-        <!-- File Input -->
+        <!-- File Input Form -->
         <form action="/upload" method="POST" enctype="multipart/form-data" id="upload-form">
+            <!-- Job Title Context Field -->
+            <div class="form-group">
+                <label for="job_title_context">Job Title Context:</label>
+                <input type="text" id="job_title_context" name="job_title_context" placeholder="Enter the job title for which you are generating the CV">
+            </div>
+
+            <!-- Custom Language Selection Dropdown with Flags -->
+            <div class="form-group">
+                <label for="language_selection">Select Target Language:</label>
+                <div class="custom-dropdown">
+                    <div class="selected-option" onclick="toggleDropdown()">
+                        <img src="{{ url_for('static', filename='flags/us.svg') }}" alt="English" class="flag-icon">
+                        <span>English</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="dropdown-options" id="dropdown-options">
+                        <div class="option" data-value="en" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/us.svg') }}" alt="English" class="flag-icon">
+                            <span>English</span>
+                        </div>
+                        <div class="option" data-value="fr" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/fr.svg') }}" alt="French" class="flag-icon">
+                            <span>French</span>
+                        </div>
+                        <div class="option" data-value="de" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/de.svg') }}" alt="German" class="flag-icon">
+                            <span>German</span>
+                        </div>
+                        <div class="option" data-value="es" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/es.svg') }}" alt="Spanish" class="flag-icon">
+                            <span>Spanish</span>
+                        </div>
+                        <div class="option" data-value="it" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/it.svg') }}" alt="Italian" class="flag-icon">
+                            <span>Italian</span>
+                        </div>
+                        <div class="option" data-value="pt" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/pt.svg') }}" alt="Portuguese" class="flag-icon">
+                            <span>Portuguese</span>
+                        </div>
+                        <div class="option" data-value="nl" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/nl.svg') }}" alt="Dutch" class="flag-icon">
+                            <span>Dutch</span>
+                        </div>
+                        <div class="option" data-value="zh" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/cn.svg') }}" alt="Chinese" class="flag-icon">
+                            <span>Chinese</span>
+                        </div>
+                        <div class="option" data-value="ja" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/jp.svg') }}" alt="Japanese" class="flag-icon">
+                            <span>Japanese</span>
+                        </div>
+                        <div class="option" data-value="ru" onclick="selectOption(this)">
+                            <img src="{{ url_for('static', filename='flags/ru.svg') }}" alt="Russian" class="flag-icon">
+                            <span>Russian</span>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="language_selection" name="language_selection" value="en">
+            </div>
+
+            <!-- Upload Box -->
+            <div class="upload-box" id="upload-box">
+                <p>Drag and drop your CV here or <span>click to browse</span></p>
+            </div>
+
+            <!-- File Input -->
             <input type="file" name="file" accept=".pdf" class="file-input" id="file-input" />
             <button type="submit" class="upload-button" id="upload-button" disabled>Upload PDF</button>
         </form>
@@ -38,23 +100,55 @@
     </div>
 
     <script>
+        // Custom Dropdown Functionality
+        function toggleDropdown() {
+            const dropdownOptions = document.getElementById('dropdown-options');
+            dropdownOptions.classList.toggle('show');
+        }
+
+        function selectOption(option) {
+            const selectedOption = document.querySelector('.selected-option');
+            const hiddenInput = document.getElementById('language_selection');
+            const flag = option.querySelector('.flag-icon').src;
+            const text = option.querySelector('span').textContent;
+            const value = option.getAttribute('data-value');
+
+            selectedOption.innerHTML = `
+                <img src="${flag}" alt="${text}" class="flag-icon">
+                <span>${text}</span>
+                <span class="arrow">▼</span>
+            `;
+            hiddenInput.value = value;
+            console.log("Selected Language:", value); // Debugging
+            toggleDropdown();
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function (event) {
+            if (!event.target.matches('.selected-option')) {
+                const dropdowns = document.querySelectorAll('.dropdown-options');
+                dropdowns.forEach(dropdown => {
+                    if (dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+            }
+        };
+
         // Drag and Drop Functionality
         const uploadBox = document.getElementById('upload-box');
         const fileInput = document.getElementById('file-input');
         const uploadButton = document.getElementById('upload-button');
-    
-        // Highlight the upload box when a file is dragged over
+
         uploadBox.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadBox.classList.add('dragover');
         });
-    
-        // Remove highlight when the file is dragged out
+
         uploadBox.addEventListener('dragleave', () => {
             uploadBox.classList.remove('dragover');
         });
-    
-        // Handle file drop
+
         uploadBox.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadBox.classList.remove('dragover');
@@ -65,53 +159,38 @@
                 uploadBox.innerHTML = `<p>File selected: <span>${files[0].name}</span></p>`;
             }
         });
-    
-        // Handle file selection via click
+
         uploadBox.addEventListener('click', () => {
             fileInput.click();
         });
-    
-        // Update the upload box when a file is selected via the file input
+
         fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
                 uploadButton.disabled = false;
                 uploadBox.innerHTML = `<p>File selected: <span>${fileInput.files[0].name}</span></p>`;
             }
         });
-    
-        // Form validation
+
         document.getElementById('upload-form').addEventListener('submit', function (e) {
             const fileInput = document.getElementById('file-input');
             if (fileInput.files.length === 0) {
-                e.preventDefault(); // Prevent form submission
-                alert('Please select a PDF file to upload.'); // Show popup
+                e.preventDefault();
+                alert('Please select a PDF file to upload.');
             }
         });
 
-    // Debugging: Log when the form submission is intercepted
-    console.log('Form submission handler attached');
-
-        // Reuse Last JSON Button
         document.getElementById('reuse-last-json').addEventListener('click', () => {
             fetch('/reuse_last_json')
-                .then(response => {
-                    if (!response.ok) {
-                        // If the response is not OK (e.g., 404, 500), throw an error
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        window.location.href = '/edit_form'; // Redirect to edit form
+                        window.location.href = '/edit_form';
                     } else {
-                        // Show a popup if no JSON file exists
                         alert('No previous JSON file found. Please upload a PDF first.');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    // Show a popup for any unexpected errors
                     alert('An error occurred. Please try again.');
                 });
         });

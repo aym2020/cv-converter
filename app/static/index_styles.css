@@ -32,21 +32,73 @@ body {
     margin-bottom: 20px;
 }
 
+/* Job Title Context Field */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="tel"]:focus,
+.form-group select:focus {
+    border-color: #2f7dda;
+    outline: none;
+}
+
+/* Language Selection Dropdown with Flags */
+.form-group select {
+    appearance: none;
+    background-color: white;
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+}
+
+/* Flag Icons in Dropdown */
+.form-group select option {
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 25px;
+}
+
 /* Upload Box */
 .upload-box {
     border: 2px dashed #2f7dda;
     border-radius: 8px;
-    padding: 20px; /* Increased padding for a larger area */
+    padding: 20px;
     background-color: #f0f8ff;
     cursor: pointer;
     transition: border-color 0.3s ease, background-color 0.3s ease;
-    min-height: 300px; /* Set a minimum height for the box */
+    min-height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    margin-bottom: 20px;
 }
-
 
 .upload-box:hover {
     border-color: #1e5bb5;
@@ -86,10 +138,16 @@ body {
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 100%;
 }
 
 .upload-button:hover {
     background-color: #1e5bb5;
+}
+
+.upload-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 /* Flash Messages */
@@ -121,4 +179,63 @@ body {
         padding: 10px 20px;
         font-size: 14px;
     }
+}
+
+/* Custom Dropdown Styles */
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.selected-option {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: white;
+}
+
+.selected-option .flag-icon {
+    width: 20px;
+    height: 15px;
+    margin-right: 10px;
+}
+
+.selected-option .arrow {
+    margin-left: auto;
+}
+
+.dropdown-options {
+    display: none;
+    position: absolute;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.dropdown-options.show {
+    display: block;
+}
+
+.dropdown-options .option {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-options .option:hover {
+    background-color: #f0f8ff;
+}
+
+.dropdown-options .option .flag-icon {
+    width: 20px;
+    height: 15px;
+    margin-right: 10px;
 }

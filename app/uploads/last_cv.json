@@ -1,111 +1,100 @@
 {
-    "name": "Elafi",
-    "first_name": "Issam",
+    "name": "RIJO",
+    "first_name": "YONI",
+    "job_title": "HelpDesk L2",
     "skills": {
-        "Software Development": [
-            "C#",
-            "SQL"
+        "Operating Systems": [
+            "Windows 7",
+            "Windows 10",
+            "Windows 11",
+            "Mac OS",
+            "IOS",
+            "Android",
+            "Google Chrome",
+            "Internet Explorer",
+            "Mozilla Firefox",
+            "Safari"
         ],
-        "Electronics": [
-            "Electronic diagnostics"
-        ],
-        "General": [
-            "Word",
-            "Excel",
-            "Powerpoint"
-        ],
-        "Development Tools": [
-            "ERP",
-            "Visual Studio",
-            "PG Admin",
-            "Linux"
+        "IT Support & Management": [
+            "Active Directory",
+            "Microsoft Azure AD",
+            "Intune",
+            "Mobile Device Management",
+            "Airwatch",
+            "EDI",
+            "SAP",
+            "AS400",
+            "Microsoft Office 365 Pro Pack",
+            "Sharepoint",
+            "Sales Force",
+            "Windows Server",
+            "DHCP",
+            "DNS",
+            "Lotus Note",
+            "ServiceNow",
+            "SmartIT",
+            "Okta",
+            "Bomgar",
+            "Teamviewer",
+            "Microsoft Identity Manager",
+            "CISCO 360",
+            "Citrix",
+            "VPN pulse secure",
+            "DDM",
+            "ESI Tronic",
+            "CDB",
+            "Genesys"
         ]
     },
     "languages": {
-        "French": "Native or bilingual proficiency - C2",
-        "English": "Professional working proficiency - B2"
+        "French": "Native or bilingual proficiency \u2013 C2",
+        "English": "Professional working proficiency \u2013 C1",
+        "Portuguese": "Professional working proficiency \u2013 C1"
     },
     "experiences": [
         {
-            "job_title": "Junior Application Architect",
-            "company": "Empirys \u2013 Advanzia Bank",
-            "duration": "07/2023 \u2013 10/2023",
-            "description": "- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.\r\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment.",
-            "client_references": [
-                {
-                    "first_name": "aymeric",
-                    "last_name": "mislah",
-                    "role": "role",
-                    "email": "ay.mislah@gmail.com",
-                    "tel": "0661865386"
-                },
-                {
-                    "first_name": "Jean-Louis",
-                    "last_name": "THI\u00c9RIOT",
-                    "role": "Commission de la d\u00e9fense nationale et des forces arm\u00e9es (Vice-pr\u00e9sident)",
-                    "email": "jean-louis.thieriot@assemblee-nationale.fr",
-                    "tel": "01 64 32 02 81"
-                }
-            ]
+            "job_title": "IT Technical Support",
+            "company": "COGNIZANT (Client: Gilead Sciences)",
+            "duration": "07/2023 \u2013 08/2024",
+            "description": "- Assisted users on site or remotely\n- Information technology park management\n- Remote phone control by Bomgar\n- Windows 10, Active Directory, Hardware management\n- Managed a complete IT park with 3 level 2 colleagues and a level 3 supervisor\n- IAM and Active Directory profile creation on Azure portal\n- VPN pulse secure, Ticket tool ServiceNow"
         },
         {
-            "job_title": "Study Coordinator",
-            "company": "Transperfect Data Force",
+            "job_title": "Content Manager on a Platform",
+            "company": "ACCENTURE",
             "duration": "09/2022 \u2013 06/2023",
-            "description": "- Coordinated data collection projects aimed at improving AI-driven speech recognition systems.\r\n- Managed large-scale datasets, ensuring data quality and accuracy for use in machine learning models.\r\n- Assisted in the creation of system architecture diagrams and documentation to support project teams.",
-            "client_references": []
+            "description": "- Managed content on social networks to avoid sensitive, violent, and other prohibitions by the client"
         },
         {
-            "job_title": "C# Developer Intern",
-            "company": "Stick Attack",
-            "duration": "05/2022 \u2013 10/2022",
-            "description": "- Designed and developed a stock management desktop application to streamline the company\u2019s logistics operations.\r\n- Collaborated with the team to ensure the solution met the company's operational needs, significantly enhancing their logistical workflow.",
-            "client_references": []
+            "job_title": "IT Field Agent",
+            "company": "CTG",
+            "duration": "05/2022 \u2013 09/2022",
+            "description": "- Identity and Access Management for the European Investment Bank\n- Profile creation, distribution list setup, shared mailbox setup, and granting access following ITSM protocols\n- Managed external emails and their legitimacy\n- Ticket tool Smart IT"
         },
         {
-            "job_title": "Electronic Technician",
-            "company": "Ujet Manufacturing",
-            "duration": "01/2019 \u2013 09/2021",
-            "description": "- Diagnosed, identified, and resolved electronic faults in electric scooters, ensuring reliable and safe operation of vehicles\r\n- Gained hands-on experience in high-tech electric vehicle production, focusing on quality control and system reliability.",
-            "client_references": []
+            "job_title": "IT Field Agent",
+            "company": "GLOBALBLUE (GITEC)",
+            "duration": "03/2021 \u2013 05/2022",
+            "description": "- Assisted users with remote control tools and elevations\n- Technical support for client hardware or software via chat (teams), email, remote phone control by Teamviewer\n- Account reset and assistance for application users (stores) in all of France\n- Managed a complete IT park with 2 level 2 colleagues and a level 3 supervisor\n- IAM and Active Directory admin rights and profile creation on Azure portal\n- Work tool on SmartIT, VPN pulse secure"
+        },
+        {
+            "job_title": "1st Line of Expert Service",
+            "company": "BOSCH",
+            "duration": "10/2020 \u2013 03/2021",
+            "description": "- Provided technical service for Bosch workshops, identifying malfunctions and errors for service technicians\n- Offered post-sale service of specific software diagnostics\n- Used DDM and ESI Tronic for diagnostics, CDB for ticket management, Genesys for phone, and MS Office for other channels"
+        },
+        {
+            "job_title": "B2B Support",
+            "company": "FUJITSU",
+            "duration": "07/2018 \u2013 03/2020",
+            "description": "- Assisted users remotely\n- Technical support via chat, email, phone remote control by Bomgar\n- Supported Office 365, IAM, Lotus Notes, Adobe, TeamCenter, Ariane, Sharepoint, Windows 7/10, Showbiz, Baan, Active Directory\n- Escalation to Level 3\n- Profile creation and admin rights through IAM and Active Directory on Azure portal\n- Utilized Citrix virtual machine\n- Level 2 support on Microsoft Azure console\n- Created Skype profiles, level 1 assistance, restored SharePoint and shared files\n- Updated knowledge database, printer connectivity reactivation, and managed level 2 phone line"
+        },
+        {
+            "job_title": "B2B Support",
+            "company": "SITEL",
+            "duration": "12/2016 \u2013 06/2018",
+            "description": "- Assisted users remotely\n- Technical support via chat, email, phone remote control by Bomgar\n- Supported Office 365, Adobe, TeamCenter, Ariane, Sharepoint, Windows 7/10, and Active Directory\n- Elevated to Level 2 support\n- Profile and admin rights creation on Azure portal\n- Used Citrix virtual machine and ServiceNow"
         }
     ],
-    "education": [
-        {
-            "degree": "Student",
-            "institution": "Ecole 42",
-            "duration": "11/2023 \u2013 09/2024",
-            "description": "- Learning language C\r\n- Fundamental of science computer"
-        },
-        {
-            "degree": "Online Student",
-            "institution": "MaCertif",
-            "duration": "02/2022 \u2013 10/2022",
-            "description": "- Fundamental of C# web"
-        },
-        {
-            "degree": "Application Designer and Developer",
-            "institution": "Unknown",
-            "duration": "11/2021 \u2013 07/2022",
-            "description": "- Design and develop desktop applications\r\n- Design a database\r\n- Introduction to OOP"
-        },
-        {
-            "degree": "BTS Electronic Diagnostic Automotive",
-            "institution": "Unknown",
-            "duration": "09/2013 \u2013 06/2015",
-            "description": "- Managing and creating electrical diagrams\r\n- Learning the elements of Auto mechanics\r\n- Learning multiplexing"
-        },
-        {
-            "degree": "BAC Vehicle Maintenance",
-            "institution": "Unknown",
-            "duration": "09/2010 \u2013 06/2013",
-            "description": "- Introduction to car mechanics."
-        }
-    ],
-    "certifications": [],
-    "job_title": "Support IT & Administratif",
-    "manager_name": "Reda QORCHI",
-    "manager_email": "reda.qorchi@randstaddigital.lu",
-    "manager_tel": "+32 4 12 34 475",
-    "manager_role": "delivery manager"
+    "education": [],
+    "certifications": []
 }

@@ -49,17 +49,22 @@ def upload_file():
 
         # Extract text from the PDF
         text = extract_text_from_pdf(filepath)
+        job_title_context = request.form.get('job_title_context')
+        target_language = request.form.get('language_selection')
+        
+        print(f"Job Title Context: {job_title_context}")
+        print(f"Target Language: {target_language}")
 
         # Send the extracted text to the OpenAI API
-        response = send_to_openai_api(text)
-        if response:
+        result = send_to_openai_api(text, job_title_context, target_language)
+        if result:
             # Save the JSON to a file
             json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'last_cv.json')
             with open(json_filepath, 'w') as f:
-                json.dump(response, f, indent=4)
+                json.dump(result, f, indent=4)
             
             # Render the editable form with the API response
-            return render_template('edit_form.html', data=response)
+            return render_template('edit_form.html', data=result)
         else:
             return "Failed to process the CV with OpenAI API."
     
@@ -76,27 +81,34 @@ def extract_text_from_pdf(filepath):
         return None
     return text
 
-def send_to_openai_api(text):
+def send_to_openai_api(text, job_title_context, target_language):
+    """
+    Sends the extracted CV text to OpenAI, requesting a structured JSON output.
+    The 'job_title_context' is the position for which the CV is tailored.
+    The 'target_language' indicates whether the CV text should be translated (e.g. 'English', 'French').
+    Skills categories remain in English, while the rest of the CV is translated if needed.
+    """
     try:
-        response = client.chat.completions.create(
-            model="gpt-4-1106-preview",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a highly accurate assistant that extracts structured CV data and returns it in a "
-                        "fixed JSON format—no extra fields, no missing fields."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": f"""
+        # System role content: Provide high-level instructions on behavior
+        system_content = (
+            "You are a highly accurate assistant that extracts structured CV data from potentially French or other-language text "
+            "and returns it in a fixed JSON format—no extra fields, no missing fields. "
+            f"The CV is for the job title: {job_title_context}. "
+            "If the CV is not in English, translate the content (descriptions, experiences, education, certifications, etc.) "
+            f"into {target_language}. However, the skills category names (e.g., 'Programming', 'Cloud & Identity Management') "
+            "must remain in English. Skill items can be translated if they are general text, but brand or software names typically remain as-is. "
+            "Ensure the JSON structure is exactly as specified."
+        )
+
+        # User role content: Detailed instructions for JSON structure
+        user_content = f"""
 **INSTRUCTIONS:**
-Extract the following information from the CV text. **Output must be valid JSON** with **exactly** these top-level fields, in this order (do not add or rename keys):
+Extract the following information from this CV text and, if needed, translate it to {target_language}. **Output must be valid JSON** with **exactly** these top-level fields, in this order (do not add or rename keys):
 
 {{
     "name": "",
     "first_name": "",
+    "job_title": "{job_title_context}",
     "skills": {{}},
     "languages": {{}},
     "experiences": [],
@@ -106,20 +118,36 @@ Extract the following information from the CV text. **Output must be valid JSON*
 
 1. **name**: Last name (string).
 2. **first_name**: First name (string).
-3. **skills**: An **object** with up to 5 categories (Business Intelligence, Programming, ETL, Cloud, etc.). Keys are category names (capitalized if relevant), each a **list** of skill strings. No blank categories. Example:
-   "skills": {{ "Programming": ["Python", "JavaScript"], "Business Intelligence": ["Tableau"] }}
+3. **job_title**: Job title (string). This should be the same as the job title provided by the user: "{job_title_context}".
+
+4. **skills**: 
+   - An **object** with up to 4 or 5 relevant categories for a professional CV (e.g., 'Programming', 'Cloud & Identity Management', 'Device & Application Management', 'Collaboration & Productivity Tools', 'Networking & Infrastructure', etc.).
+   - **Category names** must remain in **English** (do not translate them).
+   - Each key is a category name, and each value is a **list** of skill strings. 
+   - Include **all found skills** in the parsed text, placing them into these categories. 
+   - **No blank categories**. Example:
+     "skills": {{ 
+       "Programming": ["Python", "JavaScript"], 
+       "Cloud & Identity Management": ["Azure AD", "Okta"]
+     }}
    If no skills, return `"skills": {{}}`.
 
-4. **languages**: An **object** where each key is a Language (capitalized), and value is the proficiency level (Use only the following values: Native or bilingual proficiency – C2, Professional working proficiency – B2, Basic knowledge – A2). Example:
-   "languages": {{ "French": "Beginner - A2", "Italian": "Professional working proficiency - B2" }}
+5. **languages**: 
+   - An **object** where each key is a **Language** (capitalized), 
+   - The value is the proficiency level, restricted to these patterns:
+     - "Native or bilingual proficiency – C2"
+     - "Professional working proficiency – B2"
+     - "Basic knowledge – A2"
+   Example:
+     "languages": {{ "French": "Native or bilingual proficiency – C2", "Italian": "Professional working proficiency – B2" }}
    If none, return `"languages": {{}}`.
 
-5. **experiences**: A **list** of objects, each with:
+6. **experiences**: A **list** of objects, each with:
    - **job_title** (string)
    - **company** (string)
    - **duration** (string, e.g. '11/2023 – 09/2024')
-   - **description** (string). Enhance responsibilities, use bullet points (`- `) and line breaks for readability.
-   - **client_references** (list of objects, optional). Each object contains:
+   - **description** (string). Enhance responsibilities, use bullet points (`- `) and line breaks for readability. Description must be in {target_language} if original is not English.
+   - **client_references** (list of objects, optional). Each reference has:
      - **first_name** (string)
      - **last_name** (string)
      - **role** (string)
@@ -127,14 +155,14 @@ Extract the following information from the CV text. **Output must be valid JSON*
      - **tel** (string)
    If no experiences, return `"experiences": []`.
 
-6. **education**: A **list** of objects, each with:
+7. **education**: A **list** of objects, each with:
    - **degree** (string, capitalized)
    - **institution** (string, empty if unknown)
    - **duration** (string)
    - **description** (string)
-   If none, return `"education": []`.
+   If no education, return `"education": []`.
 
-7. **certifications**: A **list** of objects, each with:
+8. **certifications**: A **list** of objects, each with:
    - **name** (string, capitalized)
    - **issuer** (string, empty if unknown)
    If none, return `"certifications": []`.
@@ -142,33 +170,47 @@ Extract the following information from the CV text. **Output must be valid JSON*
 **Important**:
 - Do **not** add extra top-level fields or rename existing fields.
 - If a section is not found in the CV, provide an empty object/array for it.
-- Return **only** the JSON object, no additional text or explanations.
-- All text in **English**.
-- Capitalize Language names, Degree names, Name and First Name and Job Title and Certification names.
+- Return **only** the JSON object, with no additional text or explanations.
+- All text (except skill category headings) in **{target_language}**.
+- Capitalize Language names, Degree names, Name and First Name, Job Title, and Certification names if appropriate.
 
 CV Text:
 {text}
 """
-                }
+
+        # Call the OpenAI API
+        response = client.chat.completions.create(
+            model="gpt-4-1106-preview",
+            messages=[
+                {"role": "system", "content": system_content},
+                {"role": "user", "content": user_content}
             ]
         )
+
         raw_content = response.choices[0].message.content
+
         # Clean up the raw JSON content from GPT
-        json_str = re.sub(r'^```json\s*', '', raw_content)  # remove ```json
-        json_str = re.sub(r'\s*```$', '', json_str)         # remove ending ```
+        json_str = re.sub(r'^```json\s*', '', raw_content)  # remove ```json at start
+        json_str = re.sub(r'\s*```$', '', json_str)         # remove ``` at end
         json_str = json_str.strip()
         # Fix trailing commas in objects/arrays
         json_str = re.sub(r',\s*}', '}', json_str)
         json_str = re.sub(r',\s*]', ']', json_str)
 
-        # Print the JSON in a readable format
-        print("Raw JSON from OpenAI API:")
-        # print(json.dumps(json.loads(json_str), indent=4))  # Pretty-print JSON
+        # Parse the JSON string into a Python dictionary
+        json_data = json.loads(json_str)
 
-        return json.loads(json_str)
+        # Overwrite the job_title field with the user-provided context (just to be sure)
+        json_data["job_title"] = job_title_context
+
+        print("Raw JSON from OpenAI API:")
+        print(json.dumps(json_data, indent=4))  # Pretty-print JSON
+
+        return json_data
     except Exception as e:
         print(f"Error calling OpenAI API: {e}")
         return None
+
 
 @app.route('/generate_cv', methods=['GET', 'POST'])
 def generate_cv():
@@ -176,7 +218,7 @@ def generate_cv():
     global PAGE_HEIGHT_MM, PAGE_WIDTH_MM, PADDING_MM
 
     # Page dimensions and padding (A4 size)
-    PAGE_HEIGHT_MM = 280  # A4 height in mm
+    PAGE_HEIGHT_MM = 270  # A4 height in mm
     PAGE_WIDTH_MM = 210   # A4 width in mm
     PADDING_MM = 30       # Padding around the content
 
