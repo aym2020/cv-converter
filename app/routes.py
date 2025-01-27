@@ -8,13 +8,22 @@ import re
 from app import app
 from datetime import datetime
 import uuid
+from google.cloud import firestore
+
+
 
 # Load environment variables
 load_dotenv()
 
+# Initialize Firestore client
+db = firestore.Client(database=os.getenv('FIRESTORE_DATABASE'))
+
 # Initialize OpenAI client
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_API_KEY)
+
+# Get the path to the service account key
+credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
 # Configure upload folder
 app.config['UPLOAD_FOLDER'] = 'app/uploads'
@@ -624,30 +633,25 @@ def edit_form():
 
 # Helper functions to load and save sales managers
 def load_sales_managers():
-    json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
-    if not os.path.exists(json_filepath):
-        return []
-    with open(json_filepath, 'r') as f:
-        return json.load(f)
+    managers_ref = db.collection('sales_managers')
+    managers = [doc.to_dict() for doc in managers_ref.stream()]
+    return managers
 
 def save_sales_managers(managers):
-    json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
-    with open(json_filepath, 'w') as f:
-        json.dump(managers, f, indent=4)
+    managers_ref = db.collection('sales_managers')
+    for manager in managers:
+        managers_ref.document(manager['id']).set(manager)
 
 
 
 @app.route('/sales_managers')
 def get_sales_managers():
     try:
-        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
-        if not os.path.exists(json_filepath):
-            return jsonify({'success': False, 'error': 'No sales managers JSON found.'})
-        
-        with open(json_filepath, 'r') as f:
-            data = json.load(f)
-        
-        return jsonify({'success': True, 'data': data})
+        # Fetch all documents from the Firestore 'sales_managers' collection
+        managers_ref = db.collection('sales_managers')
+        managers = [doc.to_dict() for doc in managers_ref.stream()]
+
+        return jsonify({'success': True, 'data': managers})
     except Exception as e:
         print(f"Error fetching sales managers: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -656,15 +660,18 @@ def get_sales_managers():
 @app.route('/get_sales_manager/<manager_id>', methods=['GET'])
 def get_sales_manager(manager_id):
     try:
-        managers = load_sales_managers()
-        manager = next((m for m in managers if m.get('id') == manager_id), None)
-        if manager:
-            return jsonify({'success': True, 'data': manager}), 200
-        else:
+        # Fetch the document from Firestore
+        doc_ref = db.collection('sales_managers').document(manager_id)
+        doc = doc_ref.get()
+        if not doc.exists:
             return jsonify({'success': False, 'error': 'Sales manager not found.'}), 404
+
+        # Return the manager's data
+        return jsonify({'success': True, 'data': doc.to_dict()}), 200
     except Exception as e:
         print(f"Error fetching sales manager: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
+
 
 
 @app.route('/add_sales_manager', methods=['POST'])
@@ -674,35 +681,24 @@ def add_sales_manager():
         first_name = data.get('first_name')
         name = data.get('name')
         role = data.get('role')
-        email = data.get('email', "")  # Optional, default to empty string
-        tel = data.get('tel', "")      # Optional, default to empty string
+        email = data.get('email', "")
+        tel = data.get('tel', "")
 
-        # Validate required fields
         if not all([first_name, name, role]):
             return jsonify({'success': False, 'error': 'First name, last name, and role are required.'}), 400
 
-        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
-        if not os.path.exists(json_filepath):
-            managers = []
-        else:
-            with open(json_filepath, 'r') as f:
-                managers = json.load(f)
-
-        # Generate a unique ID for the new manager
         new_id = str(uuid.uuid4())
-
-        # Append the new sales manager
-        managers.append({
+        manager_data = {
             "id": new_id,
             "first_name": first_name,
             "name": name,
             "role": role,
             "email": email,
             "tel": tel
-        })
+        }
 
-        with open(json_filepath, 'w') as f:
-            json.dump(managers, f, indent=4)
+        # Add to Firestore
+        db.collection('sales_managers').document(new_id).set(manager_data)
 
         return jsonify({'success': True, 'id': new_id}), 200
 
@@ -718,23 +714,10 @@ def remove_sales_manager():
         manager_id = data.get('id')
         if not manager_id:
             return jsonify({'success': False, 'error': 'No ID provided.'}), 400
-        
-        json_filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'sales_managers.json')
-        if not os.path.exists(json_filepath):
-            return jsonify({'success': False, 'error': 'No sales managers JSON found.'}), 404
-        
-        with open(json_filepath, 'r') as f:
-            managers = json.load(f)
-        
-        # Find and remove the manager with the given ID
-        updated_managers = [manager for manager in managers if manager.get('id') != manager_id]
-        
-        if len(updated_managers) == len(managers):
-            return jsonify({'success': False, 'error': 'Sales manager not found.'}), 404
-        
-        with open(json_filepath, 'w') as f:
-            json.dump(updated_managers, f, indent=4)
-        
+
+        # Delete from Firestore
+        db.collection('sales_managers').document(manager_id).delete()
+
         return jsonify({'success': True}), 200
     except Exception as e:
         print(f"Error removing sales manager: {e}")

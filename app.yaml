@@ -6,7 +6,7 @@ instance_class: F1
 automatic_scaling:
   target_cpu_utilization: 0.65
   min_instances: 1
-  max_instances: 10
+  max_instances: 5
 
 handlers:
 - url: /static
@@ -19,3 +19,6 @@ handlers:
 
 env_variables:
   UPLOAD_FOLDER: "app/uploads"
+  GOOGLE_APPLICATION_CREDENTIALS: "cv-converter-449021-6e30f3266209.json"
+  FIRESTORE_DATABASE: cv-converter-db
+
