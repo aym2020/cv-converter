@@ -9,11 +9,27 @@ from app import app
 from datetime import datetime
 import uuid
 from google.cloud import firestore
-
-
+from google.cloud import secretmanager
+import google.auth
+from google.auth import impersonated_credentials
 
 # Load environment variables
 load_dotenv()
+
+# Initialize Secret Manager client
+client = secretmanager.SecretManagerServiceClient()
+
+# Fetch the secret from Secret Manager
+secret_name = "projects/758896535787/secrets/firestore-account-key/versions/latest"
+response = client.access_secret_version(request={"name": secret_name})
+secret_payload = response.payload.data.decode("UTF-8")
+
+# Write the secret to a temporary file
+with open("temp_secret.json", "w") as f:
+    f.write(secret_payload)
+
+# Set the environment variable to point to the temporary file
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "temp_secret.json"
 
 # Initialize Firestore client
 db = firestore.Client(database=os.getenv('FIRESTORE_DATABASE'))

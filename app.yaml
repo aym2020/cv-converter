@@ -19,6 +19,4 @@ handlers:
 
 env_variables:
   UPLOAD_FOLDER: "app/uploads"
-  GOOGLE_APPLICATION_CREDENTIALS: "cv-converter-449021-6e30f3266209.json"
   FIRESTORE_DATABASE: cv-converter-db
-
