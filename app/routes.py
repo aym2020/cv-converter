@@ -16,23 +16,17 @@ from google.auth import impersonated_credentials
 # Load environment variables
 load_dotenv()
 
-# Initialize Secret Manager client
-client = secretmanager.SecretManagerServiceClient()
-
 # Fetch the secret from Secret Manager
-secret_name = "projects/758896535787/secrets/firestore-account-key/versions/latest"
-response = client.access_secret_version(request={"name": secret_name})
+secret_client = secretmanager.SecretManagerServiceClient()
+secret_name = "projects/cv-converter-449021/secrets/firestore-account-key/versions/latest"
+response = secret_client.access_secret_version(request={"name": secret_name})
 secret_payload = response.payload.data.decode("UTF-8")
 
-# Write the secret to a temporary file
-with open("temp_secret.json", "w") as f:
-    f.write(secret_payload)
+# Parse the secret (service account JSON)
+credentials_info = json.loads(secret_payload)
 
-# Set the environment variable to point to the temporary file
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "temp_secret.json"
-
-# Initialize Firestore client
-db = firestore.Client(database=os.getenv('FIRESTORE_DATABASE'))
+# Initialize Firestore with explicit credentials
+firestore_client = firestore.Client.from_service_account_info(credentials_info)
 
 # Initialize OpenAI client
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -46,11 +40,6 @@ app.config['UPLOAD_FOLDER'] = 'app/uploads'
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
-
-# Default page dimensions and padding
-PAGE_HEIGHT_MM = 290  # Default height
-PAGE_WIDTH_MM = 210   # Default width
-PADDING_MM = 25       # Default padding
 
 @app.route('/')
 def index():
