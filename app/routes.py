@@ -26,7 +26,9 @@ secret_payload = response.payload.data.decode("UTF-8")
 credentials_info = json.loads(secret_payload)
 
 # Initialize Firestore with explicit credentials
-firestore_client = firestore.Client.from_service_account_info(credentials_info)
+firestore_client = firestore.Client.from_service_account_info(credentials_info, 
+                                                              project="cv-converter-449021", 
+                                                              database="cv-converter-db")
 
 # Initialize OpenAI client
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -261,7 +263,7 @@ def generate_cv():
     # Page dimensions and padding (A4 size)
     PAGE_HEIGHT_MM = 290  # A4 height in mm
     PAGE_WIDTH_MM = 210   # A4 width in mm
-    PADDING_MM = 30       # Padding around the content
+    PADDING_MM = 30      # Padding around the content
 
     # Content height after accounting for padding
     CONTENT_HEIGHT_MM = PAGE_HEIGHT_MM - 2 * PADDING_MM
@@ -638,22 +640,21 @@ def edit_form():
 
 # Helper functions to load and save sales managers
 def load_sales_managers():
-    managers_ref = db.collection('sales_managers')
+    managers_ref = firestore_client.collection('sales_managers')
     managers = [doc.to_dict() for doc in managers_ref.stream()]
     return managers
 
 def save_sales_managers(managers):
-    managers_ref = db.collection('sales_managers')
+    managers_ref = firestore_client.collection('sales_managers')
     for manager in managers:
         managers_ref.document(manager['id']).set(manager)
-
 
 
 @app.route('/sales_managers')
 def get_sales_managers():
     try:
         # Fetch all documents from the Firestore 'sales_managers' collection
-        managers_ref = db.collection('sales_managers')
+        managers_ref = firestore_client.collection('sales_managers')
         managers = [doc.to_dict() for doc in managers_ref.stream()]
 
         return jsonify({'success': True, 'data': managers})
@@ -666,7 +667,7 @@ def get_sales_managers():
 def get_sales_manager(manager_id):
     try:
         # Fetch the document from Firestore
-        doc_ref = db.collection('sales_managers').document(manager_id)
+        doc_ref = firestore_client.collection('sales_managers').document(manager_id)
         doc = doc_ref.get()
         if not doc.exists:
             return jsonify({'success': False, 'error': 'Sales manager not found.'}), 404
@@ -676,7 +677,6 @@ def get_sales_manager(manager_id):
     except Exception as e:
         print(f"Error fetching sales manager: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
-
 
 
 @app.route('/add_sales_manager', methods=['POST'])
@@ -703,7 +703,7 @@ def add_sales_manager():
         }
 
         # Add to Firestore
-        db.collection('sales_managers').document(new_id).set(manager_data)
+        firestore_client.collection('sales_managers').document(new_id).set(manager_data)
 
         return jsonify({'success': True, 'id': new_id}), 200
 
@@ -721,7 +721,7 @@ def remove_sales_manager():
             return jsonify({'success': False, 'error': 'No ID provided.'}), 400
 
         # Delete from Firestore
-        db.collection('sales_managers').document(manager_id).delete()
+        firestore_client.collection('sales_managers').document(manager_id).delete()
 
         return jsonify({'success': True}), 200
     except Exception as e:

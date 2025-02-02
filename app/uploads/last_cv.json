@@ -1,90 +1,143 @@
 {
-    "name": "Elafi",
-    "first_name": "Issam",
-    "job_title": "HelpDesk L2",
+    "name": "A.",
+    "first_name": "B.",
+    "job_title": "Java FullStack Developer ",
     "skills": {
-        "Programming": [
-            "C#",
-            "SQL",
-            "C"
+        "Programming & Development": [
+            "Java",
+            "TypeScript",
+            "JavaScript",
+            "HTML",
+            "CSS",
+            "PHP",
+            "Python",
+            "Spring",
+            "Spring Boot",
+            "Hibernate",
+            "Kafka",
+            "Angular",
+            "REST API"
         ],
-        "Device & Application Management": [
-            "ERP",
-            "Visual Studio",
-            "PG Admin",
-            "Linux"
+        "Database & Servers": [
+            "MySQL",
+            "PostgreSQL",
+            "Oracle",
+            "MongoDB",
+            "Apache Tomcat"
         ],
-        "Collaboration & Productivity Tools": [
-            "Word",
-            "Excel",
-            "PowerPoint"
+        "Tools & Platforms": [
+            "IntelliJ",
+            "Eclipse",
+            "Visual Studio Code",
+            "WebStorm",
+            "Windows",
+            "macOS",
+            "Linux",
+            "JIRA",
+            "Confluence",
+            "Postman"
+        ],
+        "DevOps & Cloud": [
+            "Maven",
+            "Jenkins",
+            "Git",
+            "GitLab",
+            "GitHub",
+            "SonarQube",
+            "AWS Cloud Practitioner"
+        ],
+        "Methodologies & Testing": [
+            "Agile Scrum",
+            "UML",
+            "JUnit"
         ]
     },
     "languages": {
-        "French": "Native or bilingual proficiency \u2013 C2",
-        "English": "Professional working proficiency \u2013 B2"
+        "English": "Native or bilingual proficiency \u2013 C2",
+        "French": "Native or bilingual proficiency \u2013 C2"
     },
     "experiences": [
         {
-            "job_title": "Junior Application Architect",
-            "company": "Empirys - Advanzia Bank",
-            "duration": "07/2023 \u2013 10/2023",
-            "description": "- Assisted in the creation of system architecture diagrams and documentation to support project teams.\n- Worked closely with IT teams to ensure alignment between technical requirements and business needs within the banking environment."
+            "job_title": "Full Stack Developer",
+            "company": "STELLANTIS",
+            "duration": "2025 - Now",
+            "description": "Development of application features\r\nImprovement and resolution of anomalies, managing projects for different countries in pre-production\r\nIncident management in production and deployment (MEP) of various projects using PSASM\r\nOn-call duty and support for critical systems\r\nImplementation of unit tests for the project\r\nImplementation and monitoring of communication with Stellantis APIs\r\nContinuous integration and deployment of applications across different environments\r\nAPI documentation on Confluence",
+            "client_references": []
         },
         {
-            "job_title": "Study Coordinator",
-            "company": "TransPerfect Data Force",
-            "duration": "09/2022 \u2013 06/2023",
-            "description": "- Coordinated data collection projects aimed at improving AI-driven speech recognition systems.\n- Managed large-scale datasets, ensuring data quality and accuracy for use in machine learning models."
+            "job_title": "Full Stack Developer",
+            "company": "SFEIR (FOYER)",
+            "duration": "04/2023 - 07/2024",
+            "description": "Development of application features\r\nImprovement and error management in projects, proposing solutions to handle production incidents, including the implementation of tests\r\nImplementation of unit tests for the project\r\nImplementation and monitoring of communication with Salesforce APIs and various third-party payment services, along with the development of related features\r\nContinuous integration and deployment of applications across different environments\r\nAPI documentation in Postman and feature documentation in Confluence",
+            "client_references": []
         },
         {
-            "job_title": "C# Developer Intern",
-            "company": "Stick Attack",
-            "duration": "05/2022 \u2013 10/2022",
-            "description": "- Designed and developed a stock management desktop application to streamline the company\u2019s logistics operations.\n- Collaborated with the team to ensure the solution met the company's operational needs, significantly enhancing their logistical workflow."
+            "job_title": "Full Stack Developer",
+            "company": "SFEIR (Police grand-ducale)",
+            "duration": "02/2022 - 03/2023",
+            "description": "Development of application features\r\nMonitoring and management of production incidents, collaborating with the infrastructure team\r\nImplementation of unit tests for the project\r\nIntegration of code quality checks using SonarQube as part of the Definition of Done\r\nContinuous integration and deployment of applications across different environments\r\nDocumentation of detailed technical specifications and deployment documents in Alfresco",
+            "client_references": []
         },
         {
-            "job_title": "Electronic Technician",
-            "company": "Ujet Manufacturing",
-            "duration": "01/2019 \u2013 09/2021",
-            "description": "- Diagnosed, identified, and resolved electronic faults in electric scooters, ensuring reliable and safe operation of vehicles\n- Gained hands-on experience in high-tech electric vehicle production, focusing on quality control and system reliability."
+            "job_title": "Java Cloud Engineer",
+            "company": "Renault Digital",
+            "duration": "06/2021 - 02/2022",
+            "description": "Development of features for smart cars\r\nImplementation of unit and integration tests for the project\r\nProduction deployment of various microservices and deployment across different environments\r\nImprovement and error management in projects\r\nDocumentation of technical specifications and deployment documents",
+            "client_references": []
+        },
+        {
+            "job_title": "Full Stack Developer",
+            "company": "Teamwill (Attijari Bank)",
+            "duration": "03/2020 - 06/2021",
+            "description": "Implementation of different layers of microservices and configuration of communication with Kafka as a consumer or producer\r\nDevelopment of application features\r\nImplementation of unit tests for the project\r\nImprovement and error management in projects",
+            "client_references": []
+        },
+        {
+            "job_title": "Full Stack Developer",
+            "company": "TALAN",
+            "duration": "09/2019 - 03/2020",
+            "description": "Business analysis and application design\r\nBackend development using Spring Framework for Java (Spring Data JPA, REST Services, Hibernate, etc.)\r\nFrontend development with Angular 7\r\nImplementation of unit tests\r\nActive participation in technical meetings and tracking of anomalies",
+            "client_references": []
+        },
+        {
+            "job_title": "Full Stack Developer",
+            "company": "Adaming",
+            "duration": "10/2018 - 09/2019",
+            "description": "Business analysis and application design\r\nBackend development with Spring Framework (Spring Boot, Spring Data JPA, REST Services, Hibernate)\r\nFrontend development with Angular 7\r\nImplementation of unit tests\r\nMonitoring and tracking of anomalies",
+            "client_references": []
+        },
+        {
+            "job_title": "Embedded Software Engineer",
+            "company": "Lilas",
+            "duration": "01/2016 - 10/2018",
+            "description": "Establish, organize, and monitor the preventive maintenance plan\r\nInspect machines and ensure compliance with safety standards\r\nManage the equipment inventory",
+            "client_references": []
         }
     ],
     "education": [
         {
-            "degree": "Student",
-            "institution": "Ecole 42",
-            "duration": "11/2023 \u2013 09/2024",
-            "description": "- Learning language C\n- Fundamental of science computer"
-        },
-        {
-            "degree": "Online Student",
-            "institution": "MaCertif",
-            "duration": "02/2022 \u2013 10/2022",
-            "description": "- Fundamental of C# web"
-        },
-        {
-            "degree": "Application Designer and Developer",
-            "institution": "",
-            "duration": "11/2021 \u2013 07/2022",
-            "description": "- Design and develop desktop applications\n- Design a database\n- Introduction to OOP"
-        },
-        {
-            "degree": "BTS Electronic Diagnostic Automotive",
-            "institution": "",
-            "duration": "09/2013 \u2013 06/2015",
-            "description": "- Managing and creating electrical diagrams\n- Learning the elements of Auto mechanics\n- Learning multiplexing"
-        },
-        {
-            "degree": "BAC Vehicle Maintenance",
-            "institution": "",
-            "duration": "09/2010 \u2013 06/2013",
-            "description": "- Introduction to car mechanics."
+            "degree": "Ing\u00e9nieur en technologies de l'information ",
+            "institution": "National Engineering School of Monastir",
+            "duration": "2015",
+            "description": ""
         }
     ],
-    "certifications": [],
-    "manager_name": "Reda QorchI",
-    "manager_email": "reda.qorchi@randstaddigital.lu",
+    "certifications": [
+        {
+            "name": "LangChain Certification",
+            "issuer": "KodeKloud"
+        },
+        {
+            "name": "Certified Kubernetes Application Developer (CKAD)",
+            "issuer": "The Linux Foundation"
+        },
+        {
+            "name": "AWS Certified Cloud Practitioner",
+            "issuer": "AWS"
+        }
+    ],
+    "manager_name": "Chaouki EL AZAOUI",
+    "manager_email": "chaouki.elazaoui@gmail.com",
     "manager_tel": "",
-    "manager_role": "Delivery Manager"
+    "manager_role": "Senior Account Manager"
 }
