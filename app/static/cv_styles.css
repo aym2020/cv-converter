@@ -487,6 +487,7 @@ body {
     .home-button,
     .print-button,
     .back-to-form-button,
+    .settings-panel,
     .action-buttons {
         display: none !important;
     }

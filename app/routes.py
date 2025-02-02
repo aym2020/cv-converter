@@ -520,13 +520,28 @@ def generate_cv():
                         break
                 data["languages"] = languages
 
-                # Update experiences with client references
+                # Update experiences with client references (maintaining order from form submission)
                 experiences = []
-                i = 1
-                while True:
+                experience_indices = []
+
+                # Collect all experience indices in submission order
+                for key in request.form.keys():
+                    if key.startswith("job_title_"):
+                        try:
+                            index = int(key.split("_")[-1])
+                            experience_indices.append(index)
+                        except ValueError:
+                            continue
+
+                # Remove duplicates while preserving order
+                seen = set()
+                experience_indices = [x for x in experience_indices if not (x in seen or seen.add(x))]
+
+                # Process experiences in submission order
+                for i in experience_indices:
                     job_title = request.form.get(f"job_title_{i}")
                     if not job_title:
-                        break
+                        continue
 
                     # Collect client references
                     client_references = []
@@ -550,7 +565,6 @@ def generate_cv():
                         })
                         j += 1
 
-                    # Append the experience with references
                     experiences.append({
                         "job_title": job_title.strip(),
                         "company": request.form.get(f"company_{i}", "").strip(),
@@ -558,37 +572,69 @@ def generate_cv():
                         "description": request.form.get(f"description_{i}", "").strip(),
                         "client_references": client_references
                     })
-                    i += 1
+
                 data["experiences"] = experiences
 
-                # Update education
+                # Update education (maintaining order from form submission)
                 education = []
-                j = 1
-                while True:
+                education_indices = []
+
+                # Collect all education indices in submission order
+                for key in request.form.keys():
+                    if key.startswith("degree_"):
+                        try:
+                            index = int(key.split("_")[-1])
+                            education_indices.append(index)
+                        except ValueError:
+                            continue
+
+                # Remove duplicates while preserving order
+                seen = set()
+                education_indices = [x for x in education_indices if not (x in seen or seen.add(x))]
+
+                # Process education items in submission order
+                for j in education_indices:
                     degree = request.form.get(f"degree_{j}")
                     if not degree:
-                        break
+                        continue
+
                     education.append({
                         "degree": degree,
-                        "institution": request.form.get(f"institution_{j}", ""),
-                        "duration": request.form.get(f"education_duration_{j}", ""),
-                        "description": request.form.get(f"education_description_{j}", ""),
+                        "institution": request.form.get(f"institution_{j}", "").strip(),
+                        "duration": request.form.get(f"education_duration_{j}", "").strip(),
+                        "description": request.form.get(f"education_description_{j}", "").strip(),
                     })
-                    j += 1
+
                 data["education"] = education
 
-                # Update certifications
+                # Update certifications (maintaining order from form submission)
                 certifications = []
-                k = 1
-                while True:
+                certification_indices = []
+
+                # Collect all certification indices in submission order
+                for key in request.form.keys():
+                    if key.startswith("certification_name_"):
+                        try:
+                            index = int(key.split("_")[-1])
+                            certification_indices.append(index)
+                        except ValueError:
+                            continue
+
+                # Remove duplicates while preserving order
+                seen = set()
+                certification_indices = [x for x in certification_indices if not (x in seen or seen.add(x))]
+
+                # Process certification items in submission order
+                for k in certification_indices:
                     certification_name = request.form.get(f"certification_name_{k}")
                     if not certification_name:
-                        break
+                        continue
+
                     certifications.append({
-                        "name": certification_name,
-                        "issuer": request.form.get(f"certification_issuer_{k}", ""),
+                        "name": certification_name.strip(),
+                        "issuer": request.form.get(f"certification_issuer_{k}", "").strip(),
                     })
-                    k += 1
+
                 data["certifications"] = certifications
 
                 # Save updated CV back to Firestore

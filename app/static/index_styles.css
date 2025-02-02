@@ -626,4 +626,18 @@ body {
     .sales-manager-card.add-card {
         width: 100%; /* 1 card per row */
     }
+
+    /* Move Button */
+    .move-button {
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 5px;
+        margin: 0 5px;
+    }
+    
+    .move-button:hover {
+        color: #333;
+    }
 }

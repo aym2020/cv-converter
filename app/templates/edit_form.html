@@ -90,6 +90,70 @@
                 <button type="button" class="add-button" onclick="addSkillCategory()">Add Skill Category</button>
             </div>
 
+            <!-- Education Section -->
+            <div class="form-group">
+                <label>Education:</label>
+                <div id="education-container">
+                    {% for education in data.education %}
+                        <fieldset class="education-item">
+                            <div class="move-buttons">
+                                <button type="button" class="move-button" onclick="moveEducationUp(this)">↑</button>
+                                <button type="button" class="move-button" onclick="moveEducationDown(this)">↓</button>
+                            </div>
+                            <legend>Education {{ loop.index }}</legend>
+                            <div class="form-group">
+                                <label for="degree_{{ loop.index }}">Degree:</label>
+                                <input type="text" id="degree_{{ loop.index }}" name="degree_{{ loop.index }}" value="{{ education.degree }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="institution_{{ loop.index }}">Institution:</label>
+                                <input type="text" id="institution_{{ loop.index }}" name="institution_{{ loop.index }}" value="{{ education.institution }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="education_duration_{{ loop.index }}">Duration:</label>
+                                <input type="text" id="education_duration_{{ loop.index }}" name="education_duration_{{ loop.index }}" value="{{ education.duration }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="education_description_{{ loop.index }}">Description:</label>
+                                <textarea id="education_description_{{ loop.index }}" name="education_description_{{ loop.index }}">{{ education.description }}</textarea>
+                            </div>
+                            <button type="button" class="remove-button" onclick="removeEducation(this)">Remove</button>
+                        </fieldset>
+                    {% endfor %}
+                </div>
+                <button type="button" class="add-button" onclick="addEducation()">Add Education</button>
+            </div>
+
+            <!-- Certifications -->
+            <div class="form-group">
+                <label>Certifications:</label>
+                <div id="certifications-container">
+                    {% if data.certifications and data.certifications|length > 0 %}
+                        {% for certification in data.certifications %}
+                            <fieldset class="certification-item">
+                                <div class="move-buttons">
+                                    <button type="button" class="move-button" onclick="moveCertificationUp(this)">↑</button>
+                                    <button type="button" class="move-button" onclick="moveCertificationDown(this)">↓</button>
+                                </div>
+                                <legend>Certification {{ loop.index }}</legend>
+                                <div class="form-group">
+                                    <label for="certification_name_{{ loop.index }}">Name:</label>
+                                    <input type="text" id="certification_name_{{ loop.index }}" name="certification_name_{{ loop.index }}" value="{{ certification.name }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="certification_issuer_{{ loop.index }}">Issuer:</label>
+                                    <input type="text" id="certification_issuer_{{ loop.index }}" name="certification_issuer_{{ loop.index }}" value="{{ certification.issuer }}">
+                                </div>
+                                <button type="button" class="remove-button" onclick="removeCertification(this)">Remove</button>
+                            </fieldset>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Display nothing if there are no certifications -->
+                    {% endif %}
+                </div>
+                <button type="button" class="add-button" onclick="addCertification()">Add Certification</button>
+            </div>
+
             <!-- Languages -->
             <div class="form-group">
                 <label>Languages:</label>
@@ -120,8 +184,14 @@
                         <!-- Store the parent loop index in a variable -->
                         {% set expIndex = loop.index %}
                         <fieldset class="experience-item" data-expindex="{{ expIndex }}">
+
+                            <div class="move-buttons">
+                                <button type="button" class="move-button" onclick="moveExperienceUp(this)">↑</button>
+                                <button type="button" class="move-button" onclick="moveExperienceDown(this)">↓</button>
+                            </div>    
+
                             <legend>Experience {{ expIndex }}</legend>
-                            
+                                                    
                             <!-- Existing fields for the experience -->
                             <div class="form-group">
                                 <label for="job_title_{{ expIndex }}">Job Title:</label>
@@ -203,63 +273,6 @@
                 <button type="button" class="add-button" onclick="addExperience()">Add Experience</button>
             </div>
 
-            <!-- Education Section -->
-            <div class="form-group">
-                <label>Education:</label>
-                <div id="education-container">
-                    {% for education in data.education %}
-                        <fieldset class="education-item">
-                            <legend>Education {{ loop.index }}</legend>
-                            <div class="form-group">
-                                <label for="degree_{{ loop.index }}">Degree:</label>
-                                <input type="text" id="degree_{{ loop.index }}" name="degree_{{ loop.index }}" value="{{ education.degree }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="institution_{{ loop.index }}">Institution:</label>
-                                <input type="text" id="institution_{{ loop.index }}" name="institution_{{ loop.index }}" value="{{ education.institution }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="education_duration_{{ loop.index }}">Duration:</label>
-                                <input type="text" id="education_duration_{{ loop.index }}" name="education_duration_{{ loop.index }}" value="{{ education.duration }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="education_description_{{ loop.index }}">Description:</label>
-                                <textarea id="education_description_{{ loop.index }}" name="education_description_{{ loop.index }}">{{ education.description }}</textarea>
-                            </div>
-                            <button type="button" class="remove-button" onclick="removeEducation(this)">Remove</button>
-                        </fieldset>
-                    {% endfor %}
-                </div>
-                <button type="button" class="add-button" onclick="addEducation()">Add Education</button>
-            </div>
-
-            <!-- Certifications -->
-            <div class="form-group">
-                <label>Certifications:</label>
-                <div id="certifications-container">
-                    {% if data.certifications and data.certifications|length > 0 %}
-                        {% for certification in data.certifications %}
-                            <fieldset class="certification-item">
-                                <legend>Certification {{ loop.index }}</legend>
-                                <div class="form-group">
-                                    <label for="certification_name_{{ loop.index }}">Name:</label>
-                                    <input type="text" id="certification_name_{{ loop.index }}" name="certification_name_{{ loop.index }}" value="{{ certification.name }}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="certification_issuer_{{ loop.index }}">Issuer:</label>
-                                    <input type="text" id="certification_issuer_{{ loop.index }}" name="certification_issuer_{{ loop.index }}" value="{{ certification.issuer }}">
-                                </div>
-                                <button type="button" class="remove-button" onclick="removeCertification(this)">Remove</button>
-                            </fieldset>
-                        {% endfor %}
-                    {% else %}
-                        <!-- Display nothing if there are no certifications -->
-                    {% endif %}
-                </div>
-                <button type="button" class="add-button" onclick="addCertification()">Add Certification</button>
-            </div>
-
-        
             <button type="submit" class="submit-button">Generate CV</button>
         </form>
     </div>
@@ -301,6 +314,10 @@
             const newExperience = document.createElement('fieldset');
             newExperience.className = 'experience-item';
             newExperience.innerHTML = `
+                <div class="move-buttons">
+                    <button type="button" class="move-button" onclick="moveExperienceUp(this)">↑</button>
+                    <button type="button" class="move-button" onclick="moveExperienceDown(this)">↓</button>
+                </div>
                 <legend>Experience ${index}</legend>
                 <div class="form-group">
                     <label for="job_title_${index}">Job Title:</label>
@@ -321,6 +338,7 @@
                 <button type="button" class="remove-button" onclick="removeExperience(this)">Remove</button>
             `;
             container.appendChild(newExperience);
+            updateExperienceNumbers(); 
         }
     
         // Function to remove an experience field
@@ -335,7 +353,11 @@
             const newEducation = document.createElement('fieldset');
             newEducation.className = 'education-item';
             newEducation.innerHTML = `
-                <legend>Education ${index}</legend>
+                <div class="move-buttons">
+                    <button type="button" class="move-button" onclick="moveEducationUp(this)">↑</button>
+                    <button type="button" class="move-button" onclick="moveEducationDown(this)">↓</button>
+                </div>
+                <legend>Education ${container.children.length + 1}</legend>
                 <div class="form-group">
                     <label for="degree_${index}">Degree:</label>
                     <input type="text" id="degree_${index}" name="degree_${index}">
@@ -355,6 +377,7 @@
                 <button type="button" class="remove-button" onclick="removeEducation(this)">Remove</button>
             `;
             container.appendChild(newEducation);
+            updateEducationNumbers();
         }
     
         // Function to remove an education field
@@ -369,7 +392,11 @@
             const newCertification = document.createElement('fieldset');
             newCertification.className = 'certification-item';
             newCertification.innerHTML = `
-                <legend>Certification ${index}</legend>
+                <div class="move-buttons">
+                    <button type="button" class="move-button" onclick="moveCertificationUp(this)">↑</button>
+                    <button type="button" class="move-button" onclick="moveCertificationDown(this)">↓</button>
+                </div>
+                <legend>Certification ${container.children.length + 1}</legend>
                 <div class="form-group">
                     <label for="certification_name_${index}">Name:</label>
                     <input type="text" id="certification_name_${index}" name="certification_name_${index}">
@@ -381,6 +408,7 @@
                 <button type="button" class="remove-button" onclick="removeCertification(this)">Remove</button>
             `;
             container.appendChild(newCertification);
+            updateCertificationNumbers();
         }
     
         // Function to remove a certification field
@@ -548,6 +576,101 @@
             if (managerRole) managerRole.value = '';
             if (managerEmail) managerEmail.value = '';
             if (managerTel) managerTel.value = '';
+        }
+
+        // For experiences
+        function moveExperienceUp(button) {
+            const experienceItem = button.closest('.experience-item');
+            const previousItem = experienceItem.previousElementSibling;
+            
+            if (previousItem) {
+                experienceItem.parentNode.insertBefore(experienceItem, previousItem);
+                updateExperienceNumbers();
+                experienceItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function moveExperienceDown(button) {
+            const experienceItem = button.closest('.experience-item');
+            const nextItem = experienceItem.nextElementSibling;
+            
+            if (nextItem) {
+                experienceItem.parentNode.insertBefore(nextItem, experienceItem);
+                updateExperienceNumbers();
+                experienceItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function updateExperienceNumbers() {
+            const container = document.getElementById('experiences-container');
+            const experiences = container.getElementsByClassName('experience-item');
+            
+            Array.from(experiences).forEach((experience, index) => {
+                const legend = experience.querySelector('legend');
+                if (legend) {
+                    legend.textContent = `Experience ${index + 1}`;
+                }
+            });
+        }
+
+        // For education
+        function moveEducationUp(button) {
+            const item = button.closest('.education-item');
+            const previousItem = item.previousElementSibling;
+            if (previousItem) {
+                item.parentNode.insertBefore(item, previousItem);
+                updateEducationNumbers();
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function moveEducationDown(button) {
+            const item = button.closest('.education-item');
+            const nextItem = item.nextElementSibling;
+            if (nextItem) {
+                item.parentNode.insertBefore(nextItem, item);
+                updateEducationNumbers();
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function updateEducationNumbers() {
+            const container = document.getElementById('education-container');
+            const items = container.getElementsByClassName('education-item');
+            Array.from(items).forEach((item, index) => {
+                const legend = item.querySelector('legend');
+                if (legend) legend.textContent = `Education ${index + 1}`;
+            });
+        }
+
+        // For certifications
+        function moveCertificationUp(button) {
+            const item = button.closest('.certification-item');
+            const previousItem = item.previousElementSibling;
+            if (previousItem) {
+                item.parentNode.insertBefore(item, previousItem);
+                updateCertificationNumbers();
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function moveCertificationDown(button) {
+            const item = button.closest('.certification-item');
+            const nextItem = item.nextElementSibling;
+            if (nextItem) {
+                item.parentNode.insertBefore(nextItem, item);
+                updateCertificationNumbers();
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function updateCertificationNumbers() {
+            const container = document.getElementById('certifications-container');
+            const items = container.getElementsByClassName('certification-item');
+            Array.from(items).forEach((item, index) => {
+                const legend = item.querySelector('legend');
+                if (legend) legend.textContent = `Certification ${index + 1}`;
+            });
         }
 
 

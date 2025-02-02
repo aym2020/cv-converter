@@ -110,10 +110,16 @@
             <div class="education-list">
                 {% for item in block["items"] %}
                     <p>
-                        <span class="education-date">{{ item.duration }}</span>:
-                        <span class="education-degree">{{ item.degree }}</span>
+                        {% if item.duration %}
+                            <span class="education-date">{{ item.duration }}</span>
+                            {% if item.degree or item.institution %}:{% endif %}
+                        {% endif %}
+                        {% if item.degree %}
+                            <span class="education-degree">{{ item.degree }}</span>
+                        {% endif %}
                         {% if item.institution %}
-                            - <span class="education-institution">{{ item.institution }}</span>
+                            {% if item.degree %}-{% endif %}
+                            <span class="education-institution">{{ item.institution }}</span>
                         {% endif %}
                     </p>
                 {% endfor %}
@@ -126,12 +132,14 @@
                 {% for item in block["items"] %}
                     <div class="certification-item">
                         <span class="certification-name">{{ item.name }}</span>
-                        <span class="certification-issuer"> - {{ item.issuer }}</span>
+                        {% if item.issuer %}
+                            <span class="certification-issuer"> - {{ item.issuer }}</span>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
             <br>
-        
+
         {% elif block.type == "languages" %}
             <div class="section-title">{{ text.languages_title }}</div>
             <div class="languages-list">
