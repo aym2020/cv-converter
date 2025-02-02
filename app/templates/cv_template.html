@@ -66,7 +66,7 @@
         {% for block in page %}
 
         {% if block.type == "skills" %}
-            <div class="section-title">{{ block.heading }}</div>
+            <div class="section-title">{{ text.skills_title }}</div>
             <div class="skills-list">
             {% for item in block["items"] %}
                 <div class="skill-category">
@@ -78,11 +78,11 @@
             <br>
         
         {% elif block.type == "education" %}
-            <div class="section-title">{{ block.heading }}</div>
+            <div class="section-title">{{ text.education_title }}</div>
             <div class="education-list">
                 {% for item in block["items"] %}
                     <p>
-                        <span class="education-date">{{ item.duration }}</span>: 
+                        <span class="education-date">{{ item.duration }}</span>:
                         <span class="education-degree">{{ item.degree }}</span>
                         {% if item.institution %}
                             - <span class="education-institution">{{ item.institution }}</span>
@@ -93,7 +93,7 @@
             <br>
             
         {% elif block.type == "certifications" %}
-            <div class="section-title">{{ block.heading }}</div>
+            <div class="section-title">{{ text.certifications_title }}</div>
             <div class="certifications-list">
                 {% for item in block["items"] %}
                     <div class="certification-item">
@@ -105,7 +105,7 @@
             <br>
         
         {% elif block.type == "languages" %}
-            <div class="section-title">{{ block.heading }}</div>
+            <div class="section-title">{{ text.languages_title }}</div>
             <div class="languages-list">
                 {% for item in block["items"] %}
                     <div class="language-item">
@@ -116,7 +116,7 @@
             </div>
             <br>
 
-            {% elif block.type == "experiences" %}
+        {% elif block.type == "experiences" %}
             <div class="section-title">{{ block.heading }}</div>
             <div class="experiences-list">
                 {% for item in block["items"] %}
@@ -131,7 +131,7 @@
         
                     <!-- Description with Bullet Points -->
                     <div class="experience-description">
-                        <p class="description-label"><em>Description of the role:</em></p>
+                        <p class="description-label"><em>{{ text.description_label }}</em></p>
                         {% set lines = item.description.split('\n') %}
                         <ul>
                             {% for line in lines %}
@@ -143,27 +143,25 @@
                         </ul>
                     </div>
                     
-                    {% if not loop.last %}<br>{% endif %} <!-- Add a line break between references -->
+                    {% if not loop.last %}<br>{% endif %}
 
                     <!-- Client References -->
                     {% if item.client_references %}
                         <div class="client-references">
-                            <p class="description-label"><em>Client References:</em></p>
+                            <p class="description-label"><em>{{ text.client_references_label }}</em></p>
                             {% for reference in item.client_references %}
                                 <div class="client-reference">
                                     <p>{{ reference.first_name }} {{ reference.last_name }}</p>
                                     <p>{{ reference.role }}</p>
-                                    <!-- Apply the email-style class to the email -->
                                     <p><span class="email-style">{{ reference.email }}</span> - {{ reference.tel }}</p>
                                 </div>
-                                {% if not loop.last %}<br>{% endif %} <!-- Add a line break between references -->
+                                {% if not loop.last %}<br>{% endif %}
                             {% endfor %}
                         </div>
                     {% endif %}
-        
-                    <!-- Add a skipped line between experiences -->
+
                     {% if not loop.last %}
-                        <br> <!-- Skip a line -->
+                        <br>
                     {% endif %}
                 {% endfor %}
             </div>
@@ -174,13 +172,8 @@
 
     <!-- Last Page -->
     <div class="page last-page">
-        <span class="we-are-randstad-digital">we are randstad digital.<br><br></span>
-        <p>
-            Randstad Digital is a leading technology partner that accelerates digital transformation for businesses by providing talent, production capabilities, and packaged solutions in specialized fields. Our expertise enables you to strengthen your team while connecting you with skilled professionals worldwide who align with the technologies you’ve chosen.<br><br>
-            We focus on packaged solutions, empowering businesses to achieve their objectives quickly and efficiently. We operate across four service lines: customer experience (UX/UI), digital engineering and product engineering, data & analytics, and cloud & infrastructure. To achieve this, we offer our clients three engagement models: expertise, competency centers, and packaged solutions.<br><br>
-            Launched on August 30, 2023, Randstad Digital has an in-depth understanding of the labor market, enabling us to support our clients in their digital transformation projects with our diversified and agile expertise and methodologies. Our 46,000 employees worldwide positively impact society by helping people achieve their full potential throughout their professional lives.<br><br>
-            Randstad was founded in 1960, with its headquarters in Diemen, the Netherlands. In 2022, across our 39 markets, we helped over 2 million people find jobs that suited them and advised more than 230,000 clients on their talent needs. We generated €27.6 billion in revenue. Randstad N.V. is listed on Euronext Amsterdam.
-        </p>
+        <span class="we-are-randstad-digital">{{ text.we_are_randstad }}<br><br></span>
+        <p>{{ text.randstad_paragraph | safe }}</p>
 
         <!-- Laser Image -->
         <div class="laser-container">
@@ -190,30 +183,27 @@
 
     <!-- Last Page 2 -->
     <div class="page last-page-2">
-        <div class="our-solutions-title">our solutions</div>
+        <div class="our-solutions-title">{{ text.our_solutions }}</div>
 
-        <div class="section-title">customer experience</div>
+        <div class="section-title">{{ text.customer_experience }}</div>
         <div class="section-description">
-            We help you improve the way you interact with your customers by designing and creating a differentiated digital experience, giving meaning to every step of the customer journey.
+            {{ text.customer_experience_desc }}
         </div>
 
-    <div class="section-title">data & analytics</div>
-    <div class="section-description">
-        We help you catalog, gather, and structure your data, transforming it into actionable insights for your organization.
-    </div>
+        <div class="section-title">{{ text.data_analytics }}</div>
+        <div class="section-description">
+            {{ text.data_analytics_desc }}
+        </div>
 
-    <div class="section-title">product & digital engineering</div>
-    <div class="section-description">
-        We provide the expertise needed to accelerate digital innovation, from product design to tailor-made solutions.
-    </div>
+        <div class="section-title">{{ text.product_engineering }}</div>
+        <div class="section-description">
+            {{ text.product_engineering_desc }}
+        </div>
 
-    <div class="section-title">cloud & infrastructure</div>
-    <div class="section-description">
-        We provide the expertise to accelerate cloud migration and help you create an agile, digitally-focused infrastructure.
+        <div class="section-title">{{ text.cloud_infrastructure }}</div>
+        <div class="section-description">
+            {{ text.cloud_infrastructure_desc }}
+        </div>
     </div>
-</div>
-    <script>
-       
-    </script>
 </body>
 </html>

@@ -16,21 +16,26 @@ from google.auth import impersonated_credentials
 # Load environment variables
 load_dotenv()
 
-# Fetch the secret from Secret Manager
-secret_client = secretmanager.SecretManagerServiceClient()
-secret_name = "projects/cv-converter-449021/secrets/firestore-account-key/versions/latest"
-response = secret_client.access_secret_version(request={"name": secret_name})
-secret_payload = response.payload.data.decode("UTF-8")
-
-# Parse the secret (service account JSON)
-credentials_info = json.loads(secret_payload)
-
-# Initialize Firestore with explicit credentials
-firestore_client = firestore.Client.from_service_account_info(
-    credentials_info, 
-    project="cv-converter-449021", 
-    database="cv-converter-db"
-)
+# Initialize Firestore based on environment
+if os.getenv('ENV') == 'local':
+    # Use local service account key
+    firestore_client = firestore.Client.from_service_account_json(
+        os.getenv('GOOGLE_APPLICATION_CREDENTIALS'),
+        project="cv-converter-449021",
+        database="cv-converter-db"
+    )
+else:
+    # Fetch secret from GCP Secret Manager
+    secret_client = secretmanager.SecretManagerServiceClient()
+    secret_name = "projects/cv-converter-449021/secrets/firestore-account-key/versions/latest"
+    response = secret_client.access_secret_version(request={"name": secret_name})
+    secret_payload = response.payload.data.decode("UTF-8")
+    credentials_info = json.loads(secret_payload)
+    firestore_client = firestore.Client.from_service_account_info(
+        credentials_info, 
+        project="cv-converter-449021", 
+        database="cv-converter-db"
+    )
 
 # Initialize OpenAI client
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -39,12 +44,108 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 # Get the path to the service account key
 credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
+# Translations for all hardcoded text in cv_template.html
+translations = {
+    "en": {
+        "skills_title": "Technical and Functional Skills.",
+        "education_title": "Education.",
+        "certifications_title": "Certifications.",
+        "languages_title": "Languages.",
+        "experiences_title": "Professional Experiences.",
+        "description_label": "Description of the role:",
+        "client_references_label": "Client References:",
+        "we_are_randstad": "we are randstad digital.",
+        "randstad_paragraph": """Randstad Digital is a leading technology partner that accelerates digital
+transformation for businesses by providing talent, production capabilities, and
+packaged solutions in specialized fields. Our expertise enables you to
+strengthen your team while connecting you with skilled professionals worldwide
+who align with the technologies you’ve chosen.<br><br>
+We focus on packaged solutions, empowering businesses to achieve their
+objectives quickly and efficiently. We operate across four service lines:
+customer experience (UX/UI), digital engineering and product engineering, data
+& analytics, and cloud & infrastructure. To achieve this, we offer our clients
+three engagement models: expertise, competency centers, and packaged
+solutions.<br><br>
+Launched on August 30, 2023, Randstad Digital has an in-depth understanding
+of the labor market, enabling us to support our clients in their digital
+transformation projects with our diversified and agile expertise and
+methodologies. Our 46,000 employees worldwide positively impact society by
+helping people achieve their full potential throughout their professional lives.<br><br>
+Randstad was founded in 1960, with its headquarters in Diemen, the
+Netherlands. In 2022, across our 39 markets, we helped over 2 million people
+find jobs that suited them and advised more than 230,000 clients on their
+talent needs. We generated €27.6 billion in revenue. Randstad N.V. is listed on
+Euronext Amsterdam.""",
+        "our_solutions": "our solutions",
+        "customer_experience": "customer experience",
+        "customer_experience_desc": """We help you improve the way you interact with your customers by designing and
+creating a differentiated digital experience, giving meaning to every step of the
+customer journey.""",
+        "data_analytics": "data & analytics",
+        "data_analytics_desc": """We help you catalog, gather, and structure your data, transforming it into actionable
+insights for your organization.""",
+        "product_engineering": "product & digital engineering",
+        "product_engineering_desc": """We provide the expertise needed to accelerate digital innovation, from product design
+to tailor-made solutions.""",
+        "cloud_infrastructure": "cloud & infrastructure",
+        "cloud_infrastructure_desc": """We provide the expertise to accelerate cloud migration and help you create an agile,
+digitally-focused infrastructure."""
+    },
+
+    "fr": {
+        "skills_title": "Compétences techniques et fonctionnelles.",
+        "education_title": "Formations.",
+        "certifications_title": "Certifications.",
+        "languages_title": "Langues.",
+        "experiences_title": "Expériences professionnelles.",
+        "description_label": "Description du rôle :",
+        "client_references_label": "Référence du client :",
+        "we_are_randstad": "nous sommes randstad digital",
+        "randstad_paragraph": """Randstad Digital est un partenaire technologique de référence qui facilite la
+transformation digitale accélérée des entreprises en fournissant des talents,
+des capacités de production et des solutions packagées dans des domaines
+spécialisés. Notre expertise vous permet de renforcer votre équipe, tout en vous
+mettant en relation avec des professionnels qualifiés dans le monde entier qui
+s'alignent sur les technologies que vous avez choisies.<br><br>
+Nous nous concentrons sur les solutions packagées et nous donnons aux entreprises
+les moyens d'atteindre leurs objectifs rapidement et efficacement. Nous intervenons
+autour de quatre lignes de services : l'expérience client (UX/UI), l'ingénierie
+numérique et l'ingénierie produit, les datas & analytics et le cloud & infrastructures.
+Pour ce faire, nous proposons à nos clients trois modèles d'engagement : l'expertise,
+des centres de compétences et des solutions packagées.<br><br>
+Lancée le 30 août 2023, Randstad Digital possède une connaissance approfondie du
+marché du travail pour accompagner ses clients dans leurs projets de transformation
+digitale grâce à son expertise et ses méthodologies diversifiées et agiles. Nos
+46 000 collaborateurs dans le monde ont un impact positif sur la société en aidant
+les gens à réaliser leur véritable potentiel tout au long de leur vie professionnelle.<br><br>
+Randstad a été fondée en 1960 et son siège social se trouve à Diemen, aux Pays-Bas.
+En 2022, sur nos 39 marchés, nous avons aidé plus de 2 millions de personnes à
+trouver un emploi qui leur convient et conseillé plus de 230 000 clients sur leurs
+besoins en talents. Nous avons généré un chiffre d'affaires de 27,6 milliards d'euros.
+Randstad N.V. est cotée à l'Euronext Amsterdam.""",
+        "our_solutions": "nos solutions",
+        "customer_experience": "expérience client",
+        "customer_experience_desc": """Nous vous aidons à améliorer la façon dont vous interagissez avec vos clients,
+en concevant et en créant une expérience digitale différenciante et en donnant
+du sens à chaque étape du parcours client.""",
+        "data_analytics": "data & analytics",
+        "data_analytics_desc": """Nous vous aidons à répertorier, rassembler et structurer vos données et à
+les transformer en informations exploitables pour votre organisation.""",
+        "product_engineering": "ingénierie produit & digital",
+        "product_engineering_desc": """Nous fournissons l'expertise nécessaire pour accélérer l'innovation digitale,
+de la conception du produit aux solutions élaborées sur mesure.""",
+        "cloud_infrastructure": "cloud & infrastructure",
+        "cloud_infrastructure_desc": """Nous fournissons l'expertise pour accélérer la migration vers le cloud et vous
+aider à créer une infrastructure agile axée sur le numérique."""
+    }
+}
+
 # Configure upload folder
 app.config['UPLOAD_FOLDER'] = 'app/uploads'
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
-
+    
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -104,6 +205,9 @@ def upload_file():
 
     if not result:
         return "Failed to process the CV with OpenAI API.", 500
+    
+    # Save chosen language in the result so we know what user selected
+    result["chosen_language"] = target_language
 
     # 5) Store JSON result in Firestore
     firestore_client.collection('cvs').document('last_cv').set(result)
@@ -472,7 +576,7 @@ def generate_cv():
             # Save updated CV back to Firestore
             doc_ref.set(data)
             print("Updated CV saved to Firestore.")
-
+            
             # ----- Build sections for chunking / pagination -----
             sections = []
 
@@ -526,10 +630,12 @@ def generate_cv():
             pages = []
             current_page = []
             current_height = 0
+            lang_code = data.get("chosen_language", "en")
 
             for section in sections:
                 hh = heading_height()
                 heading_placed = False
+                heading_str = translations[lang_code]["experiences_title"]
 
                 # Start a new page for experiences if there's already content
                 if section["type"] == "experiences" and current_height > 0:
@@ -549,7 +655,7 @@ def generate_cv():
                     if not heading_placed:
                         new_block = {
                             "type": section["type"],
-                            "heading": section["heading"],
+                            "heading": heading_str,
                             "items": []
                         }
                         current_page.append(new_block)
@@ -573,8 +679,16 @@ def generate_cv():
 
             data["page_2_content"] = pages
             print("Page 2 Content:", json.dumps(data["page_2_content"], indent=2))
+            
+            # 1) Determine the chosen language
+            lang_code = data.get("chosen_language", "en")
 
-            return render_template('cv_template.html', data=data)
+            # 2) Get localized text
+            localized_text = translations.get(lang_code, translations["en"])
+
+            # 3) Render with text=localized_text
+            print(f"Rendering with language: {lang_code}, Localized text exists: {bool(localized_text)}")
+            return render_template('cv_template.html', data=data, text=localized_text)
 
         except Exception as e:
             print(f"Error updating CV: {e}")
@@ -586,7 +700,13 @@ def generate_cv():
             doc = doc_ref.get()
             if doc.exists:
                 data = doc.to_dict()
-                return render_template('cv_template.html', data=data)
+                
+                # If no language stored, default to "en"
+                lang_code = data.get("chosen_language", "en")
+                localized_text = translations.get(lang_code, translations["en"])
+                
+                print(f"Rendering with language: {lang_code}, Localized text exists: {bool(localized_text)}")
+                return render_template('cv_template.html', data=data, text=localized_text)
             else:
                 return jsonify({'success': False, 'error': 'No last CV found in Firestore'}), 404
         except Exception as e:
