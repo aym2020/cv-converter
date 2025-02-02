@@ -33,8 +33,36 @@
             <i class="fas fa-print"></i>
             <span class="tooltip">Print to PDF</span>
         </button>
+
+        <!-- Settings Button -->
+        <button class="settings-button" onclick="toggleSettingsPanel()">
+            <i class="fas fa-cog"></i>
+            <span class="tooltip">Settings</span>
+        </button>
     </div>
     
+    <!-- Settings Panel (Floating & Fixed on Scroll) -->
+    <div id="settings-panel" class="settings-panel">
+        <h3>CV Settings</h3>
+        
+        <!-- Form sends new values to /generate_cv -->
+        <form method="POST" action="/generate_cv">
+            <label for="EXPERIENCE_BULLET_LINE_HEIGHT">Experience Bullet Height:</label>
+            <input type="number" name="EXPERIENCE_BULLET_LINE_HEIGHT" id="EXPERIENCE_BULLET_LINE_HEIGHT" step="1" value="{{ EXPERIENCE_BULLET_LINE_HEIGHT }}">
+            
+            <label for="PAGE_HEIGHT_MM">Page Height (mm):</label>
+            <input type="number" name="PAGE_HEIGHT_MM" id="PAGE_HEIGHT_MM" step="1" value="{{ PAGE_HEIGHT_MM }}">
+            
+            <label for="PADDING_MM">Padding (mm):</label>
+            <input type="number" name="PADDING_MM" id="PADDING_MM" step="1" value="{{ PADDING_MM }}">
+            
+            <button type="submit" class="settings-save-button">Regenerate CV</button>
+            <input type="hidden" name="is_settings" value="true">
+        </form>
+
+        <button type="button" class="settings-close-button" onclick="toggleSettingsPanel()">Close</button>
+    </div>
+
     <!-- Page 1 -->
     <div class="page page-1">
         <!-- Logo Container -->
@@ -205,5 +233,22 @@
             {{ text.cloud_infrastructure_desc }}
         </div>
     </div>
+
+    <script>
+        function toggleSettingsPanel() {
+            const panel = document.getElementById('settings-panel');
+            panel.classList.toggle('active');
+        }
+    
+        // Keep settings panel visible when scrolling
+        window.addEventListener("scroll", function() {
+            const panel = document.getElementById("settings-panel");
+            if (panel.classList.contains("active")) {
+                panel.classList.add("fixed");
+            }
+        });
+    </script>
+
 </body>
 </html>
+

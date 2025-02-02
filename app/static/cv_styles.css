@@ -558,3 +558,138 @@ body {
     margin: 0 auto;
     padding-left: 40px; /* Padding left 40px */
 }
+
+/* SETTINGS BUTTON (Same as Print Button) */
+.settings-button {
+    background-color: #2f7dda;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Hover Effect */
+.settings-button:hover {
+    background-color: #1e5bb5;
+    transform: translateY(-2px);
+}
+
+/* Tooltip */
+.settings-button .tooltip {
+    visibility: hidden;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    position: absolute;
+    top: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.settings-button:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* SETTINGS PANEL - Floating & Scrollable */
+.settings-panel {
+    position: fixed;
+    top: 80px; /* Below the button */
+    right: 20px; /* Adds margin from the right */
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    width: 280px;
+    display: none; /* Initially hidden */
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Keep panel visible when scrolling */
+.settings-panel.fixed {
+    position: fixed;
+    top: 80px;
+    right: 30px;
+}
+
+/* Show settings panel when active */
+.settings-panel.active {
+    display: block;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Input Fields */
+.settings-panel input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* Save Button */
+.settings-save-button {
+    background-color: #2f7dda;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.settings-save-button:hover {
+    background-color: #1e5bb5;
+}
+
+/* Close Button */
+.settings-close-button {
+    background-color: #ddd;
+    color: #0f1840;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.settings-close-button:hover {
+    background-color: #ccc;
+}
+
+/* Fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

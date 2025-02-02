@@ -374,6 +374,7 @@ def generate_cv():
     """
     # Define global variables for page dimensions
     global PAGE_HEIGHT_MM, PAGE_WIDTH_MM, PADDING_MM
+    global EXPERIENCE_BULLET_LINE_HEIGHT
 
     # Page dimensions and padding (A4 size)
     PAGE_HEIGHT_MM = 290  # A4 height in mm
@@ -390,12 +391,14 @@ def generate_cv():
     LANGUAGE_ITEM_HEIGHT = 3
     EDUCATION_BASE_HEIGHT = 8
     EDUCATION_LINE_HEIGHT = 4
+    
+    # Experiences
     EXPERIENCE_BASE_HEIGHT = 15
     EXPERIENCE_LINE_HEIGHT = 10
     EXPERIENCE_SECTION_TITLE_HEIGHT = 8
     EXPERIENCE_TABLE_HEIGHT = 8.5
     EXPERIENCE_DESCRIPTION_LABEL_HEIGHT = 7.4
-    EXPERIENCE_BULLET_LINE_HEIGHT = 8
+    EXPERIENCE_BULLET_LINE_HEIGHT = 20
     EXPERIENCE_BULLET_PADDING_TOP = 7
     EXPERIENCE_BULLET_PADDING_BOTTOM = 7
     EXPERIENCE_CLIENT_REF_TITLE_HEIGHT = 6
@@ -452,6 +455,16 @@ def generate_cv():
             return EDUCATION_BASE_HEIGHT + line_count * EDUCATION_LINE_HEIGHT
 
         return 10  # Default
+    
+    # Update rendering parameters from settings form if provided
+    try:
+        if 'is_settings' in request.form:
+            EXPERIENCE_BULLET_LINE_HEIGHT = int(request.form.get('EXPERIENCE_BULLET_LINE_HEIGHT', EXPERIENCE_BULLET_LINE_HEIGHT))
+            PAGE_HEIGHT_MM = int(request.form.get('PAGE_HEIGHT_MM', PAGE_HEIGHT_MM))
+            PADDING_MM = int(request.form.get('PADDING_MM', PADDING_MM))
+            CONTENT_HEIGHT_MM = PAGE_HEIGHT_MM - 2 * PADDING_MM
+    except ValueError:
+        pass
 
     # Firestore reference
     doc_ref = firestore_client.collection('cvs').document('last_cv')
@@ -464,119 +477,124 @@ def generate_cv():
                 return jsonify({'success': False, 'error': 'No last CV found in Firestore'}), 404
 
             data = doc.to_dict()
+            
+            # Check if this is a settings submission
+            is_settings_submission = 'is_settings' in request.form
 
+            # Only update CV data for non-settings submissions
+            if not is_settings_submission:
             # Update the JSON data with form inputs
-            data["first_name"] = request.form.get("first_name", data.get("first_name", ""))
-            data["name"] = request.form.get("name", data.get("name", ""))
-            data["job_title"] = request.form.get("job_title", data.get("job_title", ""))
-            data["manager_name"] = request.form.get("manager_name", data.get("manager_name", ""))
-            data["manager_email"] = request.form.get("manager_email", data.get("manager_email", ""))
-            data["manager_tel"] = request.form.get("manager_tel", data.get("manager_tel", ""))
-            data["manager_role"] = request.form.get("manager_role", data.get("manager_role", ""))
+                data["first_name"] = request.form.get("first_name", data.get("first_name", ""))
+                data["name"] = request.form.get("name", data.get("name", ""))
+                data["job_title"] = request.form.get("job_title", data.get("job_title", ""))
+                data["manager_name"] = request.form.get("manager_name", data.get("manager_name", ""))
+                data["manager_email"] = request.form.get("manager_email", data.get("manager_email", ""))
+                data["manager_tel"] = request.form.get("manager_tel", data.get("manager_tel", ""))
+                data["manager_role"] = request.form.get("manager_role", data.get("manager_role", ""))
 
-            # Update skills
-            data["skills"] = {}
-            for key, value in request.form.items():
-                if key.startswith("skills_"):
-                    index = key.replace("skills_", "")
-                    category_name = request.form.get(f"category_name_{index}", "").strip()
-                    if category_name:
-                        skill_list = value.split(", ")
-                        if skill_list and skill_list != [""]:
-                            data["skills"][category_name] = skill_list
+                # Update skills
+                data["skills"] = {}
+                for key, value in request.form.items():
+                    if key.startswith("skills_"):
+                        index = key.replace("skills_", "")
+                        category_name = request.form.get(f"category_name_{index}", "").strip()
+                        if category_name:
+                            skill_list = value.split(", ")
+                            if skill_list and skill_list != [""]:
+                                data["skills"][category_name] = skill_list
 
-            # Update languages
-            languages = {}
-            i = 1
-            while True:
-                language_name = request.form.get(f"language_{i}")
-                proficiency = request.form.get(f"level_{i}")
-                if language_name is None:
-                    break
-                if not language_name.strip():
-                    i += 1
-                    continue
-                languages[language_name] = proficiency or "Unknown"
-                i += 1
-                if i > 50:
-                    break
-            data["languages"] = languages
-
-            # Update experiences with client references
-            experiences = []
-            i = 1
-            while True:
-                job_title = request.form.get(f"job_title_{i}")
-                if not job_title:
-                    break
-
-                # Collect client references
-                client_references = []
-                j = 1
+                # Update languages
+                languages = {}
+                i = 1
                 while True:
-                    first_name = request.form.get(f"client_first_name_{i}_{j}")
-                    last_name = request.form.get(f"client_last_name_{i}_{j}")
-                    role = request.form.get(f"client_role_{i}_{j}")
-                    email = request.form.get(f"client_email_{i}_{j}")
-                    tel = request.form.get(f"client_tel_{i}_{j}")
+                    language_name = request.form.get(f"language_{i}")
+                    proficiency = request.form.get(f"level_{i}")
+                    if language_name is None:
+                        break
+                    if not language_name.strip():
+                        i += 1
+                        continue
+                    languages[language_name] = proficiency or "Unknown"
+                    i += 1
+                    if i > 50:
+                        break
+                data["languages"] = languages
 
-                    if not first_name and not last_name:
+                # Update experiences with client references
+                experiences = []
+                i = 1
+                while True:
+                    job_title = request.form.get(f"job_title_{i}")
+                    if not job_title:
                         break
 
-                    client_references.append({
-                        "first_name": (first_name or "").strip(),
-                        "last_name": (last_name or "").strip(),
-                        "role": (role or "").strip(),
-                        "email": (email or "").strip(),
-                        "tel": (tel or "").strip(),
+                    # Collect client references
+                    client_references = []
+                    j = 1
+                    while True:
+                        first_name = request.form.get(f"client_first_name_{i}_{j}")
+                        last_name = request.form.get(f"client_last_name_{i}_{j}")
+                        role = request.form.get(f"client_role_{i}_{j}")
+                        email = request.form.get(f"client_email_{i}_{j}")
+                        tel = request.form.get(f"client_tel_{i}_{j}")
+
+                        if not first_name and not last_name:
+                            break
+
+                        client_references.append({
+                            "first_name": (first_name or "").strip(),
+                            "last_name": (last_name or "").strip(),
+                            "role": (role or "").strip(),
+                            "email": (email or "").strip(),
+                            "tel": (tel or "").strip(),
+                        })
+                        j += 1
+
+                    # Append the experience with references
+                    experiences.append({
+                        "job_title": job_title.strip(),
+                        "company": request.form.get(f"company_{i}", "").strip(),
+                        "duration": request.form.get(f"duration_{i}", "").strip(),
+                        "description": request.form.get(f"description_{i}", "").strip(),
+                        "client_references": client_references
+                    })
+                    i += 1
+                data["experiences"] = experiences
+
+                # Update education
+                education = []
+                j = 1
+                while True:
+                    degree = request.form.get(f"degree_{j}")
+                    if not degree:
+                        break
+                    education.append({
+                        "degree": degree,
+                        "institution": request.form.get(f"institution_{j}", ""),
+                        "duration": request.form.get(f"education_duration_{j}", ""),
+                        "description": request.form.get(f"education_description_{j}", ""),
                     })
                     j += 1
+                data["education"] = education
 
-                # Append the experience with references
-                experiences.append({
-                    "job_title": job_title.strip(),
-                    "company": request.form.get(f"company_{i}", "").strip(),
-                    "duration": request.form.get(f"duration_{i}", "").strip(),
-                    "description": request.form.get(f"description_{i}", "").strip(),
-                    "client_references": client_references
-                })
-                i += 1
-            data["experiences"] = experiences
+                # Update certifications
+                certifications = []
+                k = 1
+                while True:
+                    certification_name = request.form.get(f"certification_name_{k}")
+                    if not certification_name:
+                        break
+                    certifications.append({
+                        "name": certification_name,
+                        "issuer": request.form.get(f"certification_issuer_{k}", ""),
+                    })
+                    k += 1
+                data["certifications"] = certifications
 
-            # Update education
-            education = []
-            j = 1
-            while True:
-                degree = request.form.get(f"degree_{j}")
-                if not degree:
-                    break
-                education.append({
-                    "degree": degree,
-                    "institution": request.form.get(f"institution_{j}", ""),
-                    "duration": request.form.get(f"education_duration_{j}", ""),
-                    "description": request.form.get(f"education_description_{j}", ""),
-                })
-                j += 1
-            data["education"] = education
-
-            # Update certifications
-            certifications = []
-            k = 1
-            while True:
-                certification_name = request.form.get(f"certification_name_{k}")
-                if not certification_name:
-                    break
-                certifications.append({
-                    "name": certification_name,
-                    "issuer": request.form.get(f"certification_issuer_{k}", ""),
-                })
-                k += 1
-            data["certifications"] = certifications
-
-            # Save updated CV back to Firestore
-            doc_ref.set(data)
-            print("Updated CV saved to Firestore.")
-            
+                # Save updated CV back to Firestore
+                doc_ref.set(data)
+                print("Updated CV saved to Firestore.")
+                            
             # ----- Build sections for chunking / pagination -----
             sections = []
 
@@ -679,7 +697,7 @@ def generate_cv():
 
             data["page_2_content"] = pages
             print("Page 2 Content:", json.dumps(data["page_2_content"], indent=2))
-            
+                            
             # 1) Determine the chosen language
             lang_code = data.get("chosen_language", "en")
 
@@ -687,8 +705,16 @@ def generate_cv():
             localized_text = translations.get(lang_code, translations["en"])
 
             # 3) Render with text=localized_text
-            print(f"Rendering with language: {lang_code}, Localized text exists: {bool(localized_text)}")
-            return render_template('cv_template.html', data=data, text=localized_text)
+            lang_code = data.get("chosen_language", "en")
+            localized_text = translations.get(lang_code, translations["en"])
+            return render_template(
+                'cv_template.html', 
+                data=data, 
+                text=localized_text,
+                EXPERIENCE_BULLET_LINE_HEIGHT=EXPERIENCE_BULLET_LINE_HEIGHT,
+                PAGE_HEIGHT_MM=PAGE_HEIGHT_MM,
+                PADDING_MM=PADDING_MM
+            )
 
         except Exception as e:
             print(f"Error updating CV: {e}")
@@ -706,7 +732,14 @@ def generate_cv():
                 localized_text = translations.get(lang_code, translations["en"])
                 
                 print(f"Rendering with language: {lang_code}, Localized text exists: {bool(localized_text)}")
-                return render_template('cv_template.html', data=data, text=localized_text)
+                return render_template(
+                    'cv_template.html', 
+                    data=data, 
+                    text=localized_text,
+                    EXPERIENCE_BULLET_LINE_HEIGHT=EXPERIENCE_BULLET_LINE_HEIGHT,
+                    PAGE_HEIGHT_MM=PAGE_HEIGHT_MM,
+                    PADDING_MM=PADDING_MM
+                )
             else:
                 return jsonify({'success': False, 'error': 'No last CV found in Firestore'}), 404
         except Exception as e:
