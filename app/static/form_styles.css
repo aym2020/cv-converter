@@ -435,3 +435,11 @@ fieldset legend {
     visibility: visible;
     opacity: 1;
 }
+
+/* Tooltip Text */
+.tooltip-text {
+    font-size:11px;
+    color: #333;
+    margin: 1px;
+}   
+

@@ -168,9 +168,14 @@
                             <div class="form-group">
                                 <label for="level_{{ loop.index }}">Proficiency:</label>
                                 <input type="text" id="level_{{ loop.index }}" name="level_{{ loop.index }}" value="{{ level }}">
+                                <p class="tooltip-text">Native or bilingual proficiency – C2</p>
+                                <p class="tooltip-text">Professional working proficiency – B2</p>
+                                <p class="tooltip-text">Basic knowledge – A2</p>
                             </div>
+
                             <button type="button" class="remove-button" onclick="removeLanguage(this)">Remove</button>
                         </fieldset>
+
                     {% endfor %}
                 </div>
                 <button type="button" class="add-button" onclick="addLanguage()">Add Language</button>
@@ -295,6 +300,9 @@
                 <div class="form-group">
                     <label for="level_${index}">Proficiency:</label>
                     <input type="text" id="level_${index}" name="level_${index}">
+                    <p class="tooltip-text">Native or bilingual proficiency – C2</p>
+                    <p class="tooltip-text">Professional working proficiency – B2</p>
+                    <p class="tooltip-text">Basic knowledge – A2</p>
                 </div>
                 <button type="button" class="remove-button" onclick="removeLanguage(this)">Remove</button>
             `;

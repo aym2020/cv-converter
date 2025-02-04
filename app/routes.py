@@ -317,7 +317,7 @@ Extract the following information from this CV text and, if needed, translate it
    - **institution** (string, empty if unknown)
    - **duration** (string)
    - **description** (string)
-   If no education, return `"education": []`.
+   If no education, return `"education": []`. Text must be capitalized.
 
 8. **certifications**: A **list** of objects, each with:
    - **name** (string, capitalized)
@@ -330,6 +330,7 @@ Extract the following information from this CV text and, if needed, translate it
 - Return **only** the JSON object, with no additional text or explanations.
 - All text (except skill category headings) in **{target_language}**.
 - Capitalize Language names, Degree names, Name and First Name, Job Title, and Certification names if appropriate.
+- Capitalize everything in the JSON output.
 
 CV Text:
 {text}
