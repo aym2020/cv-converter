@@ -313,24 +313,26 @@ Extract the following information from this CV text and, if needed, translate it
    If no experiences, return `"experiences": []`.
 
 7. **education**: A **list** of objects, each with:
-   - **degree** (string, capitalized)
+   - **degree** (string, capitalized case e.g. "Master 2 Ingénierie réseaux et systèmes")
    - **institution** (string, empty if unknown)
    - **duration** (string)
    - **description** (string)
    If no education, return `"education": []`. Text must be capitalized.
 
 8. **certifications**: A **list** of objects, each with:
-   - **name** (string, capitalized)
+   - **name** (string, capitalized case e.g. "AWS Certified")
    - **issuer** (string, empty if unknown)
    If none, return `"certifications": []`.
+
 
 **Important**:
 - Do **not** add extra top-level fields or rename existing fields.
 - If a section is not found in the CV, provide an empty object/array for it.
 - Return **only** the JSON object, with no additional text or explanations.
 - All text (except skill category headings) in **{target_language}**.
-- Capitalize Language names, Degree names, Name and First Name, Job Title, and Certification names if appropriate.
-- Capitalize everything in the JSON output.
+- Capitalize case for Language names, Degree names, Name and First Name, Job Title, and Certification names if appropriate (e.g. "French", "Bachelor", "John", "Manager", "AWS Certified").
+- Capitalize case everything in the JSON output (e.g. "MASTER OF SCIENCE" becomes "Master of Science").
+
 
 CV Text:
 {text}
