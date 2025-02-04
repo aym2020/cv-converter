@@ -2,8 +2,6 @@
 
 A web-based application for creating, editing, and managing professional CVs with real-time Firestore synchronization and PDF export capabilities.
 
-![CV Generator Screenshot](static/screenshot.png)
-
 ## Features
 
 ### **Dynamic Form Interface**
